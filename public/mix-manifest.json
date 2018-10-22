@@ -1,0 +1,10 @@
+{
+    "/js/app.js": "/js/app.js",
+    "/css/app.css": "/css/app.css",
+    "/css/mainsite/libs.css": "/css/mainsite/libs.css",
+    "/js/mainsite/libs.js": "/js/mainsite/libs.js",
+    "/css/admin/login.css": "/css/admin/login.css",
+    "/js/admin/login.js": "/js/admin/login.js",
+    "/css/admin/libs.css": "/css/admin/libs.css",
+    "/js/admin/libs.js": "/js/admin/libs.js"
+}
