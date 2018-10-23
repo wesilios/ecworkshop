@@ -21,16 +21,12 @@ class AdminFolderController extends Controller
     public function create(Request $request)
     {
     	if($request->ajax()) {
-            $folder = new Folder;
-            $folder->name = $request->folder_name;
-            $folder->slug = Alpha::alpha_dash($request->folder_name);
-            $folder->folder_id = $request->folder_id;
-            $folder->save();
-            $folder_id_parent = $folder->folder_id;
-            $path = 'public/images/';
+            $folder_id_parent = $request->folder_id;
+            $path = preg_replace("/\\\\/", '/',public_path());
+            $slug = Alpha::alpha_dash($request->folder_name);
 
             if($request->folder_id == 1) {
-                $path = 'public/images/'. $folder->slug;
+                $path .= '/images/' . $slug ; 
             } 
             else 
             {
@@ -40,14 +36,18 @@ class AdminFolderController extends Controller
                     $folder_id_parent = $folder_temp->folder->id;
                     $path_arr[] = $folder_temp->slug;
                 }
-                for($i == count($path_arr); $i >= 0; $i--)
+                for($i = count($path_arr)-1; $i >= 0; $i--)
                 {
-                    $path += $path_arr[$i];
+                    $path .= '/images/' . $path_arr[$i] . '/' . $slug ;
                 }
             }
-            $path = preg_replace("/\\\\/", '/',public_path());
             mkdir($path, 0777);
-            Storage::makeDirectory(public_path($folder->slug), $mode = 0777, true, true);
+
+            $folder = new Folder;
+            $folder->name = $request->folder_name;
+            $folder->slug = $slug;
+            $folder->folder_id = $request->folder_id;
+            $folder->save();
 
             $folder = Folder::findOrFail($request->folder_id);
             $folder_list = Folder::where('folder_id',$request->folder_id)->get();
