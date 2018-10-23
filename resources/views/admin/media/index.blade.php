@@ -78,7 +78,7 @@
         	<div class="col-md-12">
         		<div class="box box-solid">
         			<div class="box-header">
-        				<h3 class="box-title folder-link">
+        				<h3 class="box-title folder-link-tree">
         					@if(isset($folder_string))
 	        					@foreach($folder_string as $fd_string)
 	        						@if($fd_string['folder_slug'] == 'root')
@@ -334,6 +334,16 @@
 	               }
 	            });
 			}
+		});
+		
+		$('.folder-link').click(function(e) {
+			e.preventDefault();
+			$(this).toggleClass('active');
+		});
+
+		$('.folder-link').dblclick(function(e){
+			var href = $(this).attr('href');
+			window.location = href;
 		});
 	</script>
 @endsection

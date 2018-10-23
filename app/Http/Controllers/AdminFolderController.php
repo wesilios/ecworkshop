@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Auth;
 use Validator;
 use App\Folder;
@@ -25,6 +26,28 @@ class AdminFolderController extends Controller
             $folder->slug = Alpha::alpha_dash($request->folder_name);
             $folder->folder_id = $request->folder_id;
             $folder->save();
+            $folder_id_parent = $folder->folder_id;
+            $path = 'public/images/';
+
+            if($request->folder_id == 1) {
+                $path = 'public/images/'. $folder->slug;
+            } 
+            else 
+            {
+                while($folder_id_parent != 1)
+                {
+                    $folder_temp = Folder::findOrFail($folder_id_parent);
+                    $folder_id_parent = $folder_temp->folder->id;
+                    $path_arr[] = $folder_temp->slug;
+                }
+                for($i == count($path_arr); $i >= 0; $i--)
+                {
+                    $path += $path_arr[$i];
+                }
+            }
+            $path = preg_replace("/\\\\/", '/',public_path());
+            mkdir($path, 0777);
+            Storage::makeDirectory(public_path($folder->slug), $mode = 0777, true, true);
 
             $folder = Folder::findOrFail($request->folder_id);
             $folder_list = Folder::where('folder_id',$request->folder_id)->get();

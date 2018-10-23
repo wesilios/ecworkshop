@@ -6532,19 +6532,19 @@ a.closeZone:hover {
   font-size: 13px;
 }
 
-.folder-link a {
+.folder-link-tree a {
   color: #444;
-  padding: 10px 5px;
+  padding: 5px 15px;
 }
 
-.folder-link a:hover {
+.folder-link-tree a:hover {
   color: #444;
-  padding:5px;
+  padding: 5px 15px;
   background-color: #eee;
   border-radius: 5px;
 }
 
-.folder-link span {
+.folder-link-tree span {
   color: #444;
   margin:0px 10px;
 }
@@ -6553,21 +6553,26 @@ a.closeZone:hover {
   margin-bottom: 10px;
 }
 
-#folder-section .folder {
-  border: 1px solid #eee;
+#folder-section a .folder {
+  border: 2px solid #eee;
   width: 100%;
   padding: 10px 20px;
-}
-
-#folder-section a .folder  {
   color: #444;
+  transition: .5s;
+  -moz-transition: .5s;
+  -webkit-transition: .5s;
 }
 
-#folder-section .folder i {
+#folder-section a.active .folder  {
+  color: #444;
+  border: 2px solid #00c0ef;
+}
+
+#folder-section a .folder i {
   border-radius: 50%;
 }
 
-#folder-section .folder span {
+#folder-section a .folder span {
   margin-left: 10px;
 }
 /* bootstrap-tagsinput.css */
