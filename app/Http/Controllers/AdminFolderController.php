@@ -29,10 +29,10 @@ class AdminFolderController extends Controller
             $folder_id_parent = $folder->folder_id;
             $path = 'public/images/';
 
-            if($request->folder_id == 1) {
+            if($folder_id_parent == 1) {
                 $path = 'public/images/'. $folder->slug;
-            } 
-            else 
+            }
+            else
             {
                 while($folder_id_parent != 1)
                 {
@@ -46,8 +46,9 @@ class AdminFolderController extends Controller
                 }
             }
             $path = preg_replace("/\\\\/", '/',public_path());
+            return $path;
             mkdir($path, 0777);
-            Storage::makeDirectory(public_path($folder->slug), $mode = 0777, true, true);
+            //Storage::makeDirectory(public_path($folder->slug), $mode = 0777, true, true);
 
             $folder = Folder::findOrFail($request->folder_id);
             $folder_list = Folder::where('folder_id',$request->folder_id)->get();

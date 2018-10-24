@@ -14,18 +14,6 @@
 	<section class="content">
         <div class="row">
         	<div class="col-md-12">
-        		<div class="uploadZone">
-        			<div class="fileSelectZone">
-	        			<a class="closeZone pull-right"><i class="fa fa-close fa-2x"></i></a>
-	        			<div class="upload-ui">
-	        				<h2>Drop files anywhere to upload</h2>
-							<p>or</p>
-							<button class="btn btn-default selectFile">Select Files</button>
-	        			</div>
-	        		</div>
-        		</div>
-        	</div>
-        	<div class="col-md-12">
         		@if(session('error'))
             	<div class="alert alert-warning alert-dismissable">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -52,26 +40,6 @@
 	                    <strong>{{ $errors->first('medias') }}</strong>
 	                </span>
 	            @endif
-				<div class="box box-hidden">
-					<div class="box-body">
-						<div class="form-hidden">
-		    				{!! Form::open(['method'=>'POST', 'action'=>"AdminMediaController@create" ,'files'=>true]) !!}
-								{!! Form::file('medias[]', array('multiple'=>true,'id'=>'form-file-hidden')) !!}
-								<input type="hidden" name="folder_id" value="{{ $folder->id }}"/>
-								<div class="form-group">
-									<button class="btn btn-default selectFile">Select files</button>
-									{!! Form::submit('Upload', ['class'=>'btn btn-info']) !!}
-									<div class="pull-right">
-					    				<a href="#" data-toggle="modal" data-target="#newFolder">
-				                            <div class="btn btn-success">Folder mới</div>
-				                        </a>
-					    			</div>
-								</div>
-			    			{!! Form::close() !!}
-		    			</div>
-		    			
-					</div>
-				</div>
         	</div>
         </div>
         <div class="row">
@@ -93,6 +61,36 @@
         				</h3>
         			</div>
         			<div class="box-body">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-hidden">
+									{!! Form::open(['method'=>'POST', 'action'=>"AdminMediaController@create" ,'files'=>true]) !!}
+									{!! Form::file('medias[]', array('multiple'=>true,'id'=>'form-file-hidden')) !!}
+									<input type="hidden" name="folder_id" value="{{ $folder->id }}"/>
+									<div class="form-group">
+										<button class="btn btn-default selectFile">Select files</button>
+										{!! Form::submit('Upload', ['class'=>'btn btn-info']) !!}
+										<div class="pull-right">
+											<a href="#" data-toggle="modal" data-target="#newFolder">
+												<div class="btn btn-success">Folder mới</div>
+											</a>
+										</div>
+									</div>
+									{!! Form::close() !!}
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="uploadZone">
+									<div class="fileSelectZone">
+										<div class="upload-ui">
+											<h2>Drop files anywhere to upload</h2>
+											<p>or</p>
+											<button class="btn btn-default selectFile">Select Files</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
         				<div id="preview-image">
 
 		    			</div>
@@ -143,7 +141,7 @@
 
         					<div class="displayImages">
         					</div>
-        					
+
 							<div id="nothing">
 								<div class="row">
 									<div class="col-md-8 col-md-offset-2">
@@ -230,7 +228,7 @@
 			                    			{!! Form::label('caption', 'Caption:', ['class' => 'col-sm-4 control-label'] ) !!}
 					                      	<div class="col-sm-8">
 												{!! Form::textarea('caption', $media->caption, ['class'=>'form-control', 'rows'=>'3']) !!}
-					                      		
+
 					                      	</div>
 					                    </div>
 					                    <div class="form-group {{ $errors->has('alt_text') ? ' has-error' : '' }}">
@@ -260,7 +258,7 @@
 		        		</div>
 		      		</div><!-- /.modal-content -->
 		    	</div><!-- /.modal -->
-		  	</div> 
+		  	</div>
 		</div><!-- /.example-modal -->
 		<div class="example-modal">
 		  	<div class="modal fade item_modal" id="delete{{ $media->id }}" role="dialog">
@@ -335,7 +333,7 @@
 	            });
 			}
 		});
-		
+
 		$('.folder-link').click(function(e) {
 			e.preventDefault();
 			$(this).toggleClass('active');

@@ -32,8 +32,8 @@ class AdminMediaController extends Controller
 
     public function create(Request $request)
     {
-    	
-    	$files = $request->file('medias');
+    	$files     = $request->file('medias');
+        $folder = Folder::findOrFail($request->folder_id);
 
     	if($files === null)
     	{
@@ -46,17 +46,32 @@ class AdminMediaController extends Controller
     		if(substr($file->getMimeType(), 0, 5) == 'image') {
 			    $name = time() . '_media_' . $file->getClientOriginalName();
 			    $type = $file->getMimeType();
+			    if($folder->id == 1) {
+                    $path = public_path('images/' . $name);
+                } else {
+                    $path = public_path('images/' . $folder->slug .'/'. $name);
+                }
                 Image::make($file)->resize(1000, null, function ($constraint) {
-                    $constraint->aspectRatio();})->save('images/'.$name);
+                    $constraint->aspectRatio();})->save($path);
 	            $admin_id = Auth::user()->id;
-	            $media = Media::create(['file_name'=>$name, 'url'=>$name, 'type'=>$type, 'admin_id'=>$admin_id, 'folder_id'=>$request->folder_id]);
-			}
-			else
-			{
-				return redirect()->route('admin.media.index')->with('error','Not a image file!');
+	            $media = Media::create(['file_name'=>$name, 'url'=>$name, 'type'=>$type, 'admin_id'=>$admin_id, 'folder_id'=>$folder->id]);
+			} else {
+				if($folder->id == 1) {
+                    return redirect()->route('admin.media.index')
+                        ->with('error','Not a image file!');
+                } else {
+                    return redirect()->route('admin.folder.show', $folder->id)
+                        ->with('error','Not a image file!');
+                }
 			}
     	}
-    	return redirect()->route('admin.media.index')->with('status','Upload successfully!');
+    	if($folder_id == 1) {
+            return redirect()->route('admin.media.index')
+                ->with('status','Upload successfully!');
+        } else {
+            return redirect()->route('admin.folder.index', $folder->id)
+                ->with('status','Upload successfully!');
+        }
     }
 
     public function update(Request $request, $id)
