@@ -40,47 +40,6 @@
 	                    <strong>{{ $errors->first('medias') }}</strong>
 	                </span>
 	            @endif
-				<div class="box box-hidden">
-					<div class="box-body">
-						<div class="form-hidden">
-		    				{!! Form::open(['method'=>'POST', 'action'=>"AdminMediaController@create" ,'files'=>true]) !!}
-		    					<div class="row">
-		    						<div class="col-md-6">
-		    							<label for="selectFile">Files:</label>
-		    						</div>
-		    						<div class="col-md-6">
-		    							<div class="pull-right">
-		    								<label for="">Folders:</label>
-		    							</div>
-		    						</div>
-		    					</div>
-								<div class="row">
-									<div class="col-md-6">
-										{!! Form::file('medias[]', array('multiple'=>true,'id'=>'form-file-hidden')) !!}
-										<input type="hidden" name="folder_id" value="{{ $folder->id }}"/>
-										<div class="form-group">
-
-											<button class="btn btn-default selectFile">Select files</button>
-											{!! Form::submit('Upload', ['class'=>'btn btn-info']) !!}
-										</div>
-									</div>
-									<div class="col-md-6">
-										<div class="form-group">
-											<div class="pull-right">
-
-							    				<a href="#" data-toggle="modal" data-target="#newFolder">
-						                            <div class="btn btn-default"><i class="fa fa-plus"></i></div>
-						                        </a>
-						                        <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
-							    			</div>
-										</div>
-									</div>
-								</div>
-			    			{!! Form::close() !!}
-		    			</div>
-
-					</div>
-				</div>
         	</div>
         </div>
         <div class="row">
