@@ -6561,6 +6561,7 @@ a.closeZone:hover {
   transition: .5s;
   -moz-transition: .5s;
   -webkit-transition: .5s;
+  margin-bottom: 5px;
 }
 
 #folder-section a.active .folder  {
