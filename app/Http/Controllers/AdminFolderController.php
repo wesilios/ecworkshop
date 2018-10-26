@@ -56,14 +56,10 @@ class AdminFolderController extends Controller
                     $folder_id_parent = $folder_temp->folder->id;
                     $path_arr[] = $folder_temp->slug;
                 }
-                $path .= '/images';
+                $path .= '/images/';
                 for($i = count($path_arr)-1; $i >= 0; $i--)
                 {
-                    if($i == 0){
-                        $path .= $path_arr[$i];
-                    } else {
-                        $path .= $path_arr[$i] . '/';
-                    }
+                    $path .= $path_arr[$i] . '/';
                 }
                 $path .= $slug;
             }
