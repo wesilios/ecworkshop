@@ -11,7 +11,7 @@
 			<small></small>
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+			<li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 			<li><a href="{{ route('articles.index') }}">Tất cả bài viết</a></li>
 			<li class="active">Bài viết mới</li>
 		</ol>
@@ -76,7 +76,7 @@
 						            @endif
 			                    </div>
 	                		</div>
-			            </div>	
+			            </div>
 					</div>
 				</div>
 				<div class="col-md-3">
@@ -91,7 +91,7 @@
 								<div class="form-group">
 									<a href="#" data-toggle="modal" data-target="#delete" >
 			                            <div class="btn btn-danger pull-right"  style="margin-left:3px">
-			                              	<i class="fa fa-trash "></i> 
+			                              	<i class="fa fa-trash "></i>
 			                            </div>
 			                        </a>
 									{!! Form::submit('Cập nhật', ['class'=>'btn btn-success pull-right']) !!}
@@ -137,7 +137,7 @@
 									<a href="{{ route('categories.index') }}" class="col-md-12 btn btn-info">Danh mục mới</a>
 								</div>
 							</div>
-							
+
 							<div class="col-md-12">
 								<div class="form-group">
 									<label>Thẻ nhãn</label>
@@ -153,12 +153,12 @@
 									<a href="{{ route('categories.index') }}" class="col-md-12 btn btn-info">Thẻ nhãn mới</a>
 								</div>
 							</div>
-							
+
 						</div>
 					</div>
 				</div>
 			{!! Form::close()!!}
-			
+
 		</div>
 	</section>
 	<div class="example-modal">
@@ -265,7 +265,7 @@
 	        		</div>
 	      		</div><!-- /.modal-content -->
 	    	</div><!-- /.modal -->
-	  	</div> 
+	  	</div>
 	</div><!-- /.example-modal -->
 @endsection
 

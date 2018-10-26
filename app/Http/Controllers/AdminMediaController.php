@@ -52,10 +52,11 @@ class AdminMediaController extends Controller
                     $path = public_path('images/' . $name);
                     $url  = 'images/' . $name;
                 } else {
-                    while($folder_id != 1)
+			        $folder_temp_id = $folder_id;
+                    while($folder_temp_id != 1)
                     {
-                        $folder_temp = Folder::findOrFail($folder_id);
-                        $folder_id = $folder_temp->folder->id;
+                        $folder_temp = Folder::findOrFail($folder_temp_id);
+                        $folder_temp_id = $folder_temp->folder->id;
                         $path_arr[] = $folder_temp->slug;
                     }
                     $path .= 'images/';
@@ -67,15 +68,16 @@ class AdminMediaController extends Controller
                             $path .= $path_arr[$i] . '/';
                         }
                     }
-                    $url = $path;
-                    $path = public_path($path);
+                    $url = $path . '/' . $name;
+                    $path = public_path($url);
                 }
                 $test = [
                     'file_name'  =>  $name,
                     'url'        =>  $url,
                     'type'       =>  $type,
                     'folder_id'  =>  $folder_id,
-                ]; dd($test);
+                    'path'       =>  $path
+                ];
                 Image::make($file)->resize(1000, null, function ($constraint) {
                     $constraint->aspectRatio();})->save($path);
 	            $admin_id = Auth::user()->id;
@@ -107,7 +109,6 @@ class AdminMediaController extends Controller
 
     public function update(Request $request, $id)
     {
-    	//dd($request->all());
         $media = Media::findOrFail($id);
         if($request->title == '')
         {

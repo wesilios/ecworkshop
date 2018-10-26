@@ -4913,3 +4913,7 @@ a.closeZone:hover {
 #folder-section a .folder span {
   margin-left: 10px;
 }
+
+#h5-pre {
+  display: none;
+}

@@ -7,7 +7,7 @@
 			<small></small>
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+			<li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 			<li><a href="{{ route('articles.index') }}">Tất cả bài viết</a></li>
 			<li class="active">Danh mục bài viết</li>
 		</ol>

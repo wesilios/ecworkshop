@@ -6,7 +6,7 @@
 			<small></small>
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+			<li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 			<li>Settings</li>
 			<li class="active">Edit</li>
 		</ol>
@@ -23,7 +23,7 @@
                 @endif
             	{!! Form::open(['method'=>'PUT', 'action'=>['AdminSettingsController@update', $settings->id], 'class'=>'form-horizontal']) !!}
             		<div class="nav-tabs-custom">
-	            		
+
 		                <ul class="nav nav-tabs">
 		                  	<li class="active"><a href="#tab_1" data-toggle="tab">General</a></li>
 		                  	<li><a href="#tab_2" data-toggle="tab">Social media</a></li>
@@ -159,5 +159,5 @@
 @endsection
 
 @section('extendscripts')
-    
+
 @endsection

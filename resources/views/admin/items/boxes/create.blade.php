@@ -11,7 +11,7 @@
 			<small></small>
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+			<li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 			<li><a href="{{ route('boxes.index') }}">Tất cả thân máy</a></li>
 			<li class="active">Thân máy mới</li>
 		</ol>
@@ -71,7 +71,7 @@
 						            @endif
 			                    </div>
 	                		</div>
-			            </div>	
+			            </div>
 					</div>
 				</div>
 				<div class="col-md-3">
@@ -102,7 +102,7 @@
 									</div>
 								</div>
 							</div>
-								
+
 							<div class="col-md-12">
 								<div class="form-group" id="select_brand_div">
 									<label>Hãng sản phẩm</label>
@@ -146,7 +146,7 @@
 									!!}
 								</div>
 							</div>
-							
+
 							<div class="col-md-12">
 								<div class="form-group">
 									<a href="" class="custom-link" data-label="Hãng mới" data-type="brn"><strong>+ Hãng mới</strong></a>
@@ -168,12 +168,12 @@
 									<button id="main-submit" class="btn btn-sm btn-info pull-right" value="" disabled> Thêm mới</button>
 								</div>
 							</div>
-							
+
 						</div>
 					</div>
 				</div>
 			{!! Form::close()!!}
-			
+
 		</div>
 	</section>
 @endsection

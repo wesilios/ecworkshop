@@ -4,10 +4,9 @@
 	<section class="content-header">
 		<h1>
 			Media
-			<button class="btn bg-maroon btn-xs media-addnew">Add new</button>
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+			<li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 			<li class="active">Media</li>
 		</ol>
 	</section>
@@ -92,12 +91,13 @@
 							</div>
 						</div>
         				<div id="preview-image">
-
+							<h5 id="h5-pre"><strong>Preview</strong></h5>
+							<div class="row"></div>
 		    			</div>
         				@if($medias->isNotEmpty() || $folder_list->isNotEmpty())
-							@if(count($folder_list) > 1)
+							@if(count($folder_list) >= 1)
 		        				<div id="folder-section">
-		        					<h5>Folders</h5>
+		        					<h5><strong>Folders</strong></h5>
 									<div class="row">
 										@foreach($folder_list as $fd)
 											@if($folder->id != $fd->id)
@@ -112,13 +112,15 @@
 										@endforeach
 									</div>
 				    			</div>
+								<hr>
 							@else
 								<div id="folder-section">
 								</div>
+								<hr>
 			    			@endif
 			    			@if($medias->isNotEmpty())
 								<div class="displayImages">
-									<h5>Files</h5>
+									<h5><strong>Files</strong></h5>
 									<div class="row">
 										@foreach($medias as $media)
 										<div class="col-sm-2">
@@ -137,14 +139,18 @@
 										@endforeach
 									</div>
 								</div>
+								<hr>
 							@else
 								<div class="displayImages">
 								</div>
+								<hr>
 							@endif
         				@else
 							<div id="folder-section"></div>
+							<hr>
 
         					<div class="displayImages"></div>
+							<hr>
 
 							<div id="nothing">
 								<div class="row">

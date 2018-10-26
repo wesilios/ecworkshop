@@ -7,7 +7,7 @@
 			<small></small>
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+			<li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 			<li class="active">Customers</li>
 		</ol>
 	</section>
@@ -75,8 +75,8 @@
 				                </table>
 		       				</div>
 	       				</div>
-	       				
-	          			
+
+
 		                <div class="text-center">
 		                	{!! $customers->links()!!}
 		                </div>
@@ -124,8 +124,8 @@
 				                </table>
 		       				</div>
 	       				</div>
-	       				
-	          			
+
+
 		                <div class="text-center">
 		                	{!! $extraCustomers->links()!!}
 		                </div>

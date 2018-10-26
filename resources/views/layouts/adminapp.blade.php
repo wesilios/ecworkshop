@@ -7,6 +7,10 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicon-96x96.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('favicon.png') }}">
 
     <title>EC Workshop Administration</title>
 
@@ -232,7 +236,7 @@
                                     <li class="user-header">
                                         <img src="{{ asset($profile_pic) }}" class="img-circle" alt="User Image">
                                         <p>
-                                            {{ Auth::user()->name }} 
+                                            {{ Auth::user()->name }}
                                             <small>Member since {{ date("F jS, Y", strtotime(Auth::user()->created_at)) }}</small>
                                         </p>
                                     </li>
@@ -304,7 +308,7 @@
                     <li class="header">MAIN NAVIGATION</li>
                     <li class="">
                         <a href="{{ route('admin.dashboard') }}">
-                            <i class="fa fa-dashboard"></i> <span>Dashboard</span> 
+                            <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                         </a>
                     </li>
                     @if(Auth::user()->role_id < 3)
@@ -331,8 +335,8 @@
                     </li>
                     <li class="treeview">
                         <a href="#">
-                            <i class="fa fa-th"></i> 
-                            <span>Sản phẩm</span> 
+                            <i class="fa fa-th"></i>
+                            <span>Sản phẩm</span>
                             <i class="fa fa-angle-left pull-right"></i>
                         </a>
                         <ul class="treeview-menu">
@@ -444,7 +448,7 @@
                                     <li><a href="{{ route('pages.create') }}"><i class="fa fa-circle-o"></i> Tạo trang mới</a></li>
                                 </ul>
                             </li>
-                            
+
                         </ul>
                     </li>
                     <li class="treeview">
@@ -484,7 +488,7 @@
         <!-- Content Header (Page header) -->
             @yield('content')
         </div><!-- /.content-wrapper -->
-    
+
         <footer class="main-footer">
             <div class="pull-right hidden-xs">
             <b>Version</b> 2.2.1

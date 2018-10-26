@@ -6,7 +6,7 @@
 			{{ $slider->name }}
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+			<li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 			<li><a href="{{ route('admin.sliders.index') }}">All Sliders</a></li>
 			<li class="active">{{ $slider->name }}</li>
 		</ol>
@@ -24,14 +24,14 @@
 			                      	@endfor
 			                    </ol>
 			                    <div class="carousel-inner">
-			                    	@php 
+			                    	@php
 										$i = 0
 			                    	@endphp
 			                    	@foreach($slider->sliderDetails as $sliderDetail)
 				                      	<div class="item {{ $i == 0 ? 'active' : ''}}">
 				                        	<img src="{{ asset($sliderDetail->media->url) }}" alt="{{ asset($sliderDetail->media->file_name) }}">
 				                      	</div>
-			                      	@php 
+			                      	@php
 										$i++
 			                    	@endphp
 			                      	@endforeach
@@ -42,7 +42,7 @@
 			                    <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
 			                      <span class="fa fa-angle-right"></span>
 			                    </a>
-			                </div>								
+			                </div>
 						@else
 	                  	<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
 	                    	<ol class="carousel-indicators">
@@ -209,7 +209,7 @@
 		        			</div>
 		        		</div>
 		        		<div class="modal-footer">
-		        			
+
 		        		</div>
 		      		</div>
 		    	</div>
@@ -273,10 +273,10 @@
 	        		</div>
 	      		</div><!-- /.modal-content -->
 	    	</div><!-- /.modal -->
-	  	</div> 
+	  	</div>
 	</div><!-- /.example-modal -->
 @endsection
 
 @section('extendscripts')
-	
+
 @endsection

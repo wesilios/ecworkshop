@@ -7,7 +7,7 @@
 			<button class="btn bg-maroon btn-xs media-addnew">Add new</button>
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+			<li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 			<li class="active">Media</li>
 		</ol>
 	</section>
@@ -68,7 +68,7 @@
 								</div>
 			    			{!! Form::close() !!}
 		    			</div>
-		    			
+
 					</div>
 				</div>
         	</div>
@@ -86,19 +86,19 @@
         			<div class="box-body">
         				<div id="folder-section">
 							<div class="row">
-								
+
 							</div>
 		    			</div>
         				<div id="preview-image">
 
 		    			</div>
         				<div class="displayImages">
-		        			
+
 		        		</div>
         			</div>
         			<div class="box-footer">
         				<div class="text-center">
-		                	
+
 		                </div>
         			</div>
         		</div>

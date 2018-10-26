@@ -7,7 +7,7 @@
 			<small></small>
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+			<li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 			<li><a href="{{ route('admin.customers.index') }}">Extra Customers</a></li>
 			<li class="active">{{ $extracustomer->name }}</li>
 		</ol>
@@ -17,7 +17,7 @@
 	<section class="content">
         <div class="row">
             <div class="col-xs-12">
-				
+
             	@if(session('status'))
             	<div class="alert alert-info alert-dismissable">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -65,7 +65,7 @@
 	       				</div>
 		            </div>
 		        </div>
-		        
+
 		        <div class="box">
 		        	<div class="box-header">
 			          	<h3 class="box-title">Danh sách đơn hàng</h3>
@@ -141,7 +141,7 @@
 															<span class="label label-danger">Hủy</span>
 															@break
 													@endswitch
-													
+
 												</td>
 												<td>{{ date("F jS, Y", strtotime($order->created_at)) }}</td>
 												<td>

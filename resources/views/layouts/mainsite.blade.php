@@ -7,7 +7,11 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-	
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicon-96x96.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+    <link rel="shortcut icon" type="image/png" href="{{ asset('favicon.png') }}">
+
     @yield('meta')
 
     <!-- Styles -->
@@ -18,22 +22,22 @@
 </head>
 <body>
     @yield('header')
-	
+
 
     @yield('slider')
-    
+
 
     @yield('content')
 
     <div class="modal fade" id="add_to_cart_notify" role="dialog">
-        
+
     </div><!-- /modal -->
     @yield('section-blog')
-    
-    
+
+
     @yield('footer')
-    
-	
+
+
 
 	<script src="{{ asset('js/app.js') }}"></script>
 	<script src="{{ asset('js/mainsite/libs.js') }}"></script>
@@ -60,7 +64,7 @@
           $this.addClass('active');
         });
         $(document).ready(function(){
-            
+
 
             $('.items-carousel').slick({
               dots: false,

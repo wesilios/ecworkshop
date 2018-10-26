@@ -7,7 +7,7 @@
 			<small></small>
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+			<li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 			<li class="active">Shipping fees</li>
 		</ol>
 	</section>
@@ -54,13 +54,13 @@
 											<td>{{ $city->city }}</td>
 											<td>
 												@if($city->feeDistricts->count() > 0)
-													
+
 								                      	<select class="form-control">
 								                      		@foreach($city->feeDistricts as $district)
 								                        		<option>{{ $district->name }}</option>
 								                        	@endforeach
 								                      	</select>
-								                    
+
 												@else
 													Chưa có quận nào!
 												@endif
