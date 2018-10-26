@@ -14,18 +14,6 @@
 	<section class="content">
         <div class="row">
         	<div class="col-md-12">
-        		<div class="uploadZone">
-        			<div class="fileSelectZone">
-	        			<a class="closeZone pull-right"><i class="fa fa-close fa-2x"></i></a>
-	        			<div class="upload-ui">
-	        				<h2>Drop files anywhere to upload</h2>
-							<p>or</p>
-							<button class="btn btn-default selectFile">Select Files</button>
-	        			</div>
-	        		</div>
-        		</div>
-        	</div>
-        	<div class="col-md-12">
         		@if(session('error'))
             	<div class="alert alert-warning alert-dismissable">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -52,47 +40,6 @@
 	                    <strong>{{ $errors->first('medias') }}</strong>
 	                </span>
 	            @endif
-				<div class="box box-hidden">
-					<div class="box-body">
-						<div class="form-hidden">
-		    				{!! Form::open(['method'=>'POST', 'action'=>"AdminMediaController@create" ,'files'=>true]) !!}
-		    					<div class="row">
-		    						<div class="col-md-6">
-		    							<label for="selectFile">Files:</label>
-		    						</div>
-		    						<div class="col-md-6">
-		    							<div class="pull-right">
-		    								<label for="">Folders:</label>
-		    							</div>
-		    						</div>
-		    					</div>
-								<div class="row">
-									<div class="col-md-6">
-										{!! Form::file('medias[]', array('multiple'=>true,'id'=>'form-file-hidden')) !!}
-										<input type="hidden" name="folder_id" value="{{ $folder->id }}"/>
-										<div class="form-group">
-											
-											<button class="btn btn-default selectFile">Select files</button>
-											{!! Form::submit('Upload', ['class'=>'btn btn-info']) !!}
-										</div>
-									</div>
-									<div class="col-md-6">
-										<div class="form-group">
-											<div class="pull-right">
-												
-							    				<a href="#" data-toggle="modal" data-target="#newFolder">
-						                            <div class="btn btn-default"><i class="fa fa-plus"></i></div>
-						                        </a>
-						                        <button class="btn btn-danger"><i class="fa fa-trash"></i></button>
-							    			</div>
-										</div>
-									</div>
-								</div>
-			    			{!! Form::close() !!}
-		    			</div>
-		    			
-					</div>
-				</div>
         	</div>
         </div>
         <div class="row">
@@ -114,11 +61,41 @@
         				</h3>
         			</div>
         			<div class="box-body">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-hidden">
+									{!! Form::open(['method'=>'POST', 'action'=>"AdminMediaController@create" ,'files'=>true]) !!}
+									{!! Form::file('medias[]', array('multiple'=>true,'id'=>'form-file-hidden')) !!}
+									<input type="hidden" name="folder_id" value="{{ $folder->id }}"/>
+									<div class="form-group">
+										<button class="btn btn-default selectFile">Select files</button>
+										{!! Form::submit('Upload', ['class'=>'btn btn-info']) !!}
+										<div class="pull-right">
+											<a href="#" data-toggle="modal" data-target="#newFolder">
+												<div class="btn btn-success">Folder mới</div>
+											</a>
+										</div>
+									</div>
+									{!! Form::close() !!}
+								</div>
+							</div>
+							<div class="col-md-12">
+								<div class="uploadZone">
+									<div class="fileSelectZone">
+										<div class="upload-ui">
+											<h2>Drop files anywhere to upload</h2>
+											<p>or</p>
+											<button class="btn btn-default selectFile">Select Files</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
         				<div id="preview-image">
 
 		    			</div>
         				@if($medias->isNotEmpty() || $folder_list->isNotEmpty())
-							@if($folder_list->isNotEmpty())
+							@if(count($folder_list) > 1)
 		        				<div id="folder-section">
 		        					<h5>Folders</h5>
 									<div class="row">
@@ -135,41 +112,45 @@
 										@endforeach
 									</div>
 				    			</div>
+							@else
+								<div id="folder-section">
+								</div>
 			    			@endif
 			    			@if($medias->isNotEmpty())
-	        				<div class="displayImages">
-	        					<h5>Files</h5>
-	        					<div class="row">
-	        						@foreach($medias as $media)
-									<div class="col-sm-2">
-										<div class="thumbnails_img" style="background-image:url('{{ asset($media->url) }}')">
-											<div class="caption">
-												<div class="caption-content">
-													<a href="#" data-toggle="modal" data-target="#new_modal{{ $media->id }}">
-							                            <div class="btn btn-info">
-							                              	<i class="fa fa-eye"></i>
-							                            </div>
-							                        </a>
+								<div class="displayImages">
+									<h5>Files</h5>
+									<div class="row">
+										@foreach($medias as $media)
+										<div class="col-sm-2">
+											<div class="thumbnails_img" style="background-image:url('{{ asset($media->url) }}')">
+												<div class="caption">
+													<div class="caption-content">
+														<a href="#" data-toggle="modal" data-target="#new_modal{{ $media->id }}">
+															<div class="btn btn-info">
+																<i class="fa fa-eye"></i>
+															</div>
+														</a>
+													</div>
 												</div>
 											</div>
 										</div>
+										@endforeach
 									</div>
-									@endforeach
-	        					</div>
-			        		</div>
-			        		@endif
+								</div>
+							@else
+								<div class="displayImages">
+								</div>
+							@endif
         				@else
-        					<div id="folder-section">
-        					</div>
+							<div id="folder-section"></div>
 
-        					<div class="displayImages">
-        					</div>
-        					
+        					<div class="displayImages"></div>
+
 							<div id="nothing">
 								<div class="row">
 									<div class="col-md-8 col-md-offset-2">
 										<span><i class="fa fa-file-code-o"></i></span>
-										<h4>Nothing to show</h4>
+										<h4>Folder is empty</h4>
 									</div>
 								</div>
 							</div>
@@ -251,7 +232,7 @@
 			                    			{!! Form::label('caption', 'Caption:', ['class' => 'col-sm-4 control-label'] ) !!}
 					                      	<div class="col-sm-8">
 												{!! Form::textarea('caption', $media->caption, ['class'=>'form-control', 'rows'=>'3']) !!}
-					                      		
+
 					                      	</div>
 					                    </div>
 					                    <div class="form-group {{ $errors->has('alt_text') ? ' has-error' : '' }}">
@@ -281,7 +262,7 @@
 		        		</div>
 		      		</div><!-- /.modal-content -->
 		    	</div><!-- /.modal -->
-		  	</div> 
+		  	</div>
 		</div><!-- /.example-modal -->
 		<div class="example-modal">
 		  	<div class="modal fade item_modal" id="delete{{ $media->id }}" role="dialog">
@@ -310,10 +291,10 @@
                     		<h4 class="modal-title">Tạo folder mới</h4>
 		      			</div>
 		        		<div class="modal-body">
-
 		         			<div class="form-group">
 	         					<label for="folder_name">Tên folder</label>
 								<input type="text" name="folder_name" class="form-control"/>
+								<div class="error"></div>
 								<input type="hidden" name="folder_id" value="{{ $folder->id }}" />
 	         				</div>
 							<div class="form-group">
@@ -344,9 +325,13 @@
 	                dataType:'json',
 	                data: {folder_name:folder_name, _token:token, folder_id:folder_id},
 	                success: function(data) {
-	                    $('#folder-section').html('');
-	                    $('#folder-section').html(data.option);
-	                    $('#newFolder').modal('hide');
+	                    if(data.error) {
+							$('#newFolder .error').html(data.mess);
+						} else {
+							$('#folder-section').html('');
+							$('#folder-section').html(data.option);
+							$('#newFolder').modal('hide');
+						}
 	                },
 	                error: function (xhr, ajaxOptions, thrownError) {
 	                   console.log(xhr.status);
@@ -356,7 +341,7 @@
 	            });
 			}
 		});
-		
+
 		$('.folder-link').click(function(e) {
 			e.preventDefault();
 			$(this).toggleClass('active');

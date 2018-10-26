@@ -32,20 +32,23 @@ $(document).ready(function(){
 	        return isValidFile;
 		}
 		if (!files.length) {
-			alert("No image selected");
+			alert('No image selected');
 		}
 		else{
-			for (var i = 0; i < files.length; i++) 
+			for (var i = 0; i < files.length; i++)
 			{
 	            if(validate(files[i].name) === true)
 	            {
 	            	var src = window.URL.createObjectURL(files[i]);
 
-					var col_sm_2 = document.createElement("div");
+                    var row = document.createElement('div');
+                    row.className = 'row';
+					var col_sm_2 = document.createElement('div');
 					col_sm_2.className = 'col-sm-2';
-					$("#preview-image").append(col_sm_2);
+					$("#preview-image").append(row);
+                    row.append(col_sm_2);
 
-					var thumbnails_img = document.createElement("div");
+					var thumbnails_img = document.createElement('div');
 					thumbnails_img.className = 'thumbnails_img';
 					thumbnails_img.style.backgroundImage = "url("+src+")";
 					col_sm_2.append(thumbnails_img);
@@ -55,7 +58,7 @@ $(document).ready(function(){
 	            }
 			}
 		}
-		
+
 	});
 
 	$('.selectImgA').click(function(event){
@@ -80,7 +83,7 @@ $(document).ready(function(){
 		{
 			$("#selForm option[value='"+ id +"']").attr("selected", true);
 		}
-		
+
 	});
 
 	$('.selectImgIndex').click(function(event){

@@ -9,15 +9,16 @@ class Media extends Model
     //
 
     protected $location = 'images/';
-    
+
     protected $fillable = [
 
-    	'file_name', 
-    	'url', 
-    	'caption', 
-    	'description', 
-    	'admin_id', 
-    	'title', 
+    	'file_name',
+    	'url',
+    	'caption',
+    	'description',
+    	'admin_id',
+        'folder_id',
+    	'title',
     	'alt_text',
         'type',
 
@@ -26,11 +27,6 @@ class Media extends Model
     public function admin()
     {
     	return $this->belongsTo('App\Admin');
-    }
-
-    public function setUrlAttribute($value)
-    {
-        return $this->attributes['url'] = $this->location . $value;
     }
 
     public function articles()
