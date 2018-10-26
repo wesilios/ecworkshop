@@ -11,7 +11,7 @@
 			<small></small>
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+			<li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 			<li><a href="{{ route('articles.index') }}">Tất cả bài viết</a></li>
 			<li class="active">Bài viết mới</li>
 		</ol>
@@ -53,7 +53,7 @@
 						            @endif
 			                    </div>
 	                		</div>
-			            </div>	
+			            </div>
 					</div>
 				</div>
 				<div class="col-md-3">
@@ -93,7 +93,7 @@
 									<a href="{{ route('categories.index') }}" class="col-md-12 btn btn-info">Danh mục mới</a>
 								</div>
 							</div>
-							
+
 							<div class="col-md-12">
 								<div class="form-group">
 									<label>Thẻ nhãn</label>
@@ -109,12 +109,12 @@
 									<a href="{{ route('tags.index') }}" class="col-md-12 btn btn-info">Thẻ nhãn mới</a>
 								</div>
 							</div>
-							
+
 						</div>
 					</div>
 				</div>
 			{!! Form::close()!!}
-			
+
 		</div>
 	</section>
 @endsection

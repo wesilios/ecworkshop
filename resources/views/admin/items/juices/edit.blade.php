@@ -11,7 +11,7 @@
 			<small></small>
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+			<li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 			<li><a href="{{ route('juices.index') }}">Tất cả tinh dầu</a></li>
 			<li class="active">Edit</li>
 		</ol>
@@ -80,7 +80,7 @@
 						            @endif
 			                    </div>
 	                		</div>
-			            </div>	
+			            </div>
 					</div>
 				</div>
 				<div class="col-md-4">
@@ -95,7 +95,7 @@
 								<div class="form-group">
 									<a href="#" data-toggle="modal" data-target="#delete" >
 			                            <div class="btn btn-danger pull-right"  style="margin-left:3px">
-			                              	<i class="fa fa-trash "></i> 
+			                              	<i class="fa fa-trash "></i>
 			                            </div>
 			                        </a>
 									{!! Form::submit('Lưu chỉnh sửa', ['class'=>'btn btn-success pull-right']) !!}
@@ -113,7 +113,7 @@
 				                      	@endfor
 				                    </ol>
 				                    <div class="carousel-inner">
-				                    	@php 
+				                    	@php
 											$i = 0
 				                    	@endphp
 				                    	@if($index_img != null)
@@ -124,7 +124,7 @@
 												<div class="item">
 						                        	<img src="{{ asset($media->url) }}" alt="{{ asset($media->file_name) }}">
 						                      	</div>
-						                      	@php 
+						                      	@php
 												$i++
 					                    	@endphp
 					                      	@endforeach
@@ -133,7 +133,7 @@
 						                      	<div class="item {{ $i == 0 ? 'active' : ''}}">
 						                        	<img src="{{ asset($media->url) }}" alt="{{ asset($media->file_name) }}">
 						                      	</div>
-					                      	@php 
+					                      	@php
 												$i++
 					                    	@endphp
 					                      	@endforeach
@@ -145,9 +145,9 @@
 				                    <a class="right carousel-control" href="#carousel-example-generic" data-slide="next">
 				                      <span class="fa fa-angle-right"></span>
 				                    </a>
-				                </div>								
+				                </div>
 							@else
-							
+
 							<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
 			                    <ol class="carousel-indicators">
 			                      	<li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
@@ -204,7 +204,7 @@
 									</div>
 								</div>
 							</div>
-								
+
 							<div class="col-md-12">
 								<div class="form-group">
 									<label>Hãng sản phẩm</label>
@@ -282,7 +282,7 @@
 						</div>
 					</div>
 			{!! Form::close()!!}
-			
+
 		</div>
 	</section>
 	<div class="example-modal">
@@ -442,7 +442,7 @@
 	        		</div>
 	      		</div><!-- /.modal-content -->
 	    	</div><!-- /.modal -->
-	  	</div> 
+	  	</div>
 	</div><!-- /.example-modal -->
 	@foreach($juice->medias as $media)
 		<div class="example-modal">

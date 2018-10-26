@@ -95,8 +95,10 @@ class AdminFolderController extends Controller
     		$new = ['folder_name' => $folder_temp->name, 'folder_slug'=>$folder_temp->slug];
     		$folder_string[] = $new;
     	}
+
     	$new = ['folder_name' => $folder->name, 'folder_slug'=>$folder->slug];
         $folder_string[] = $new;
+
     	//echo '<pre>', print_r($folder_string), '</pre>';
         return view('admin.media.index', compact('medias','folder','folder_list','folder_string'));
     }

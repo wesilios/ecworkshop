@@ -7,7 +7,7 @@
 			<small></small>
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+			<li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 			<li class="active"><a href="{{ route('admin.orders.index') }}">Tất cả đơn hàng</a></li>
 		</ol>
 	</section>
@@ -120,7 +120,7 @@
 																<span class="label label-danger">Hủy</span>
 																@break
 														@endswitch
-														
+
 													</td>
 													<td>{{ date("F jS, Y", strtotime($order->created_at)) }}</td>
 													<td>
@@ -160,7 +160,7 @@
 																	<span class="label label-danger">Tài khoản chưa có role</span>
 																	@break
 															@endswitch
-															
+
 														</td>
 														<td>{{ date("F jS, Y", strtotime($order->created_at)) }}</td>
 														<td>
@@ -200,7 +200,7 @@
 																		<span class="label label-danger">Tài khoản chưa có role</span>
 																		@break
 																@endswitch
-																
+
 															</td>
 															<td>{{ date("F jS, Y", strtotime($order->created_at)) }}</td>
 															<td>
@@ -223,8 +223,8 @@
 				                </table>
 		       				</div>
 	       				</div>
-	       				
-	          			
+
+
 		                <div class="text-center">
 		                	{!! $orders->links()!!}
 		                </div>

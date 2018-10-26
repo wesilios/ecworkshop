@@ -11,7 +11,7 @@
 			<small></small>
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+			<li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 			<li><a href="{{ route('tanks.index') }}">Tất cả buồng đốt</a></li>
 			<li class="active">Buồng đốt mới</li>
 		</ol>
@@ -71,7 +71,7 @@
 						            @endif
 			                    </div>
 	                		</div>
-			            </div>	
+			            </div>
 					</div>
 				</div>
 				<div class="col-md-3">
@@ -102,7 +102,7 @@
 									</div>
 								</div>
 							</div>
-								
+
 							<div class="col-md-12">
 								<div class="form-group" id="select_brand_div">
 									<label>Hãng sản phẩm</label>
@@ -183,10 +183,10 @@
 							</div>
 						</div>
 					</div>
-					
+
 				</div>
 			{!! Form::close()!!}
-			
+
 		</div>
 	</section>
 @endsection

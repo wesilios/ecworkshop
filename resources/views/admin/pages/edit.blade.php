@@ -11,7 +11,7 @@
 			<small></small>
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+			<li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 			<li><a href="{{ route('pages.index') }}">All pages</a></li>
 			<li><a href="#">{{ $page->name}}</a></li>
 			<li class="active">Edit</li>
@@ -71,7 +71,7 @@
 						            @endif
 			                    </div>
 	                		</div>
-			            </div>	
+			            </div>
 					</div>
 				</div>
 				<div class="col-md-3">
@@ -101,10 +101,10 @@
 							</div>
 						</div>
 					</div>
-					
+
 				</div>
 			{!! Form::close()!!}
-			
+
 		</div>
 	</section>
 @endsection

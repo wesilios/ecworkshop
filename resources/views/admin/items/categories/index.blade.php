@@ -7,7 +7,7 @@
 			<small></small>
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+			<li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 			<li class="active">Items Categories</li>
 		</ol>
 	</section>
@@ -91,7 +91,7 @@
 													['class'=>'form-control','placeholder'=>'-- Không có loại sản phẩm cha --']
 													);
 												!!}
-												
+
 											</td>
 											<td>{{ $item_cat->created_at->diffForHumans() }}</td>
 											<td>{{ $item_cat->updated_at->diffForHumans() }}</td>
@@ -168,7 +168,7 @@
 		        			</div>
 		        		</div>
 		        		<div class="modal-footer">
-		        			
+
 		        		</div>
 		      		</div>
 		    	</div>

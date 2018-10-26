@@ -35,23 +35,21 @@ $(document).ready(function(){
 			alert('No image selected');
 		}
 		else{
+		    $('#h5-pre').show();
 			for (var i = 0; i < files.length; i++)
 			{
 	            if(validate(files[i].name) === true)
 	            {
 	            	var src = window.URL.createObjectURL(files[i]);
-
-                    var row = document.createElement('div');
-                    row.className = 'row';
 					var col_sm_2 = document.createElement('div');
 					col_sm_2.className = 'col-sm-2';
-					$("#preview-image").append(row);
-                    row.append(col_sm_2);
+					$("#preview-image .row").append(col_sm_2);
 
 					var thumbnails_img = document.createElement('div');
 					thumbnails_img.className = 'thumbnails_img';
 					thumbnails_img.style.backgroundImage = "url("+src+")";
 					col_sm_2.append(thumbnails_img);
+					$('.uploadZone').remove();
 	            }
 	            else{
 	            	alert('Allowed Extensions are : *.' + allowedExtension.join(', *.'));

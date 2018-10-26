@@ -7,7 +7,7 @@
 			<small></small>
 		</h1>
 		<ol class="breadcrumb">
-			<li><a href="#"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+			<li><a href="{{ route('admin.dashboard') }}"><i class="fa fa-dashboard"></i> Dashboard</a></li>
 			<li class="active">Menus</li>
 		</ol>
 	</section>
@@ -149,7 +149,7 @@
 		        			</div>
 		        		</div>
 		        		<div class="modal-footer">
-		        			
+
 		        		</div>
 		      		</div>
 		    	</div>
