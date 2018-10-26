@@ -95,7 +95,7 @@
 
 		    			</div>
         				@if($medias->isNotEmpty() || $folder_list->isNotEmpty())
-							@if($folder_list->isNotEmpty())
+							@if(count($folder_list) > 1)
 		        				<div id="folder-section">
 		        					<h5>Folders</h5>
 									<div class="row">
@@ -112,41 +112,45 @@
 										@endforeach
 									</div>
 				    			</div>
+							@else
+								<div id="folder-section">
+								</div>
 			    			@endif
 			    			@if($medias->isNotEmpty())
-	        				<div class="displayImages">
-	        					<h5>Files</h5>
-	        					<div class="row">
-	        						@foreach($medias as $media)
-									<div class="col-sm-2">
-										<div class="thumbnails_img" style="background-image:url('{{ asset($media->url) }}')">
-											<div class="caption">
-												<div class="caption-content">
-													<a href="#" data-toggle="modal" data-target="#new_modal{{ $media->id }}">
-							                            <div class="btn btn-info">
-							                              	<i class="fa fa-eye"></i>
-							                            </div>
-							                        </a>
+								<div class="displayImages">
+									<h5>Files</h5>
+									<div class="row">
+										@foreach($medias as $media)
+										<div class="col-sm-2">
+											<div class="thumbnails_img" style="background-image:url('{{ asset($media->url) }}')">
+												<div class="caption">
+													<div class="caption-content">
+														<a href="#" data-toggle="modal" data-target="#new_modal{{ $media->id }}">
+															<div class="btn btn-info">
+																<i class="fa fa-eye"></i>
+															</div>
+														</a>
+													</div>
 												</div>
 											</div>
 										</div>
+										@endforeach
 									</div>
-									@endforeach
-	        					</div>
-			        		</div>
-			        		@endif
+								</div>
+							@else
+								<div class="displayImages">
+								</div>
+							@endif
         				@else
-        					<div id="folder-section">
-        					</div>
+							<div id="folder-section"></div>
 
-        					<div class="displayImages">
-        					</div>
+        					<div class="displayImages"></div>
 
 							<div id="nothing">
 								<div class="row">
 									<div class="col-md-8 col-md-offset-2">
 										<span><i class="fa fa-file-code-o"></i></span>
-										<h4>Nothing to show</h4>
+										<h4>Folder is empty</h4>
 									</div>
 								</div>
 							</div>
@@ -287,10 +291,10 @@
                     		<h4 class="modal-title">Tạo folder mới</h4>
 		      			</div>
 		        		<div class="modal-body">
-
 		         			<div class="form-group">
 	         					<label for="folder_name">Tên folder</label>
 								<input type="text" name="folder_name" class="form-control"/>
+								<div class="error"></div>
 								<input type="hidden" name="folder_id" value="{{ $folder->id }}" />
 	         				</div>
 							<div class="form-group">
@@ -321,9 +325,13 @@
 	                dataType:'json',
 	                data: {folder_name:folder_name, _token:token, folder_id:folder_id},
 	                success: function(data) {
-	                    $('#folder-section').html('');
-	                    $('#folder-section').html(data.option);
-	                    $('#newFolder').modal('hide');
+	                    if(data.error) {
+							$('#newFolder .error').html(data.mess);
+						} else {
+							$('#folder-section').html('');
+							$('#folder-section').html(data.option);
+							$('#newFolder').modal('hide');
+						}
 	                },
 	                error: function (xhr, ajaxOptions, thrownError) {
 	                   console.log(xhr.status);

@@ -21,9 +21,30 @@ class AdminFolderController extends Controller
     public function create(Request $request)
     {
     	if($request->ajax()) {
+    	    $validator = Validator::make($request->all(), [
+                'folder_name' => 'required|string|max:255'
+            ]);
+            if($validator->fails())
+            {
+                $mess = '<span id="helpBlock2" class="help-block">Folder name is empty.</span>';
+                $mess->render();
+                return response()->json(['error'=>'1', 'mess'=> $mess]);
+            }
+
             $folder_id_parent = $request->folder_id;
             $path = preg_replace("/\\\\/", '/',public_path());
-            $slug = Alpha::alpha_dash($request->folder_name);
+            $origin = Alpha::alpha_dash($request->folder_name);
+            $findFolder = Folder::where('origin','LIKE', $origin.'%')
+                ->where('folder_id','=',$folder_id_parent)->get();
+            if($findFolder->isNotEmpty()) {
+                $count          = count($findFolder)+1;
+                $slug           = $origin . '_' . $count;
+                $folder_name    = $request->folder_name . '_' .$count;
+            } else {
+                $slug           = $origin;
+                $folder_name    = $request->folder_name;
+            }
+
             if($request->folder_id == 1) {
                 $path .= '/images/' . $slug ;
             }
@@ -35,15 +56,25 @@ class AdminFolderController extends Controller
                     $folder_id_parent = $folder_temp->folder->id;
                     $path_arr[] = $folder_temp->slug;
                 }
+                $path .= '/images';
                 for($i = count($path_arr)-1; $i >= 0; $i--)
                 {
-                    $path .= '/images/' . $path_arr[$i] . '/' . $slug ;
+                    if($i == 0){
+                        $path .= $path_arr[$i];
+                    } else {
+                        $path .= $path_arr[$i] . '/';
+                    }
                 }
+                $path .= $slug;
             }
-            mkdir($path, 0777);
+            if(!file_exists($path)) {
+                mkdir($path, 0777, true);
+                chmod($path, 0777);
+            }
             $folder = new Folder;
-            $folder->name = $request->folder_name;
+            $folder->name = $folder_name;
             $folder->slug = $slug;
+            $folder->origin = $origin;
             $folder->folder_id = $request->folder_id;
             $folder->save();
             $folder = Folder::findOrFail($request->folder_id);
