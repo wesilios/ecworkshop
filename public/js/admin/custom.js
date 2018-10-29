@@ -15,6 +15,7 @@ $(document).ready(function(){
 		event.preventDefault();
 		$('#form-file-hidden').click();
 	});
+
 	$('#form-file-hidden').change(function(event){
 		var $this = $(this);
 		var files = $this.prop('files');
@@ -33,9 +34,9 @@ $(document).ready(function(){
 		}
 		if (!files.length) {
 			alert('No image selected');
-		}
-		else{
+		} else{
 		    $('#h5-pre').show();
+            $('#uploadBtn').show();
 			for (var i = 0; i < files.length; i++)
 			{
 	            if(validate(files[i].name) === true)
@@ -50,13 +51,11 @@ $(document).ready(function(){
 					thumbnails_img.style.backgroundImage = "url("+src+")";
 					col_sm_2.append(thumbnails_img);
 					$('.uploadZone').remove();
-	            }
-	            else{
-	            	alert('Allowed Extensions are : *.' + allowedExtension.join(', *.'));
+	            } else {
+					alert('Allowed Extensions are : *.' + allowedExtension.join(', *.'));
 	            }
 			}
 		}
-
 	});
 
 	$('.selectImgA').click(function(event){

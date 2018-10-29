@@ -163,115 +163,99 @@
 	</section>
 	<div class="example-modal">
 	  	<div class="modal fade item_modal" id="delete" role="dialog">
-	    	<div class="modal-dialog delete-dialog" style="">
-	      		<div class="modal-content">
-	        		<div class="modal-body">
-	         			<h5>Xóa bài viết này?</h5>
-	        		</div>
-	        		<div class="modal-footer">
-	        			{!! Form::open(['method'=>'DELETE', 'action'=>['AdminArticleController@destroy', $article->id], 'class'=>'form-horizontal']) !!}
-	        				<button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+			<div class="modal-dialog delete-dialog" style="">
+				<div class="modal-content">
+					<div class="modal-body">
+						<h5>Xóa bài viết này?</h5>
+					</div>
+					<div class="modal-footer">
+						{!! Form::open(['method'=>'DELETE', 'action'=>['AdminArticleController@destroy', $article->id], 'class'=>'form-horizontal']) !!}
+							<button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
 							{!! Form::submit('Xóa', ['class'=>'btn btn-primary']) !!}
-            			{!! Form::close() !!}
-	        		</div>
-	      		</div>
-	    	</div>
+						{!! Form::close() !!}
+					</div>
+				</div>
+			</div>
 	 	</div>
-	</div>
-	<div class="example-modal">
-	  	<div class="modal fade item_modal" id="gallery_modal" role="dialog">
-	    	<div class="modal-dialog modal-dialog-95" style="border-top:5px solid #0097bc; border-radius:4px">
-	      		<div class="modal-content">
-	          		<div class="modal-header">
-	            		<div>
-	            			<span>Media Gallery</span>
-	              			<div class="pull-right">
-	                			<button type="button" class="btn-custom btn-default" data-dismiss="modal">
-	                				<i class="fa fa-close"></i>
-	                			</button>
-	              			</div>
-	            		</div>
-	          		</div>
-	          		<div class="modal-body">
-	            		<div class="row">
-	            			<div style="min-height:600px; width:100%">
-	                			<div class="nav-tabs-custom" style="height:100%">
-					                <ul class="nav nav-tabs">
-					                  	<li><a href="#tab_1" data-toggle="tab">Upload</a></li>
-					                  	<li class="active"><a href="#tab_2" data-toggle="tab">Media gallery</a></li>
-					                  	<li class="pull-right"></li>
-					                </ul>
-					                <div class="tab-content">
-					                  	<div class="tab-pane" id="tab_1">
-				                			<div class="uploadZone">
-							        			<div class="fileSelectZone">
-								        			<div class="upload-ui">
-								        				<h2>Drop files anywhere to upload</h2>
-														<p>or</p>
-														<button class="btn btn-default selectFile">Select Files</button>
-								        			</div>
-								        		</div>
-							        		</div>
-							        		<div class="box box-hidden">
-												<div class="box-body">
-													<div class="form-hidden">
-									    				{!! Form::open(['method'=>'PUT', 'action'=>["AdminArticleController@uploadImage",$article->id] ,'files'=>true]) !!}
-															{!! Form::file('medias', ['id'=>'form-file-hidden']) !!}
-															<div class="form-group">
-																<button class="btn btn-default selectFile">Select files</button>
-																{!! Form::submit('Upload', ['class'=>'btn btn-info']) !!}
-															</div>
-										    			{!! Form::close() !!}
-									    			</div>
-									    			<div id="preview-image">
-
-									    			</div>
-												</div>
-											</div>
-							        	</div>
-							        	<div class="tab-pane active" id="tab_2" style="overflow:scroll;">
-							        		<div class="col-sm-12" >
-		                						<div class="modalDisplayImages">
-								        			@foreach($medias as $media)
-													<div class="col-sm-2">
-														<div class="thumbnails_img" style="background-image:url('{{ asset($media->url) }}')">
-															<div class="caption">
-																<div class="caption-content">
-																	<a href="#" id="{{ $media->id }}" class="selectImgA">
-											                            <div class="btn btn-info">
-											                              	<i class="fa fa-save"></i>
-											                            </div>
-											                        </a>
-																</div>
-															</div>
-														</div>
-													</div>
-													<div class="form-hidden-article">
-									    				{!! Form::open(['method'=>'PUT', 'action'=>["AdminArticleController@selectImage",$article->id] ,'files'=>true]) !!}
-															{!! Form::text('media_id', $media->id ,['id'=>'form-file-hidden']) !!}
-															<div class="form-group">
-																{!! Form::submit('Select', ['class'=>'btn btn-info','id'=>'selectImgbtn'.$media->id]) !!}
-															</div>
-										    			{!! Form::close() !!}
-									    			</div>
-													@endforeach
-								        		</div>
-		            						</div>
-							        	</div>
-							        </div>
-							    </div>
-	              			</div>
-	        			</div>
-	        		</div>
-	      		</div><!-- /.modal-content -->
-	    	</div><!-- /.modal -->
-	  	</div>
-	</div><!-- /.example-modal -->
+	</div><!-- /delete.example-modal -->
+	@include('admin.articles.include.media')
 @endsection
 
 @section('extendscripts')
 	<script>
 		$('.select2-multi').select2();
 		$('.select2-multi').select2().val({!! json_encode($tag_value) !!}).trigger('change');
+        $('#new_folder').click(function(e) {
+            e.preventDefault();
+            var $this = $(this);
+            var token = $("input[name='_token']").val();
+            var folder_name = $("input[name='folder_name']").val();
+            var folder_id = $("input[name='folder_id']").val();
+            if(folder_name == '') {
+                alert('Trống tên');
+            } else {
+                $.ajax({
+                    url: "{{ route('admin.folder.create') }}",
+                    method:'POST',
+                    dataType:'json',
+                    data: {folder_name:folder_name, _token:token, folder_id:folder_id},
+                    success: function(data) {
+                        if(data.error) {
+                            $('#newFolder .error').html(data.mess);
+                        } else {
+                            $('#folder-section').html('');
+                            $('#folder-section').html(data.option);
+                            $('#newFolder').modal('hide');
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        console.log(xhr.status);
+                        console.log(xhr.responseText);
+                        console.log(thrownError);
+                    }
+                });
+            }
+        });
+
+        $('.folder-link').click(function(e) {
+            e.preventDefault();
+            $(this).toggleClass('active');
+            if($(this).attr('data-active') == 1) {
+                $(this).attr('data-active',0);
+            } else {
+                $(this).attr('data-active',1);
+            }
+        });
+
+        $('.folder-link').dblclick(function(e){
+            var href = $(this).attr('href');
+            var article_id = {{ $article->id }};
+            alert(article_id);
+            var token = $("input[name='_token']").val();
+            var folder_slug = $(this).attr('data-folder-slug');
+            var folder_id = $(this).attr('data-folder-id');
+            if(folder_id == null || folder_slug == null) {
+                alert('Cant get this folder');
+            } else {
+                $.ajax({
+                    url: "{{ route('admin.folder.ajax.show') }}",
+                    method: 'POST',
+                    dataType: 'json',
+                    data: {folder_slug:folder_slug, folder_id:folder_id, _token:token},
+                    success: function (data) {
+                        if(data.error) {
+                            alert(data.mess);
+                        } else {
+                            console.log(data.option);
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        console.log(xhr.status);
+                        console.log(xhr.responseText);
+                        console.log(thrownError);
+                    }
+                });
+            }
+        });
 	</script>
 @endsection

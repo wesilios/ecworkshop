@@ -169,7 +169,8 @@ Route::delete('/admin/media/{id}/destroy', 'AdminMediaController@destroy')->name
 |--------------------------------------------------------------------------
 */
 Route::post('/admin/folder/create','AdminFolderController@create')->name('admin.folder.create');
-Route::get('/admin/media/folders/{slug}','AdminFolderController@show')->name('admin.folder.show');
+Route::get('/admin/media/folder/{slug}','AdminFolderController@show')->name('admin.folder.show');
+Route::post('/admin/media/folder/ajax/','AdminFolderController@ajaxModalMedia')->name('admin.folder.ajax.show');
 /*
 |--------------------------------------------------------------------------
 | Admin orders
@@ -300,6 +301,8 @@ Route::group(['middleware'=>['web']], function() {
 			'uses'=>'ArticleController@getSingle'
 		])->where('slug','[\w\d\-\_]+');
 
+	Route::get('/khong-tim-thay',['as'=>'404.not.found','uses'=>'PagesController@get404']);
+
 	// Items routes
 	Route::get('/{item_cat}', [
 			'as'=>'items.cat.index',
@@ -315,7 +318,7 @@ Route::group(['middleware'=>['web']], function() {
 			'as'=>'item.index',
 			'uses'=>'PagesController@getItem'
 		])->where(['item_cat'=>'[\w\d\-\_]+', 'item_name'=>'[\w\d\-\_]+']);
-	
+
 	Route::get('/{item_cat}/{item_sub_cat}/{item_id}/{item_name}', [
 			'as'=>'item.sub.index',
 			'uses'=>'PagesController@getSubItem'

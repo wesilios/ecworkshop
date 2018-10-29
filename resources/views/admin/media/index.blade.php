@@ -44,37 +44,63 @@
         <div class="row">
         	<div class="col-md-12">
         		<div class="box box-solid">
-        			<div class="box-header">
-        				<h3 class="box-title folder-link-tree">
-        					@if(isset($folder_string))
-	        					@foreach($folder_string as $fd_string)
-	        						@if($fd_string['folder_slug'] == 'root')
-										<a href="{{ route('admin.media.index')}}">{{ $fd_string['folder_name'] }}</a>
-										<span><i class="fa fa-angle-right"></i></span>
+        			<div class="box-header folder-link-tree">
+						@if(isset($folder_string))
+							@foreach($folder_string as $fd_string)
+								@if($fd_string['folder_slug'] == 'root')
+									@if($fd_string['folder_id']  == $folder->id)
+										<div class="btn-group btn-group-sm">
+											<button type="button" class="btn btn-info custom">{{ $fd_string['folder_name'] }}</button>
+											<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+												<span class="caret"></span>
+												<span class="sr-only">Toggle Dropdown</span>
+											</button>
+											<ul class="dropdown-menu" role="menu">
+												<li><a href="#" class="selectFile">Upload files</a></li>
+												<li class="divider"></li>
+												<li><a href="#" data-toggle="modal" data-target="#newFolder">New folder</a></li>
+											</ul>
+										</div>
 									@else
-										<a href="{{ route('admin.folder.show',$fd_string['folder_slug'])}}">{{ $fd_string['folder_name'] }}</a>
-										<span><i class="fa fa-angle-right"></i></span>
+										<a href="{{ route('admin.media.index')}}" class="btn btn-default btn-sm custom">{{ $fd_string['folder_name'] }}</a>
+										<span class="custom"><i class="fa fa-angle-right"></i></span>
 									@endif
-	        					@endforeach
-	        				@endif
-        				</h3>
+								@else
+									@if($fd_string['folder_id'] == $folder->id)
+										<div class="btn-group btn-group-sm">
+											<button type="button" class="btn btn-info custom">{{ $fd_string['folder_name'] }}</button>
+											<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+												<span class="caret"></span>
+												<span class="sr-only">Toggle Dropdown</span>
+											</button>
+											<ul class="dropdown-menu" role="menu">
+												<li><a href="#" class="selectFile">Upload files</a></li>
+												<li class="divider"></li>
+												<li><a href="#" data-toggle="modal" data-target="#newFolder">New folder</a></li>
+											</ul>
+										</div>
+									@else
+										<a href="{{ route('admin.folder.show',$fd_string['folder_slug'])}}" class="btn btn-default btn-sm custom">{{ $fd_string['folder_name'] }}</a>
+										<span class="custom"><i class="fa fa-angle-right"></i></span>
+									@endif
+								@endif
+							@endforeach
+						@endif
         			</div>
         			<div class="box-body">
 						<div class="row">
 							<div class="col-md-12">
 								<div class="form-hidden">
 									{!! Form::open(['method'=>'POST', 'action'=>"AdminMediaController@create" ,'files'=>true]) !!}
-									{!! Form::file('medias[]', array('multiple'=>true,'id'=>'form-file-hidden')) !!}
-									<input type="hidden" name="folder_id" value="{{ $folder->id }}"/>
-									<div class="form-group">
-										<button class="btn btn-default selectFile">Select files</button>
-										{!! Form::submit('Upload', ['class'=>'btn btn-info']) !!}
-										<div class="pull-right">
-											<a href="#" data-toggle="modal" data-target="#newFolder">
-												<div class="btn btn-success">Folder mới</div>
-											</a>
+										{!! Form::file('medias[]', array('multiple'=>true,'id'=>'form-file-hidden')) !!}
+										<input type="hidden" name="folder_id" value="{{ $folder->id }}"/>
+										<div id="preview-image">
+											<h5 id="h5-pre"><strong>Preview</strong> <input type="submit" id="uploadBtn" class="btn btn-info btn-sm" value="Upload" style="display: none"></h5>
+											<div class="row"></div>
 										</div>
-									</div>
+										<div class="form-group">
+
+										</div>
 									{!! Form::close() !!}
 								</div>
 							</div>
@@ -90,14 +116,11 @@
 								</div>
 							</div>
 						</div>
-        				<div id="preview-image">
-							<h5 id="h5-pre"><strong>Preview</strong></h5>
-							<div class="row"></div>
-		    			</div>
-        				@if($medias->isNotEmpty() || $folder_list->isNotEmpty())
+
+						@if($medias->isNotEmpty() || $folder_list->isNotEmpty())
 							@if(count($folder_list) >= 1)
-		        				<div id="folder-section">
-		        					<h5><strong>Folders</strong></h5>
+								<div id="folder-section">
+									<h5><strong>Folders</strong></h5>
 									<div class="row">
 										@foreach($folder_list as $fd)
 											@if($folder->id != $fd->id)
@@ -114,9 +137,7 @@
 				    			</div>
 								<hr>
 							@else
-								<div id="folder-section">
-								</div>
-								<hr>
+								<div id="folder-section"></div>
 			    			@endif
 			    			@if($medias->isNotEmpty())
 								<div class="displayImages">
@@ -141,17 +162,11 @@
 								</div>
 								<hr>
 							@else
-								<div class="displayImages">
-								</div>
-								<hr>
+								<div class="displayImages"></div>
 							@endif
         				@else
 							<div id="folder-section"></div>
-							<hr>
-
-        					<div class="displayImages"></div>
-							<hr>
-
+							<div class="displayImages"></div>
 							<div id="nothing">
 								<div class="row">
 									<div class="col-md-8 col-md-offset-2">
@@ -288,30 +303,30 @@
 		 	</div>
 		</div>
 	@endforeach
-		<div class="example-modal">
-		  	<div class="modal fade" id="newFolder" role="dialog">
-		    	<div class="modal-dialog" style="">
-		      		<div class="modal-content">
-		      			<div class="modal-header">
-		      				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    		<h4 class="modal-title">Tạo folder mới</h4>
-		      			</div>
-		        		<div class="modal-body">
-		         			<div class="form-group">
-	         					<label for="folder_name">Tên folder</label>
-								<input type="text" name="folder_name" class="form-control"/>
-								<div class="error"></div>
-								<input type="hidden" name="folder_id" value="{{ $folder->id }}" />
-	         				</div>
-							<div class="form-group">
-								<button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-default">Thoát</button>
-								<button class="btn btn-primary" id="new_folder">Taọ mới</button>
-							</div>
-		        		</div>
-		      		</div>
-		    	</div>
-		 	</div>
+	<div class="example-modal">
+		<div class="modal fade" id="newFolder" role="dialog">
+			<div class="modal-dialog" style="">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<h4 class="modal-title">Tạo folder mới</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="folder_name">Tên folder</label>
+							<input type="text" name="folder_name" class="form-control"/>
+							<div class="error"></div>
+							<input type="hidden" name="folder_id" value="{{ $folder->id }}" />
+						</div>
+						<div class="form-group">
+							<button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-default">Thoát</button>
+							<button class="btn btn-primary" id="new_folder">Taọ mới</button>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
+	</div>
 @endsection
 
 @section('extendscripts')

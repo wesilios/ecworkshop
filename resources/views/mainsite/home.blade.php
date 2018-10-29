@@ -2,7 +2,7 @@
 
 @section('meta')
     <title>EC Distribution</title>
-    
+
 
     <!-- seo thong thuong-->
     <meta name="keywords" content="{{ $settings->keywords }}" />
@@ -36,12 +36,12 @@
         <header id="main_slider" class="carousel slide">
             <!-- Indicators -->
             <ol class="carousel-indicators">
-            	@php 
+            	@php
 					$i = 0
 	            @endphp
 	            @foreach($main_slider->sliderDetails as $slider)
                 	<li data-target="#main_slider" data-slide-to="{{ $i }}" class="{{ $i ==0 ? 'active' : '' }}"></li>
-                @php 
+                @php
 					$i++
 	            @endphp
                 @endforeach
@@ -49,14 +49,14 @@
 
             <!-- Wrapper for slides -->
             <div class="carousel-inner">
-            	@php 
+            	@php
 					$i = 0
 	            @endphp
 	            @foreach($main_slider->sliderDetails as $slider)
                 <div class="item {{ $i ==0 ? 'active' : '' }}">
                     <a href="{{ $slider->link }}"><img class="img-responsive" src="{{ asset($slider->media->url) }}" alt="{{ $slider->media->alt_text }}"></a>
                 </div>
-                @php 
+                @php
 					$i++
 	            @endphp
                 @endforeach
@@ -98,7 +98,7 @@
 	                    <div>
                             <div class="item">
                                 <a href="{{ $box->item->itemCategory->slug }}/{{ $box->item->id }}/{{ $box->item->slug }}">
-                                    <img class="img-responsive" 
+                                    <img class="img-responsive"
                                     src="
                                     @foreach($box->medias()->where('media_id', $box->item->index_img)->get() as $img)
                                     {{ asset($img->url) }}
@@ -109,17 +109,17 @@
                                         @if($box->item->price_off > 0 || $box->item->price_off != null)
                                             {{ number_format($box->item->price_off,0, ",",".") }} VNĐ
                                             <span>{{ number_format($box->item->price,0, ",",".") }} VNĐ</span>
-                                            
+
                                         @else
                                             {{ number_format($box->item->price,0, ",",".") }} VNĐ
                                         @endif
                                     </div>
-                                    
+
                                 </a>
                                 <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $box->item->id }}" value="{{ $box->id }}">
                                 <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $box->item->id }}" value="{{ $box->item_category_id }}">
                                 <div class="btn-cart" id="{{ $box->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
-                            </div> 
+                            </div>
 	                    </div>
 	                    @else
 						<div>
@@ -128,7 +128,7 @@
                                     @if($box->medias()->first() == null)
                                     <img class="img-responsive" src="https://via.placeholder.com/650x650?text=No+image" alt="">
                                     @else
-                                    <img class="img-responsive" 
+                                    <img class="img-responsive"
                                     src="
                                     {{ asset($box->medias()->first()->url) }}
                                     " alt="">
@@ -138,25 +138,25 @@
                                         @if($box->item->price_off > 0 || $box->item->price_off != null)
                                             {{ number_format($box->item->price_off,0, ",",".") }} VNĐ
                                             <span>{{ number_format($box->item->price,0, ",",".") }} VNĐ</span>
-                                            
+
                                         @else
                                             {{ number_format($box->item->price,0, ",",".") }} VNĐ
                                         @endif
                                     </div>
-                                    
+
                                 </a>
                                 <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $box->item->id }}" value="{{ $box->id }}">
                                 <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $box->item->id }}" value="{{ $box->item_category_id }}">
                                 <div class="btn-cart" id="{{ $box->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
                             </div>
-	                    </div>		
+	                    </div>
 	                    @endif
                     @endforeach
                 </div>
             </div>
         </div>
     </section>
-    
+
     <section class="item-div">
         <div class="container">
             <div class="col-lg-12 custom-no-padding">
@@ -178,19 +178,19 @@
                     <div id="1st_sub_slider" class="carousel slide">
                         <!-- Wrapper for slides -->
                         <div class="carousel-inner">
-                            @php 
+                            @php
                                 $i = 0
                             @endphp
                             @foreach($first_sub_slider->sliderDetails as $slider)
                             <div class="item {{ $i ==0 ? 'active' : '' }}">
                                 <img class="img-responsive" src="{{ asset($slider->media->url) }}" alt="{{ $slider->media->alt_text }}">
                             </div>
-                            @php 
+                            @php
                                 $i++
                             @endphp
                             @endforeach
                         </div>
-                       
+
                     </div>
                 </div>
 
@@ -200,7 +200,7 @@
                         <div>
                             <div class="item">
                                 <a href="/buong-dot/{{ $tank->item->itemCategory->slug }}/{{ $tank->item->id }}/{{ $tank->item->slug }}">
-                                    <img class="img-responsive" 
+                                    <img class="img-responsive"
                                     src="
                                     @foreach($tank->medias()->where('media_id', $tank->item->index_img)->get() as $img)
                                     {{ asset($img->url) }}
@@ -211,17 +211,17 @@
                                         @if($tank->item->price_off > 0 || $tank->item->price_off != null)
                                             {{ number_format($tank->item->price_off,0, ",",".") }} VNĐ
                                             <span>{{ number_format($tank->item->price,0, ",",".") }} VNĐ</span>
-                                            
+
                                         @else
                                             {{ number_format($tank->item->price,0, ",",".") }} VNĐ
                                         @endif
                                     </div>
-                                    
+
                                 </a>
                                 <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $tank->item->id }}" value="{{ $tank->id }}">
                                 <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $tank->item->id }}" value="{{ $tank->item_category_id }}">
                                 <div class="btn-cart" id="{{ $tank->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
-                            </div> 
+                            </div>
                         </div>
                         @else
                         <div>
@@ -230,7 +230,7 @@
                                     @if($tank->medias()->first() == null)
                                     <img class="img-responsive" src="https://via.placeholder.com/650x650?text=No+image" alt="">
                                     @else
-                                    <img class="img-responsive" 
+                                    <img class="img-responsive"
                                     src="
                                     {{ asset($tank->medias()->first()->url) }}
                                     " alt="">
@@ -240,18 +240,18 @@
                                         @if($tank->item->price_off > 0 || $tank->item->price_off != null)
                                             {{ number_format($tank->item->price_off,0, ",",".") }} VNĐ
                                             <span>{{ number_format($tank->item->price,0, ",",".") }} VNĐ</span>
-                                            
+
                                         @else
                                             {{ number_format($tank->item->price,0, ",",".") }} VNĐ
                                         @endif
                                     </div>
-                                    
+
                                 </a>
                                 <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $tank->item->id }}" value="{{ $tank->id }}">
                                 <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $tank->item->id }}" value="{{ $tank->item_category_id }}">
-                                <div class="btn-cart" id="{{ $tank->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div> 
+                                <div class="btn-cart" id="{{ $tank->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
                             </div>
-                        </div>      
+                        </div>
                         @endif
                     @endforeach
                 </div>
@@ -280,19 +280,19 @@
                     <div id="2nd_sub_slider" class="carousel slide">
                         <!-- Wrapper for slides -->
                         <div class="carousel-inner">
-                            @php 
+                            @php
                                 $i = 0
                             @endphp
                             @foreach($second_sub_slider->sliderDetails as $slider)
                             <div class="item {{ $i ==0 ? 'active' : '' }}">
                                 <img class="img-responsive" src="{{ asset($slider->media->url) }}" alt="{{ $slider->media->alt_text }}">
                             </div>
-                            @php 
+                            @php
                                 $i++
                             @endphp
                             @endforeach
                         </div>
-                       
+
                     </div>
                 </div>
 
@@ -302,7 +302,7 @@
                         <div>
                             <div class="item">
                                 <a href="/tinh-dau-vape/{{ $juice->item->itemCategory->slug }}/{{ $juice->item->id }}/{{ $juice->item->slug }}">
-                                    <img class="img-responsive" 
+                                    <img class="img-responsive"
                                     src="
                                     @foreach($juice->medias()->where('media_id', $juice->item->index_img)->get() as $img)
                                     {{ asset($img->url) }}
@@ -313,17 +313,17 @@
                                         @if($juice->item->price_off > 0 || $juice->item->price_off != null)
                                             {{ number_format($juice->item->price_off,0, ",",".") }} VNĐ
                                             <span>{{ number_format($juice->item->price,0, ",",".") }} VNĐ</span>
-                                            
+
                                         @else
                                             {{ number_format($juice->item->price,0, ",",".") }} VNĐ
                                         @endif
                                     </div>
-                                    
+
                                 </a>
                                 <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $juice->item->id }}" value="{{ $juice->id }}">
                                 <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $juice->item->id }}" value="{{ $juice->item_category_id }}">
                                 <div class="btn-cart" id="{{ $juice->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
-                            </div> 
+                            </div>
                         </div>
                         @else
                         <div>
@@ -332,7 +332,7 @@
                                     @if($juice->medias()->first() == null)
                                     <img class="img-responsive" src="https://via.placeholder.com/650x650?text=No+image" alt="">
                                     @else
-                                    <img class="img-responsive" 
+                                    <img class="img-responsive"
                                     src="
                                     {{ asset($juice->medias()->first()->url) }}
                                     " alt="">
@@ -342,18 +342,18 @@
                                         @if($juice->item->price_off > 0 || $juice->item->price_off != null)
                                             {{ number_format($juice->item->price_off,0, ",",".") }} VNĐ
                                             <span>{{ number_format($juice->item->price,0, ",",".") }} VNĐ</span>
-                                            
+
                                         @else
                                             {{ number_format($juice->item->price,0, ",",".") }} VNĐ
                                         @endif
                                     </div>
-                                    
+
                                 </a>
                                 <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $juice->item->id }}" value="{{ $juice->id }}">
                                 <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $juice->item->id }}" value="{{ $juice->item_category_id }}">
                                 <div class="btn-cart" id="{{ $juice->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
                             </div>
-                        </div>      
+                        </div>
                         @endif
                     @endforeach
                 </div>
@@ -384,7 +384,7 @@
                         <div>
                             <div class="item">
                                 <a href="/phu-kien/{{ $accessory->item->itemCategory->slug }}/{{ $accessory->item->id }}/{{ $accessory->item->slug }}">
-                                    <img class="img-responsive" 
+                                    <img class="img-responsive"
                                     src="
                                     @foreach($accessory->medias()->where('media_id', $accessory->item->index_img)->get() as $img)
                                     {{ asset($img->url) }}
@@ -395,17 +395,17 @@
                                         @if($accessory->item->price_off > 0 || $accessory->item->price_off != null)
                                             {{ number_format($accessory->item->price_off,0, ",",".") }} VNĐ
                                             <span>{{ number_format($accessory->item->price,0, ",",".") }} VNĐ</span>
-                                            
+
                                         @else
                                             {{ number_format($accessory->item->price,0, ",",".") }} VNĐ
                                         @endif
                                     </div>
-                                    
+
                                 </a>
                                 <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $accessory->item->id }}" value="{{ $accessory->id }}">
                                 <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $accessory->item->id }}" value="{{ $accessory->item_category_id }}">
                                 <div class="btn-cart" id="{{ $accessory->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
-                            </div> 
+                            </div>
                         </div>
                         @else
                         <div>
@@ -414,7 +414,7 @@
                                     @if($accessory->medias()->first() == null )
                                     <img class="img-responsive" src="https://via.placeholder.com/650x650?text=No+image" alt="">
                                     @else
-                                    <img class="img-responsive" 
+                                    <img class="img-responsive"
                                     src="
                                     {{ asset($accessory->medias()->first()->url) }}
                                     " alt="">
@@ -424,18 +424,18 @@
                                         @if($accessory->item->price_off > 0 || $accessory->item->price_off != null)
                                             {{ number_format($accessory->item->price_off,0, ",",".") }} VNĐ
                                             <span>{{ number_format($accessory->item->price,0, ",",".") }} VNĐ</span>
-                                            
+
                                         @else
                                             {{ number_format($accessory->item->price,0, ",",".") }} VNĐ
                                         @endif
                                     </div>
-                                    
+
                                 </a>
                                 <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $accessory->item->id }}" value="{{ $accessory->id }}">
                                 <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $accessory->item->id }}" value="{{ $accessory->item_category_id }}">
                                 <div class="btn-cart" id="{{ $accessory->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
                             </div>
-                        </div>      
+                        </div>
                         @endif
                     @endforeach
                 </div>
@@ -453,7 +453,7 @@
                             </div>
                             <div class="col-lg-7">
                                 <div class="col-lg-12 no-padding" id="ajax-location">
-                                    
+
                                 </div>
                                 <div class="col-lg-8 no-padding">
                                     <div class="newform">
@@ -482,7 +482,7 @@
         </div><!-- /modal-dialog -->
     </div><!-- /modal -->
 
-    
+
 @endsection
 
 @section('section-blog')
@@ -497,7 +497,13 @@
             <div class="row">
                 @foreach($articles as $article)
                 <div class="col-md-5ths col-xs-12 col-sm-12 co-md-6">
-                    <a href="/review-blog/{{ $article->slug }}"><img class="img-responsive" src="{{ asset($article->media()->first()->url) }}" alt=""></a>
+                    <a href="/review-blog/{{ $article->slug }}">
+                        @if(!empty($article->media->first()))
+                            <img class="img-responsive" src="{{ asset($article->media->first()->url) }}" alt="">
+                            @else
+                            <img class="img-responsive" src="https://via.placeholder.com/204x92?text=No+image" alt="">
+                        @endif
+                    </a>
                     <h5 class="blog-title">{{ $article->title }}</h5>
                     <p>{{ str_limit($article->summary, 110) }}</p>
                 </div>

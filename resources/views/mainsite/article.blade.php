@@ -2,7 +2,7 @@
 
 @section('meta')
     <title>EC Distribution</title>
-    
+
     <!-- seo thong thuong-->
     <title>{{ $page->name }} | EC Distribution</title>
     <meta name="keywords" content="{{ $settings->keywords }}" />
@@ -15,7 +15,7 @@
     <!-- meta google -->
     <meta itemprop="name" content="{{ $page->name }} | EC Distribution">
     <meta itemprop="description" content="{{ $page->summary }}">
-    <meta itemprop="image" content="{{ asset($article->media()->first()->url) }}" />
+    <meta itemprop="image" content="{{ !empty($article->media->first()) ? asset($article->media->first()->url) : asset('images/1531112245_media_Rouge-100-Back.jpg') }}" />
 
     <!-- meta facebook -->
     <meta property="fb:app_id" content="" />
@@ -24,7 +24,7 @@
     <meta property="og:site_name" content="EC Distribution">
     <meta property="og:title" content="{{ $article->title }} | EC Distribution" />
     <meta property="og:description" content="{{ $article->summary }}" />
-    <meta property="og:image" content="{{ asset($article->media()->first()->url) }}" />
+    <meta property="og:image" content="{{ !empty($article->media->first()) ? asset($article->media->first()->url) : asset('images/1531112245_media_Rouge-100-Back.jpg') }}" />
 
     {{ $settings->google_id }}
     {{ $settings->webmaster }}
@@ -38,10 +38,16 @@
 				<div class="col-sm-12 col-md-8 col-lg-8">
 					<h5 class="blog-title">{{ $article->title }}</h5>
 					<div class="time-publish"><i class="fa fa-calendar"></i> Ngày đăng:{{ date("j/n/Y", strtotime($article->created_at)) }}</div>
-					<a href="/review-blog/{{ $article->slug }}"><img class="img-responsive" src="{{ asset($article->media()->first()->url) }}" alt=""></a>
+					<a href="/review-blog/{{ $article->slug }}">
+                        @if(!empty($article->media->first()))
+                        <img class="img-responsive" src="{{ asset($article->media()->first()->url) }}" alt="">
+                            @else
+                            <img class="img-responsive" src="https://via.placeholder.com/750x340?text=No+image" alt="">
+                        @endif
+                    </a>
                     {!! $article->content !!}
                     <div class="article-cat">Loại bài viết: <em>{{ $article->category->name }}</em></div>
-                    <div class="article-tags">Tags: 
+                    <div class="article-tags">Tags:
                     	@foreach($article->tags as $tag)
 							<a href="">#{{ $tag->name }}</a>
                     	@endforeach
@@ -55,7 +61,13 @@
 					</div>
 					@foreach($random_articles as $article)
 					<div class="article-related-item">
-						<a href="/review-blog/{{ $article->slug }}"><img class="img-responsive" src="{{ asset($article->media()->first()->url) }}" alt=""></a>
+						<a href="/review-blog/{{ $article->slug }}">
+                            @if(!empty($article->media->first()))
+                            <img class="img-responsive" src="{{ asset($article->media()->first()->url) }}" alt="">
+                                @else
+                                <img class="img-responsive" src="https://via.placeholder.com/360x163?text=No+image" alt="">
+                            @endif
+                        </a>
 	                    <h5 class="article-relate-title">{{ $article->title }}</h5>
 					</div>
                     @endforeach

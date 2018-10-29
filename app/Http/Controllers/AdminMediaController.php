@@ -25,7 +25,7 @@ class AdminMediaController extends Controller
         $folder_list = Folder::where('folder_id',$folder->id)->get();
         $media = Media::findOrFail(22);
         $width = Image::make($media->url)->width();
-        $new = ['folder_name' => $folder->name, 'folder_slug'=>$folder->slug];
+        $new = ['folder_id' => $folder->id,'folder_name' => $folder->name, 'folder_slug'=>$folder->slug];
         $folder_string[] = $new;
     	return view('admin.media.index', compact('medias','folder','folder_list','folder_string'));
     }
@@ -138,4 +138,5 @@ class AdminMediaController extends Controller
         $media->delete();
         return redirect()->route('admin.media.index')->with('delete','Delete successfully!');
     }
+
 }

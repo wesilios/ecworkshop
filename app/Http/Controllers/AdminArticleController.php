@@ -11,6 +11,7 @@ use App\Category;
 use App\Tag;
 use App\Alpha;
 use App\Media;
+use App\Folder;
 
 class AdminArticleController extends Controller
 {
@@ -112,16 +113,22 @@ class AdminArticleController extends Controller
     public function edit($id)
     {
         //
-        $medias = Media::orderBy('id', 'desc')->get();
         $article = Article::findOrFail($id);
+        $medias = Media::where('folder_id','=','1');
+        if($article->media->first())
+        {
+            $medias = $medias->where('id','!=',$article->media->first()->id);
+        }
+        $medias = $medias->orderBy('id', 'desc')->get();
+        $folder = Folder::findOrFail(1);
+        $folder_list = Folder::where('folder_id',$folder->id)->get();
+        $new = ['folder_id' => $folder->id,'folder_name' => $folder->name, 'folder_slug'=>$folder->slug];
+        $folder_string[] = $new;
         $tags = Tag::all()->pluck('name', 'id');
         $categories = Category::all()->pluck('name','id');
         $tag_value = $article->tags->pluck('id');
         $article_media = $article->media;
-        return view('admin.articles.edit', compact('article','categories','tags','tag_value','medias'));
-        
-        //dd($tags);
-        
+        return view('admin.articles.edit', compact('article','categories','tags','tag_value','medias','folder_list','folder_string','folder'));
     }
 
     /**

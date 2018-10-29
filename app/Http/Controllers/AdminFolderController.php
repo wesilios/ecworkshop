@@ -86,21 +86,44 @@ class AdminFolderController extends Controller
         $folder_list = Folder::where('folder_id', $folder->id)->get();
         $medias = Media::where('folder_id',$folder->id)->orderBy('id', 'desc')->paginate(24);
     	$folder_id_parent = $folder->folder->id;
-    	$folder_string = [['folder_name'=>'root','folder_slug'=>'root']];
+    	$folder_string = [['folder_id' => '1','folder_name'=>'root','folder_slug'=>'root']];
 
     	while($folder_id_parent != 1)
     	{
     		$folder_temp = Folder::findOrFail($folder_id_parent);
     		$folder_id_parent = $folder_temp->folder->id;
-    		$new = ['folder_name' => $folder_temp->name, 'folder_slug'=>$folder_temp->slug];
+    		$new = ['folder_id' => $folder_temp->id,'folder_name' => $folder_temp->name, 'folder_slug'=>$folder_temp->slug];
     		$folder_string[] = $new;
     	}
 
-    	$new = ['folder_name' => $folder->name, 'folder_slug'=>$folder->slug];
+    	$new = ['folder_id' => $folder->id,'folder_name' => $folder->name, 'folder_slug'=>$folder->slug];
         $folder_string[] = $new;
-
-    	//echo '<pre>', print_r($folder_string), '</pre>';
         return view('admin.media.index', compact('medias','folder','folder_list','folder_string'));
+    }
+
+    public function ajaxModalMedia(Request $request)
+    {
+        if($request->ajax()) {
+            $slug = $request->get('folder_slug');
+            $folder = Folder::where('slug',$slug)->first();
+            $folder_list = Folder::where('folder_id', $folder->id)->get();
+            $medias = Media::where('folder_id',$folder->id)->orderBy('id', 'desc')->paginate(24);
+            $folder_id_parent = $folder->folder->id;
+            $folder_string = [['folder_id' => '1','folder_name'=>'root','folder_slug'=>'root']];
+
+            while($folder_id_parent != 1)
+            {
+                $folder_temp = Folder::findOrFail($folder_id_parent);
+                $folder_id_parent = $folder_temp->folder->id;
+                $new = ['folder_id' => $folder_temp->id,'folder_name' => $folder_temp->name, 'folder_slug'=>$folder_temp->slug];
+                $folder_string[] = $new;
+            }
+
+            $new = ['folder_id' => $folder->id,'folder_name' => $folder->name, 'folder_slug'=>$folder->slug];
+            $folder_string[] = $new;
+            $data = view('admin.ajax.media.article', compact('medias','folder','folder_list','folder_string'))->render();
+            return response()->json(['option'=>$data]);
+        }
     }
 
 }

@@ -466,7 +466,7 @@ footer ul > li > a:active{
 }
 
 .navbar-default .navbar-nav>li>a:hover,
-.navbar-default .navbar-nav>li>a:active, 
+.navbar-default .navbar-nav>li>a:active,
 .navbar-default .navbar-nav>li>a:focus {
     color: #f01821;
 }
@@ -589,7 +589,7 @@ footer ul > li > a:active{
 		display: inline;
 	}
 
-	.logo-nav .navbar-brand 
+	.logo-nav .navbar-brand
 	{
 		display: none;
 	}
@@ -1032,7 +1032,7 @@ footer ul > li > a:active{
 	}
 
 	.custom-no-padding {
-		
+
 	}
 
 	.cart {
@@ -1112,7 +1112,7 @@ footer ul > li > a:active{
 	}
 
 	.custom-no-padding {
-		
+
 	}
 
 	.cart {
@@ -1288,11 +1288,13 @@ footer ul > li > a:active{
 
 .section-blog .blog-title {
 	font-family: Elle-Futura-Heavy;
+	height: 35px;
 }
 
 .section-blog p {
 	font-size: 13px;
-} 
+	height: 50px
+}
 
 .section-items .item {
  	margin: 0px 0px;
@@ -1932,7 +1934,7 @@ footer ul > li > a:active{
 
 .item_des_nw {
 	margin-top: 5px;
-	font-size: 15px; 
+	font-size: 15px;
 	font-family: Elle-Futura;
 	color: #333;
 }
@@ -1940,7 +1942,7 @@ footer ul > li > a:active{
 .item_price_nw {
 	margin-top: 5px;
 	margin-bottom: 5px;
-	font-size: 17px; 
+	font-size: 17px;
 	font-family: Elle-Futura;
 	color: #333;
 }
@@ -1949,12 +1951,12 @@ footer ul > li > a:active{
 {
 	margin-top: 5px;
 	margin-bottom: 5px;
-	font-size: 15px; 
+	font-size: 15px;
 	font-family: Elle-Futura;
 	color: #333;
 }
 
-.item_size_nw 
+.item_size_nw
 {
 	margin-top: 5px;
 	margin-bottom: 15px;
@@ -2052,8 +2054,8 @@ div.newform select {
     background-color: #333333;
 }
 
-.nav-tabs > li.active > a, 
-.nav-tabs > li.active > a:hover, 
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:hover,
 .nav-tabs > li.active > a:focus  {
     background-color: #9f0606;
     color: #ffffff;
@@ -2269,7 +2271,7 @@ table.table-order > thead > tr > th{
 	margin-top: 10px;
 }
 
-.order-totalPrice-price 
+.order-totalPrice-price
 {
 	font-family: Elle-Futura-Heavy;
 	font-size: 17px;
@@ -2334,4 +2336,8 @@ ul.list_terms li a{
 	ul.list_terms li {
 		text-align: left;
 	}
+}
+
+.col-article {
+
 }

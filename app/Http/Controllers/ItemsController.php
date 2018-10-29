@@ -46,7 +46,7 @@ class ItemsController extends Controller
     		case '5':
     			$items = Accessory::orderBy('id','desc')->paginate(24);
     			break;
-    		
+
     		default:
     			# code...
     			break;
@@ -86,7 +86,7 @@ class ItemsController extends Controller
     		case '5':
     			$items = Accessory::orderBy('id','desc')->where('item_category_id', $item_sub_category['id'])->paginate(24);
     			break;
-    		
+
     		default:
     			# code...
     			break;
@@ -113,34 +113,58 @@ class ItemsController extends Controller
         $top_nav = Menu::where('id',1)->first();
         $page = Page::where('slug','=', $item_cat)->first();
         $pageSub = Page::where('slug','=', $item_sub_cat)->first();
+        if(empty($page) || empty($pageSub))
+        {
+            return redirect()->route('404.not.found');
+        }
         $item_category = ItemCategory::where('slug',$item_cat)->first();
         $not_item = Item::where('id',$item_id)->first();
         switch ($item_category->id) {
             case '1':
                 $item = Box::where('item_id', $not_item->id)->first();
+                if(empty($item))
+                {
+                    return redirect()->route('404.not.found');
+                }
                 $random_items = Box::where('id','!=',$item->id)->inRandomOrder()->paginate(5);
                 break;
 
             case '2':
                 $item = FullKit::where('item_id', $not_item->id)->first();
+                if(empty($item))
+                {
+                    return redirect()->route('404.not.found');
+                }
                 $random_items = FullKit::where('id','!=',$item->id)->inRandomOrder()->paginate(5);
                 break;
 
             case '3':
                 $item = Tank::where('item_id', $not_item->id)->first();
+                if(empty($item))
+                {
+                    return redirect()->route('404.not.found');
+                }
                 $random_items = Tank::where('id','!=',$item->id)->inRandomOrder()->paginate(5);
                 break;
 
             case '4':
                 $item = Juice::where('item_id', $not_item->id)->first();
+                if(empty($item))
+                {
+                    return redirect()->route('404.not.found');
+                }
                 $random_items = Juice::where('id','!=',$item->id)->inRandomOrder()->paginate(5);
                 break;
 
             case '5':
                 $item = Accessory::where('item_id', $not_item->id)->first();
+                if(empty($item))
+                {
+                    return redirect()->route('404.not.found');
+                }
                 $random_items = Accessory::where('id','!=',$item->id)->inRandomOrder()->paginate(5);
                 break;
-            
+
             default:
                 # code...
                 break;
@@ -168,37 +192,62 @@ class ItemsController extends Controller
         $top_nav = Menu::where('id',1)->first();
         $page = Page::where('slug','=', $item_cat)->first();
         $not_item = Item::where('id',$item_id)->first();
+        if(empty($page))
+        {
+            return redirect()->route('404.not.found');
+        }
         $item_category = ItemCategory::where('slug',$item_cat)->first();
         switch ($item_category->id) {
             case '1':
                 $item = Box::where('item_id', $not_item->id)->first();
+                if(empty($item))
+                {
+                    return redirect()->route('404.not.found');
+                }
                 $random_items = Box::where('id','!=',$item->id)->inRandomOrder()->paginate(5);
                 break;
 
             case '2':
                 $item = FullKit::where('item_id', $not_item->id)->first();
+                if(empty($item))
+                {
+                    return redirect()->route('404.not.found');
+                }
                 $random_items = FullKit::where('id','!=',$item->id)->inRandomOrder()->paginate(5);
                 break;
 
             case '3':
                 $item = Tank::where('item_id', $not_item->id)->first();
+                if(empty($item))
+                {
+                    return redirect()->route('404.not.found');
+                }
                 $random_items = Tank::where('id','!=',$item->id)->inRandomOrder()->paginate(5);
                 break;
 
             case '4':
                 $item = Juice::where('item_id', $not_item->id)->first();
+                if(empty($item))
+                {
+                    return redirect()->route('404.not.found');
+                }
                 $random_items = Juice::where('id','!=',$item->id)->inRandomOrder()->paginate(5);
                 break;
 
             case '5':
                 $item = Accessory::where('item_id', $not_item->id)->first();
+                if(empty($item))
+                {
+                    return redirect()->route('404.not.found');
+                }
                 $random_items = Accessory::where('id','!=',$item->id)->inRandomOrder()->paginate(5);
                 break;
-            
+
             default:
                 # code...
                 break;
         }
+
         return view('mainsite.item', compact(
             'settings',
             'footer_1st_menu',
