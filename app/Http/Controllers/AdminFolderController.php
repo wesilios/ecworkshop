@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Article;
+use http\Env\Response;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Auth;
 use Validator;
 use App\Folder;
@@ -107,10 +108,10 @@ class AdminFolderController extends Controller
             $slug = $request->get('folder_slug');
             $folder = Folder::where('slug',$slug)->first();
             $folder_list = Folder::where('folder_id', $folder->id)->get();
-            $medias = Media::where('folder_id',$folder->id)->orderBy('id', 'desc')->paginate(24);
+            $medias = Media::where('folder_id',$folder->id)->orderBy('id', 'desc')->get();
             $folder_id_parent = $folder->folder->id;
             $folder_string = [['folder_id' => '1','folder_name'=>'root','folder_slug'=>'root']];
-
+            $article = Article::find($request->get('article_id'));
             while($folder_id_parent != 1)
             {
                 $folder_temp = Folder::findOrFail($folder_id_parent);
@@ -121,7 +122,7 @@ class AdminFolderController extends Controller
 
             $new = ['folder_id' => $folder->id,'folder_name' => $folder->name, 'folder_slug'=>$folder->slug];
             $folder_string[] = $new;
-            $data = view('admin.ajax.media.article', compact('medias','folder','folder_list','folder_string'))->render();
+            $data = view('admin.ajax.media.article', compact('medias','folder','folder_list','folder_string','article'))->render();
             return response()->json(['option'=>$data]);
         }
     }

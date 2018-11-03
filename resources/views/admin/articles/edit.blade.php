@@ -66,12 +66,12 @@
 						                </span>
 						            @endif
 			                    </div>
-			                    <div class="form-group {{ $errors->has('content') ? ' has-error' : '' }}">
-	                    			{!! Form::label('content', 'Nội dung bài viết:', ['class' => 'control-label'] ) !!}
-									{!! Form::textarea('content', $article->content, ['class'=>'form-control textarea']) !!}
-		                      		@if ($errors->has('content'))
+			                    <div class="form-group {{ $errors->has('content_ar') ? ' has-error' : '' }}">
+	                    			{!! Form::label('content_ar', 'Nội dung bài viết:', ['class' => 'control-label'] ) !!}
+									{!! Form::textarea('content_ar', $article->content, ['class'=>'form-control textarea']) !!}
+		                      		@if ($errors->has('content_ar'))
 						                <span class="help-block">
-						                    <strong>{{ $errors->first('content') }}</strong>
+						                    <strong>{{ $errors->first('content_ar') }}</strong>
 						                </span>
 						            @endif
 			                    </div>
@@ -227,35 +227,41 @@
             }
         });
 
+		function getFolderByAjax(folder_slug, folder_id, token, article_id) {
+            $.ajax({
+                url: "{{ route('admin.folder.ajax.show') }}",
+                method: 'POST',
+                dataType: 'json',
+                data: {folder_slug:folder_slug, folder_id:folder_id, _token:token, article_id:article_id},
+                success: function (data) {
+                    if(data.error) {
+                        alert(data.mess);
+                    } else {
+                        console.log(data.option);
+                        $('#modal-medias').html(data.option);
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    console.log(xhr.status);
+                    console.log(xhr.responseText);
+                    console.log(thrownError);
+                }
+            });
+		};
+
         $('.folder-link').dblclick(function(e){
             var href = $(this).attr('href');
-            var article_id = {{ $article->id }};
-            alert(article_id);
+            var article_id = '{{ $article->id }}';
             var token = $("input[name='_token']").val();
+            alert(token);
             var folder_slug = $(this).attr('data-folder-slug');
             var folder_id = $(this).attr('data-folder-id');
             if(folder_id == null || folder_slug == null) {
                 alert('Cant get this folder');
             } else {
-                $.ajax({
-                    url: "{{ route('admin.folder.ajax.show') }}",
-                    method: 'POST',
-                    dataType: 'json',
-                    data: {folder_slug:folder_slug, folder_id:folder_id, _token:token},
-                    success: function (data) {
-                        if(data.error) {
-                            alert(data.mess);
-                        } else {
-                            console.log(data.option);
-                        }
-                    },
-                    error: function (xhr, ajaxOptions, thrownError) {
-                        console.log(xhr.status);
-                        console.log(xhr.responseText);
-                        console.log(thrownError);
-                    }
-                });
+				getFolderByAjax(folder_slug, folder_id, token, article_id);
             }
         });
+
 	</script>
 @endsection

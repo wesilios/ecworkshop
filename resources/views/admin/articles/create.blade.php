@@ -43,12 +43,12 @@
 						                </span>
 						            @endif
 			                    </div>
-			                    <div class="form-group {{ $errors->has('content') ? ' has-error' : '' }}">
-	                    			{!! Form::label('content', 'Nội dung bài viết:', ['class' => 'control-label'] ) !!}
-									{!! Form::textarea('content', null, ['class'=>'form-control textarea']) !!}
-		                      		@if ($errors->has('content'))
+			                    <div class="form-group {{ $errors->has('content_ar') ? ' has-error' : '' }}">
+	                    			{!! Form::label('content_ar', 'Nội dung bài viết:', ['class' => 'control-label'] ) !!}
+									{!! Form::textarea('content_ar', null, ['class'=>'form-control textarea']) !!}
+		                      		@if ($errors->has('content_ar'))
 						                <span class="help-block">
-						                    <strong>{{ $errors->first('content') }}</strong>
+						                    <strong>{{ $errors->first('content_ar') }}</strong>
 						                </span>
 						            @endif
 			                    </div>

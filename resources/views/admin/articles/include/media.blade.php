@@ -1,6 +1,6 @@
 <div class="example-modal">
     <div class="modal fade item_modal" id="gallery_modal" role="dialog">
-        <div class="modal-dialog modal-dialog-95" style="">
+        <div class="modal-dialog modal-dialog-fullscreen" style="">
             <div class="modal-content">
                 <div class="modal-header">
                     <div>
@@ -71,40 +71,44 @@
                                 </div>
                             </div>
                         </div>
-                        @if($folder_list->isNotEmpty())
-                            @if(count($folder_list) >= 1)
-                                <div id="folder-section">
-                                    <h5><strong>Folders</strong></h5>
-                                    <div class="row">
-                                        @foreach($folder_list as $fd)
-                                            @if($folder->id != $fd->id)
-                                                <a href="{{ route('admin.folder.show',$fd->slug) }}" data-folder-id="{{ $fd->id }}" data-folder-slug="{{ $fd->slug }}" class="folder-link" data-active="1">
-                                                    <div class="col-md-2">
-                                                        <div class="folder">
-                                                            <i class="fa fa-folder"></i> <span>{{ $fd->name }}</span>
-                                                        </div>
-                                                    </div>
-                                                </a>
-                                            @endif
-                                        @endforeach
-                                    </div>
-                                </div>
-                                <hr>
-                            @else
-                                <div id="folder-section"></div>
-                            @endif
-                        @else
-                            <div id="folder-section"></div>
-                        @endif
+
                         <div class="row">
-                            <div class="col-sm-12" >
+                            <div class="col-sm-2">
+                                @if($folder_list->isNotEmpty())
+                                    @if(count($folder_list) >= 1)
+                                        <div id="folder-section">
+                                            <h5><strong>Folders</strong></h5>
+                                            <div class="row">
+                                                @foreach($folder_list as $fd)
+                                                    @if($folder->id != $fd->id)
+                                                        <a href="{{ route('admin.folder.show',$fd->slug) }}" data-folder-id="{{ $fd->id }}" data-folder-slug="{{ $fd->slug }}" class="folder-link" data-active="1">
+                                                            <div class="col-md-12">
+                                                                <div class="folder">
+                                                                    <i class="fa fa-folder"></i> <span>{{ $fd->name }}</span>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    @endif
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                        <hr>
+                                    @else
+                                        <div id="folder-section"></div>
+                                    @endif
+                                @else
+                                    <div id="folder-section"></div>
+                                @endif
+                            </div>
+                            <div class="col-sm-10" >
+                                <h5><strong>Files</strong></h5>
                                 <div class="modalDisplayImages row">
                                     @if($article->media->first())
                                         <div class="col-sm-2">
                                             <div class="thumbnails_img active" style="background-image:url('{{ asset($article->media->first()->url) }}')">
                                                 <div class="caption">
                                                     <div class="caption-content">
-                                                        <a href="#" id="{{ $article->media->first()->id }}" class="selectImgA">
+                                                        <a href="#" id="{{ $article->media->first()->id }}" class='selectImgA'>
                                                             <div class="btn btn-info">
                                                                 <i class="fa fa-check"></i>
                                                             </div>
@@ -157,7 +161,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="folder_name">Tên folder</label>
-                        <input type="text" name="folder_name" class="form-control"/>
+                        <input type="text" name="folder_name" id="folder_name" class="form-control"/>
                         <div class="error"></div>
                         <input type="hidden" name="folder_id" value="{{ $folder->id }}" />
                     </div>

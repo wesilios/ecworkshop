@@ -28,7 +28,7 @@ $(document).ready(function(){
                 if(fileExtension === allowedExtension[index]) {
                     isValidFile = true;
                     break;
-                }
+                }        
             }
 	        return isValidFile;
 		}
@@ -44,11 +44,11 @@ $(document).ready(function(){
 	            	var src = window.URL.createObjectURL(files[i]);
 					var col_sm_2 = document.createElement('div');
 					col_sm_2.className = 'col-sm-2';
-					$("#preview-image .row").append(col_sm_2);
+					$('#preview-image .row').append(col_sm_2);
 
 					var thumbnails_img = document.createElement('div');
 					thumbnails_img.className = 'thumbnails_img';
-					thumbnails_img.style.backgroundImage = "url("+src+")";
+					thumbnails_img.style.backgroundImage = 'url("'+ src +'")';
 					col_sm_2.append(thumbnails_img);
 					$('.uploadZone').remove();
 	            } else {
@@ -61,7 +61,7 @@ $(document).ready(function(){
 	$('.selectImgA').click(function(event){
 		event.preventDefault();
 		var id = $(this).attr('id');
-		var btn = "#selectImgbtn";
+		var btn = '#selectImgbtn';
 		$(btn.concat(id)).click();
 	});
 
@@ -69,16 +69,16 @@ $(document).ready(function(){
 		event.preventDefault();
 		var id = $(this).attr('id');
 		//alert(id);
-		var thumbnails_img = "#thumbnails_img";
+		var thumbnails_img = '#thumbnails_img';
 		$(thumbnails_img.concat(id)).toggleClass('active');
 
-		if($("#selForm option[value='"+ id +"']").attr("selected"))
+		if($('#selForm option[value="' + id + '"]').attr('selected'))
 		{
-			$("#selForm option[value='"+ id +"']").attr("selected", false);
+			$('#selForm option[value="' + id + '"]').attr('selected', false);
 		}
 		else
 		{
-			$("#selForm option[value='"+ id +"']").attr("selected", true);
+			$('#selForm option[value="' + id + '"]').attr('selected', true);
 		}
 
 	});
@@ -87,10 +87,10 @@ $(document).ready(function(){
 		event.preventDefault();
 		var id = $(this).attr('id');
 		//alert(id);
-		var thumbnails_img = "#thumbnails_index_img";
+		var thumbnails_img = '#thumbnails_index_img';
 		$('.thumbnails_img').removeClass('active');
 		$(thumbnails_img.concat(id)).toggleClass('active');
-		$("#selIndexImgForm option").attr("selected", false);
-		$("#selIndexImgForm option[value='"+ id +"']").attr("selected", true);
+		$('#selIndexImgForm option').attr('selected', false);
+		$('#selIndexImgForm option[value="'+ id +'"]').attr('selected', true);
 	});
 });

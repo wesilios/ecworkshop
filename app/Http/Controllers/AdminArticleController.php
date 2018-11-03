@@ -73,13 +73,12 @@ class AdminArticleController extends Controller
         $input = $request->all();
         $article = new Article;
         $article->title = $request->title;
-        $article->content = $request->content;
+        $article->content = $request->content_ar;
         $article->summary = $request->summary;
         $article->category_id = $request->category_id;
         $article->admin_id = Auth::user()->id;
         $article->slug = Alpha::alpha_dash($article->title);
         $article->save();
-        //dd($input);
 
         if(isset($input['tag_id']))
         {
@@ -157,13 +156,12 @@ class AdminArticleController extends Controller
         }
 
         $input = $request->all();
-        $article = Article::findOrFail($id);
+        $article = Article::find($id);
         $article->title = $request->title;
-        $article->content = $request->content;
+        $article->content = $request->content_ar;
         $article->summary = $request->summary;
         $article->category_id = $request->category_id;
         $article->save();
-        //dd($input);
         if($input['tag_id'])
         {
             foreach($input['tag_id'] as $input_tag)

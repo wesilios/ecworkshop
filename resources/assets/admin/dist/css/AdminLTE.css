@@ -4762,12 +4762,6 @@ a.closeZone:hover {
   width: 95%;
 }
 
-.btn-custom
-{
-  background-color: transparent;
-  border:none;
-}
-
 .modal-dialog-95 .modal-header span {
   font-size:20px;
 }
@@ -4784,6 +4778,18 @@ a.closeZone:hover {
   height:100%;
   border-left: 1px solid #ddd;
   padding: 12px 16px 0;
+}
+
+.btn-custom
+{
+  background-color: transparent;
+  border:none;
+}
+
+.modal-dialog-fullscreen
+{
+  width: 100%;
+  margin: 0;
 }
 
 #nothing {

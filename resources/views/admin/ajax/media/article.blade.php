@@ -83,25 +83,12 @@
 <div class="row">
     <div class="col-sm-12" >
         <div class="modalDisplayImages row">
-            <div class="col-sm-2">
-                <div class="thumbnails_img active" style="background-image:url('{{ asset($article->media->first()->url) }}')">
-                    <div class="caption">
-                        <div class="caption-content">
-                            <a href="#" id="{{ $article->media->first()->id }}" class="selectImgA">
-                                <div class="btn btn-info">
-                                    <i class="fa fa-check"></i>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @foreach($medias as $media)
+            @if($article->media->first())
                 <div class="col-sm-2">
-                    <div class="thumbnails_img" style="background-image:url('{{ asset($media->url) }}')">
+                    <div class="thumbnails_img active" style="background-image:url('{{ asset($article->media->first()->url) }}')">
                         <div class="caption">
                             <div class="caption-content">
-                                <a href="#" id="{{ $media->id }}" class="selectImgA">
+                                <a href="#" id="{{ $article->media->first()->id }}" class="selectImgA">
                                     <div class="btn btn-info">
                                         <i class="fa fa-check"></i>
                                     </div>
@@ -110,15 +97,109 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-hidden-article">
-                    {!! Form::open(['method'=>'PUT', 'action'=>["AdminArticleController@selectImage",$article->id] ,'files'=>true]) !!}
-                    {!! Form::text('media_id', $media->id ,['id'=>'form-file-hidden']) !!}
-                    <div class="form-group">
-                        {!! Form::submit('Select', ['class'=>'btn btn-info','id'=>'selectImgbtn'.$media->id]) !!}
+                @foreach($medias as $media)
+                    <div class="col-sm-2">
+                        <div class="thumbnails_img" style="background-image:url('{{ asset($media->url) }}')">
+                            <div class="caption">
+                                <div class="caption-content">
+                                    <a href="#" id="{{ $media->id }}" class="selectImgA">
+                                        <div class="btn btn-info">
+                                            <i class="fa fa-check"></i>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    {!! Form::close() !!}
-                </div>
-            @endforeach
+                    <div class="form-hidden-article">
+                        {!! Form::open(['method'=>'PUT', 'action'=>["AdminArticleController@selectImage",$article->id] ,'files'=>true]) !!}
+                        {!! Form::text('media_id', $media->id ,['id'=>'form-file-hidden']) !!}
+                        <div class="form-group">
+                            {!! Form::submit('Select', ['class'=>'btn btn-info','id'=>'selectImgbtn'.$media->id]) !!}
+                        </div>
+                        {!! Form::close() !!}
+                    </div>
+                @endforeach
+            @endif
         </div>
     </div>
 </div>
+    <script>
+        $('#new_folder').click(function(e) {
+            e.preventDefault();
+            var $this = $(this);
+            var token = $("input[name='_token']").val();
+            var folder_name = $("input[name='folder_name']").val();
+            var folder_id = $("input[name='folder_id']").val();
+            if(folder_name == '') {
+                alert('Trống tên');
+            } else {
+                $.ajax({
+                    url: "{{ route('admin.folder.create') }}",
+                    method:'POST',
+                    dataType:'json',
+                    data: {folder_name:folder_name, _token:token, folder_id:folder_id},
+                    success: function(data) {
+                        if(data.error) {
+                            $('#newFolder .error').html(data.mess);
+                        } else {
+                            $('#folder-section').html('');
+                            $('#folder-section').html(data.option);
+                            $('#newFolder').modal('hide');
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        console.log(xhr.status);
+                        console.log(xhr.responseText);
+                        console.log(thrownError);
+                    }
+                });
+            }
+        });
+
+        $('.folder-link').click(function(e) {
+            e.preventDefault();
+            $(this).toggleClass('active');
+            if($(this).attr('data-active') == 1) {
+                $(this).attr('data-active',0);
+            } else {
+                $(this).attr('data-active',1);
+            }
+        });
+
+        function getFolderByAjax(folder_slug, folder_id, token, article_id) {
+            $.ajax({
+                url: "{{ route('admin.folder.ajax.show') }}",
+                method: 'POST',
+                dataType: 'json',
+                data: {folder_slug:folder_slug, folder_id:folder_id, _token:token, article_id:article_id},
+                success: function (data) {
+                    if(data.error) {
+                        alert(data.mess);
+                    } else {
+                        console.log(data.option);
+                        $('#modal-medias').html(data.option);
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    console.log(xhr.status);
+                    console.log(xhr.responseText);
+                    console.log(thrownError);
+                }
+            });
+        };
+
+        $('.folder-link').dblclick(function(e){
+            var href = $(this).attr('href');
+            var article_id = '{{ $article->id }}';
+            var token = $("input[name='_token']").val();
+            var folder_slug = $(this).attr('data-folder-slug');
+            var folder_id = $(this).attr('data-folder-id');
+            if(folder_id == null || folder_slug == null) {
+                alert('Cant get this folder');
+            } else {
+                getFolderByAjax(folder_slug, folder_id, token, article_id);
+            }
+        });
+
+    </script>
