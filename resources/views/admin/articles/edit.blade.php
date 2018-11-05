@@ -237,7 +237,7 @@
                     if(data.error) {
                         alert(data.mess);
                     } else {
-                        console.log(data.option);
+                        console.log(data.folder_string);
                         $('#modal-medias').html(data.option);
                     }
                 },
@@ -253,7 +253,6 @@
             var href = $(this).attr('href');
             var article_id = '{{ $article->id }}';
             var token = $("input[name='_token']").val();
-            alert(token);
             var folder_slug = $(this).attr('data-folder-slug');
             var folder_id = $(this).attr('data-folder-id');
             if(folder_id == null || folder_slug == null) {
@@ -262,6 +261,66 @@
 				getFolderByAjax(folder_slug, folder_id, token, article_id);
             }
         });
+
+        $('.custom').click(function (e) {
+			e.preventDefault();
+            var article_id = '{{ $article->id }}';
+            var token = $("input[name='_token']").val();
+            var folder_slug = $(this).attr('data-folder-slug');
+            var folder_id = $(this).attr('data-folder-id');
+            if(folder_id == null || folder_slug == null) {
+                alert('Cant get this folder');
+            } else {
+                getFolderByAjax(folder_slug, folder_id, token, article_id);
+            }
+        });
+
+        function uploadImage() {};
+        function uploadImages() {};
+
+		$('.selectFile_1').click(function(e){
+			e.preventDefault();
+			$("input[name='medias']").click();
+		});
+
+		$("input[name='medias']").change(function(e) {
+            var medias = e.target.files;
+            var folder_id = $(this).attr('data-folder-id');
+            var article_id = '{{ $article->id }}';
+            var token = $("input[name='_token']").val();
+			$("#formUploadImage").trigger('submit');
+		});
+
+		$('#formUploadImage').on('submit', function (e) {
+			e.preventDefault();
+			var data = new FormData(this);
+            $.ajax({
+                url: "{{ route('admin.article.ajaxUpload') }}",
+                method: 'POST',
+                dataType: 'json',
+				contentType: false,
+				cache: false,
+				processData: false,
+				data: data,
+                success: function (data){
+                    if(data.success == '1')
+                    {
+						$('.modalDisplayImages').html();
+						$('.modalDisplayImages').html(data.data);
+                    } else {
+                        if(data.error == '1')
+						{
+						    console.log(data.message);
+						}
+					}
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    console.log(xhr.status);
+                    console.log(xhr.responseText);
+                    console.log(thrownError);
+                }
+            });
+		});
 
 	</script>
 @endsection

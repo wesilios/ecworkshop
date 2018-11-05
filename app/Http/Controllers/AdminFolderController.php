@@ -108,10 +108,16 @@ class AdminFolderController extends Controller
             $slug = $request->get('folder_slug');
             $folder = Folder::where('slug',$slug)->first();
             $folder_list = Folder::where('folder_id', $folder->id)->get();
-            $medias = Media::where('folder_id',$folder->id)->orderBy('id', 'desc')->get();
+            $article = Article::find($request->get('article_id'));
+            $medias = Media::where('folder_id',$folder->id);
+            if($article->media->first())
+            {
+                $medias = $medias->where('id','!=',$article->media->first()->id);
+            }
+            $medias = $medias->orderBy('id', 'desc')->get();
             $folder_id_parent = $folder->folder->id;
             $folder_string = [['folder_id' => '1','folder_name'=>'root','folder_slug'=>'root']];
-            $article = Article::find($request->get('article_id'));
+
             while($folder_id_parent != 1)
             {
                 $folder_temp = Folder::findOrFail($folder_id_parent);
@@ -120,10 +126,13 @@ class AdminFolderController extends Controller
                 $folder_string[] = $new;
             }
 
-            $new = ['folder_id' => $folder->id,'folder_name' => $folder->name, 'folder_slug'=>$folder->slug];
-            $folder_string[] = $new;
+            if($folder->id != 1)
+            {
+                $new = ['folder_id' => $folder->id,'folder_name' => $folder->name, 'folder_slug'=>$folder->slug];
+                $folder_string[] = $new;
+            }
             $data = view('admin.ajax.media.article', compact('medias','folder','folder_list','folder_string','article'))->render();
-            return response()->json(['option'=>$data]);
+            return response()->json(['option'=>$data, 'folder_id' => $folder->id, 'folder_string' =>$folder_string ]);
         }
     }
 

@@ -199,7 +199,6 @@ class AdminArticleController extends Controller
     public function uploadImage(Request $request, $id)
     {
         //
-        //dd($request->all());
         $file = $request->file('medias');
         $article = Article::findOrFail($id);
         if($file === null)
@@ -209,7 +208,6 @@ class AdminArticleController extends Controller
         else
         {
             $file->getClientMimeType();
-            //echo $file->getMimeType();
             if(substr($file->getMimeType(), 0, 5) == 'image') {
                 $name = time() . '_media_' . $file->getClientOriginalName();
                 $type = $file->getMimeType();
@@ -227,7 +225,6 @@ class AdminArticleController extends Controller
         {
             $article->media()->sync($media);
         }
-        //dd($article->media);
         return redirect()->route('articles.edit', [$id])->with('status','Cập nhật image thành công');
     }
 
@@ -235,9 +232,46 @@ class AdminArticleController extends Controller
     {
         $input = $request->all();
         $article = Article::findOrFail($id);
-        //dd($request->all());
         $media = Media::findOrFail($input['media_id']);
         $article->media()->sync($media);
         return redirect()->route('articles.edit', [$id])->with('status','Cập nhật image thành công');
+    }
+
+    public function ajaxUpload(Request $request)
+    {
+        if($request->ajax())
+        {
+            $file      = $request->file('medias');
+            $folder    = Folder::find($request->folder_id);
+            $article   = Article::find($request->article_id);
+            $folder_id = $folder->id;
+
+            if($file === null)
+            {
+                return response()->json([
+                    'error'   => '1',
+                    'message' => 'File is empty',
+                ]);
+            }
+            $file = Media::ajaxUploadImage($file, $folder_id);
+            if(!empty($file))
+            {
+                $medias = Media::where('folder_id', '=', $folder_id)->orderBy('id', 'desc')->get();
+                $data   = view('admin.ajax.media.new_files', compact('medias', 'folder', 'article'))->render();
+                return response()->json([
+                    'data'        => $data,
+                    'file'        => $file,
+                    'success'     => '1',
+                    'message'     => 'Success'
+                ]);
+            }
+            else
+            {
+                return response()->json([
+                    'error'   => '1',
+                    'message' => 'File must be a image type',
+                ]);
+            }
+        }
     }
 }

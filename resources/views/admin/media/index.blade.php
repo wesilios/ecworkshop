@@ -295,6 +295,7 @@
 		        		<div class="modal-footer">
 		        			{!! Form::open(['method'=>'DELETE', 'action'=>['AdminMediaController@destroy', $media->id], 'class'=>'form-horizontal']) !!}
 		        				<button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+								<input type="hidden" name="folder_id" value="{{ $folder->id }}">
 								{!! Form::submit('Xóa', ['class'=>'btn btn-primary']) !!}
 	            			{!! Form::close() !!}
 		        		</div>

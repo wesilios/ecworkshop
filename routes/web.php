@@ -207,6 +207,12 @@ Route::prefix('/admin')->group(function() {
 
 	Route::get('/settings/{id}/edit', 'AdminSettingsController@edit')->name('admin.settings.edit');
 	Route::put('/settings/{id}', 'AdminSettingsController@update')->name('admin.settings.update');
+/*
+|--------------------------------------------------------------------------
+| Admin ajax
+|--------------------------------------------------------------------------
+*/
+Route::post('/admin/article/ajaxUpload', 'AdminArticleController@ajaxUpload')->name('admin.article.ajaxUpload');
 
 /*
 |--------------------------------------------------------------------------

@@ -27,13 +27,15 @@
                                                         <span class="sr-only">Toggle Dropdown</span>
                                                     </button>
                                                     <ul class="dropdown-menu" role="menu">
-                                                        <li><a href="#" class="selectFile">Upload files</a></li>
+                                                        <li><a href="#" class="selectFile_1">Upload files</a></li>
                                                         <li class="divider"></li>
                                                         <li><a href="#" data-toggle="modal" data-target="#newFolder">New folder</a></li>
                                                     </ul>
                                                 </div>
                                             @else
-                                                <a href="{{ route('admin.media.index')}}" class="btn btn-default btn-sm custom">{{ $fd_string['folder_name'] }}</a>
+                                                <a href="" class="btn btn-default btn-sm custom" data-folder-id="{{ $fd_string->folder_id }}" data-folder-slug="{{ $fd_string->slug }}">
+                                                    {{ $fd_string['folder_name'] }}
+                                                </a>
                                                 <span class="custom"><i class="fa fa-angle-right"></i></span>
                                             @endif
                                         @else
@@ -45,13 +47,16 @@
                                                         <span class="sr-only">Toggle Dropdown</span>
                                                     </button>
                                                     <ul class="dropdown-menu" role="menu">
-                                                        <li><a href="#" class="selectFile">Upload files</a></li>
+                                                        <li><a href="#" class="selectFile_1">Upload files</a></li>
                                                         <li class="divider"></li>
                                                         <li><a href="#" data-toggle="modal" data-target="#newFolder">New folder</a></li>
                                                     </ul>
                                                 </div>
                                             @else
-                                                <a href="{{ route('admin.folder.show',$fd_string['folder_slug'])}}" class="btn btn-default btn-sm custom">{{ $fd_string['folder_name'] }}</a>
+
+                                                <a href="" class="btn btn-default btn-sm custom" data-folder-id="{{ $fd_string['folder_id'] }}" data-folder-slug="{{ $fd_string['folder_slug'] }}">
+                                                    {{ $fd_string['folder_name'] }}
+                                                </a>
                                                 <span class="custom"><i class="fa fa-angle-right"></i></span>
                                             @endif
                                         @endif
@@ -60,14 +65,12 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="form-hidden">
-                                    {!! Form::open(['method'=>'PUT', 'action'=>["AdminArticleController@uploadImage",$article->id] ,'files'=>true]) !!}
-                                    {!! Form::file('medias', ['id'=>'form-file-hidden']) !!}
-                                    <input type="hidden" name="folder_id" value="{{ $folder->id }}"/>
-                                    <div id="preview-image">
-                                        <h5 id="h5-pre"><strong>Preview</strong> <input type="submit" id="uploadBtn" class="btn btn-info btn-sm" value="Upload" style="display: none"></h5>
-                                        <div class="row"></div>
-                                    </div>
-                                    {!! Form::close() !!}
+                                    <form method="POST" action="{{ route('admin.articles.upload', $article->id) }}" accept-charset="UTF-8" enctype="multipart/form-data" id="formUploadImage">
+                                        <input type="file" name="medias" id="form-file-hidden1" value="" style="display: none">
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                        <input type="hidden" name="article_id" value="{{ $article->id }}">
+                                        <input type="hidden" name="folder_id" value="{{ $folder->id }}"/>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -109,8 +112,8 @@
                                                 <div class="caption">
                                                     <div class="caption-content">
                                                         <a href="#" id="{{ $article->media->first()->id }}" class='selectImgA'>
-                                                            <div class="btn btn-info">
-                                                                <i class="fa fa-check"></i>
+                                                            <div class="btn btn-success">
+                                                                <i class="fa fa-close"></i>
                                                             </div>
                                                         </a>
                                                     </div>
@@ -133,7 +136,7 @@
                                             </div>
                                         </div>
                                         <div class="form-hidden-article">
-                                            {!! Form::open(['method'=>'PUT', 'action'=>["AdminArticleController@selectImage",$article->id] ,'files'=>true]) !!}
+                                            {!! Form::open(['method'=>'PUT', 'action'=>["AdminArticleController@selectImage",$article->id]]) !!}
                                             {!! Form::text('media_id', $media->id ,['id'=>'form-file-hidden']) !!}
                                             <div class="form-group">
                                                 {!! Form::submit('Select', ['class'=>'btn btn-info','id'=>'selectImgbtn'.$media->id]) !!}

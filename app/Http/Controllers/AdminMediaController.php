@@ -33,7 +33,7 @@ class AdminMediaController extends Controller
     public function create(Request $request)
     {
         $files     = $request->file('medias');
-        $folder    = Folder::findOrFail($request->folder_id);
+        $folder    = Folder::find($request->folder_id);
         $folder_id = $folder->id;
 
     	if($files === null)
@@ -71,13 +71,6 @@ class AdminMediaController extends Controller
                     $url = $path . '/' . $name;
                     $path = public_path($url);
                 }
-                $test = [
-                    'file_name'  =>  $name,
-                    'url'        =>  $url,
-                    'type'       =>  $type,
-                    'folder_id'  =>  $folder_id,
-                    'path'       =>  $path
-                ];
                 Image::make($file)->resize(1000, null, function ($constraint) {
                     $constraint->aspectRatio();})->save($path);
 	            $admin_id = Auth::user()->id;
@@ -131,12 +124,19 @@ class AdminMediaController extends Controller
         return redirect()->route('admin.media.index')->with('status','Update successfully!');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        $media = Media::findOrFail($id);
-        unlink(public_path() . '/images/' . $media->file_name);
+        $media  = Media::findOrFail($id);
+        $folder = Folder::find($request->folder_id);
+        if($folder->id > 1) {
+            unlink(public_path() . '/images/' .$folder->slug . '/' . $media->file_name);
+        } else {
+            unlink(public_path() . '/images/' . $media->file_name);
+        }
         $media->delete();
+        if($folder->id > 1) {
+            return redirect()->route('admin.folder.show', $folder->slug)->with('delete', 'Delete successfully!');
+        }
         return redirect()->route('admin.media.index')->with('delete','Delete successfully!');
     }
-
 }
