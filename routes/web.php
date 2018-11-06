@@ -171,6 +171,7 @@ Route::delete('/admin/media/{id}/destroy', 'AdminMediaController@destroy')->name
 Route::post('/admin/folder/create','AdminFolderController@create')->name('admin.folder.create');
 Route::get('/admin/media/folder/{slug}','AdminFolderController@show')->name('admin.folder.show');
 Route::post('/admin/media/folder/ajax/','AdminFolderController@ajaxModalMedia')->name('admin.folder.ajax.show');
+Route::post('/admin/media/folder/ajax/juice','AdminFolderController@ajaxJuiceModalShow')->name('admin.folder.juice.ajax.show');
 /*
 |--------------------------------------------------------------------------
 | Admin orders
@@ -213,7 +214,9 @@ Route::prefix('/admin')->group(function() {
 |--------------------------------------------------------------------------
 */
 Route::post('/admin/article/ajaxUpload', 'AdminArticleController@ajaxUpload')->name('admin.article.ajaxUpload');
+Route::post('/admin/juice/ajaxUpload', 'AdminJuicesController@ajaxUpload')->name('admin.juice.ajaxUpload');
 
+Route::post('/admin/juice/remove_selected_img', 'AdminJuicesController@ajaxRemoveImg')->name('admin.juice.remove_selected_img');
 /*
 |--------------------------------------------------------------------------
 | Admin shipping fee

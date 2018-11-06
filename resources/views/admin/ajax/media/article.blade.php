@@ -82,35 +82,53 @@
                 <div id="folder-section"></div>
             @endif
         @else
-            <div id="folder-section"></div>
+            <div id="folder-section">
+                <h5><strong>Folders</strong></h5>
+                <div class="row">
+                    <div class="col-md-12">
+                        <p>No folder here!</p>
+                    </div>
+                </div>
+            </div>
         @endif
     </div>
     <div class="col-sm-10" >
         <h5><strong>Files</strong></h5>
         <div class="modalDisplayImages row">
-            @foreach($medias as $media)
-                <div class="col-sm-2">
-                    <div class="thumbnails_img" style="background-image:url('{{ asset($media->url) }}')">
-                        <div class="caption">
-                            <div class="caption-content">
-                                <a href="#" id="{{ $media->id }}" class="selectImgA">
-                                    <div class="btn btn-info">
-                                        <i class="fa fa-check"></i>
-                                    </div>
-                                </a>
+            @if($medias->isNotEmpty())
+                @foreach($medias as $media)
+                    <div class="col-sm-2">
+                        <div class="thumbnails_img" style="background-image:url('{{ asset($media->url) }}')">
+                            <div class="caption">
+                                <div class="caption-content">
+                                    <a href="#" id="{{ $media->id }}" class="selectImgA">
+                                        <div class="btn btn-info">
+                                            <i class="fa fa-check"></i>
+                                        </div>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-hidden-article">
-                    {!! Form::open(['method'=>'PUT', 'action'=>["AdminArticleController@selectImage",$article->id]]) !!}
-                    {!! Form::text('media_id', $media->id ,['id'=>'form-file-hidden']) !!}
-                    <div class="form-group">
-                        {!! Form::submit('Select', ['class'=>'btn btn-info','id'=>'selectImgbtn'.$media->id]) !!}
+                    <div class="form-hidden-article">
+                        {!! Form::open(['method'=>'PUT', 'action'=>["AdminArticleController@selectImage",$article->id]]) !!}
+                        {!! Form::text('media_id', $media->id ,['id'=>'form-file-hidden']) !!}
+                        <div class="form-group">
+                            {!! Form::submit('Select', ['class'=>'btn btn-info','id'=>'selectImgbtn'.$media->id]) !!}
+                        </div>
+                        {!! Form::close() !!}
                     </div>
-                    {!! Form::close() !!}
+                @endforeach
+                @else
+                <div id="nothing">
+                    <div class="row">
+                        <div class="col-md-8 col-md-offset-2">
+                            <span><i class="fa fa-file-code-o"></i></span>
+                            <h4>No file here</h4>
+                        </div>
+                    </div>
                 </div>
-            @endforeach
+            @endif
         </div>
     </div>
 </div>

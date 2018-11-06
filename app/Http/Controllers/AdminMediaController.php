@@ -126,10 +126,29 @@ class AdminMediaController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        $media  = Media::findOrFail($id);
-        $folder = Folder::find($request->folder_id);
+        $media     = Media::findOrFail($id);
+        $folder    = Folder::find($request->folder_id);
+        $folder_id = $folder->id;
         if($folder->id > 1) {
-            unlink(public_path() . '/images/' .$folder->slug . '/' . $media->file_name);
+            $folder_temp_id = $folder_id;
+            $path = '';
+            while($folder_temp_id != 1)
+            {
+                $folder_temp = Folder::findOrFail($folder_temp_id);
+                $folder_temp_id = $folder_temp->folder->id;
+                $path_arr[] = $folder_temp->slug;
+            }
+            $path .= 'images/';
+            for($i = count($path_arr)-1; $i >= 0; $i--)
+            {
+                if($i == 0){
+                    $path .= $path_arr[$i];
+                } else {
+                    $path .= $path_arr[$i] . '/';
+                }
+            }
+            $url = $path . '/' . $media->file_name;
+            unlink(public_path() . '/'. $url);
         } else {
             unlink(public_path() . '/images/' . $media->file_name);
         }
