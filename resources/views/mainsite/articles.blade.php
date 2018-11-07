@@ -2,7 +2,7 @@
 
 @section('meta')
     <title>EC Distribution</title>
-    
+
 
     <!-- seo thong thuong-->
     <title>{{ $page->name }} - EC Distribution</title>
@@ -45,8 +45,14 @@
 			</div>
 			<div class="row">
 				@foreach($articles as $article)
-				<div class="col-lg-4">
-					<a href="/review-blog/{{ $article->slug }}"><img class="img-responsive" src="{{ asset($article->media()->first()->url) }}" alt=""></a>
+				<div class="col-lg-4 col-article">
+					<a href="/review-blog/{{ $article->slug }}">
+                        @if(!empty($article->media->first()))
+                        <img class="img-responsive" src="{{ asset($article->media()->first()->url) }}" alt="">
+                            @else
+                            <img class="img-responsive" src="https://via.placeholder.com/360x163?text=No+image" alt="">
+                        @endif
+                    </a>
                     <h5 class="blog-title">{{ $article->title }}</h5>
                     <p>{{ str_limit($article->summary, 110) }}</p>
                     <a href="/review-blog/{{ $article->slug}}">Xem thêm >></a>

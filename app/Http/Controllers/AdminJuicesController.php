@@ -9,6 +9,7 @@ use App\Alpha;
 use App\Media;
 use App\Item;
 use App\Brand;
+use App\Folder;
 use App\Tag;
 use App\ItemCategory;
 use App\ItemStatus;
@@ -98,7 +99,7 @@ class AdminJuicesController extends Controller
         else{
             $juice->homepage_active = 0;
         }
-        
+
         $juice->brand_id = $request->brand_id;
         $juice->slug = Alpha::alpha_dash($item->name);
         $juice->size_id = $request->size_id;
@@ -127,8 +128,13 @@ class AdminJuicesController extends Controller
     public function edit($id)
     {
         //
-        $medias = Media::orderBy('id', 'desc')->get();
-        $juice = Juice::findOrFail($id);
+        $juice = Juice::find($id);
+        $medias = Media::where('folder_id','=','1');
+        $medias = $medias->orderBy('id', 'desc')->get();
+        $folder = Folder::findOrFail(1);
+        $folder_list = Folder::where('folder_id',$folder->id)->get();
+        $new = ['folder_id' => $folder->id,'folder_name' => $folder->name, 'folder_slug'=>$folder->slug];
+        $folder_string[] = $new;
         $brands = Brand::all()->pluck('name','id');
         //$tags = Tag::all()->pluck('name', 'id');
         $juice_cats = ItemCategory::where('item_category_id','4')->pluck('name','id');
@@ -142,7 +148,7 @@ class AdminJuicesController extends Controller
             }
         }
         $media_remain = $juice->medias()->where('media_id','!=',  $juice->item->index_img)->get();
-        return view('admin.items.juices.edit', compact('juice','brands','juice_cats','medias','juice_sizes','index_img','media_remain','statuses'));
+        return view('admin.items.juices.edit', compact('juice','brands','juice_cats','medias','juice_sizes','index_img','media_remain','statuses','folder_list','folder_string','folder'));
     }
 
     /**
@@ -191,13 +197,13 @@ class AdminJuicesController extends Controller
         else{
             $juice->homepage_active = 0;
         }
-        
+
         $juice->brand_id = $request->brand_id;
         $juice->slug = Alpha::alpha_dash($item->name);
         $juice->size_id = $request->size_id;
         $juice->item_category_id = $request->juice_category_id;
         $juice->save();
-        
+
         return redirect()->route('juices.edit', [$id])->with('status','Lưu chỉnh sửa thành công');
     }
 
@@ -308,5 +314,92 @@ class AdminJuicesController extends Controller
         unlink(public_path() . '/images/' . $media->file_name);
         $media->delete();
         return redirect()->route('juices.edit', [$id])->with('status','Xóa hình ảnh thành công');
+    }
+
+    public function ajaxUpload(Request $request)
+    {
+        if($request->ajax())
+        {
+            $files     = $request->file('medias');
+            $folder    = Folder::find($request->folder_id);
+            $juice     = Juice::find($request->juice_id);
+            $folder_id = $folder->id;
+
+            if($files === null)
+            {
+                return response()->json([
+                    'error'   => '1',
+                    'message' => 'File is empty',
+                ]);
+            }
+            foreach ($files as $file)
+            {
+                $file = Media::ajaxUploadImage($file, $folder_id);
+                if(empty($file))
+                {
+                    return response()->json([
+                        'error'   => '1',
+                        'message' => 'Upload failed!',
+                    ]);
+                }
+            }
+
+            if(!empty($files))
+            {
+                $medias = Media::where('folder_id', '=', $folder_id)->orderBy('id', 'desc')->get();
+                $data   = view('admin.ajax.media.items.juice.new_files', compact('medias', 'folder', 'juice'))->render();
+                return response()->json([
+                    'data'        => $data,
+                    'file'        => $files,
+                    'success'     => '1',
+                    'message'     => 'Success'
+                ]);
+            }
+            else
+            {
+                return response()->json([
+                    'error'   => '1',
+                    'message' => 'File must be a image type',
+                ]);
+            }
+        }
+    }
+
+    public function ajaxRemoveImg(Request $request)
+    {
+        if($request->ajax())
+        {
+            $juice     = Juice::find($request->juice_id);
+            $media = $juice->medias->where('id',$request->media_id)->first();
+
+            $juice->medias()->detach($request->media_id);
+            $index_img = '';
+            foreach ($juice->medias as $media) {
+                if($media->id == $juice->item->index_img)
+                {
+                    $index_img = $media;
+                }
+            }
+            $media_remain = $juice->medias()->where('media_id','!=',  $juice->item->index_img)->get();
+            $juice     = Juice::find($request->juice_id);
+            if($juice->medias->isNotEmpty())
+            {
+                $data = view('admin.ajax.media.items.juice.new_media_list', compact('juice','index_img', 'media_remain'))->render();
+                return response()->json([
+                    'data'      => $data,
+                    'juice'     => $juice->medias,
+                    'success'   => '1',
+                    'message'   => 'Sucess'
+                ]);
+            } else {
+                $data = view('admin.ajax.media.items.juice.new_media_list', compact('juice','index_img', 'media_remain'))->render();
+                return response()->json([
+                    'data'      => $data,
+                    'juice'     => $juice->medias,
+                    'error'     => '1',
+                    'message'   => 'Slider images for this item is empty'
+                ]);
+            }
+        }
     }
 }

@@ -41,7 +41,7 @@
 	          			<table class="table table-hover">
           					<tr>
 								<th>#Id</th>
-								<th>Tiêu đề</th>
+								<th style="width: 30%">Tiêu đề</th>
 								<th>Nội dung</th>
 								<th>Danh mục bài viết</th>
 								<th>Thẻ bài viết</th>
@@ -65,12 +65,10 @@
 											<td>{{ date("F jS, Y", strtotime($article->created_at)) }}</td>
 											<td>{{ $article->admin->name }}</th>
 											<td>
-												<a href="{{ route('articles.edit',[$article->id]) }}" class="btn btn-info btn-sm"><i class="fa fa-edit "></i> Sửa</a>
+												<a href="{{ route('articles.edit',[$article->id]) }}" class="btn btn-info btn-sm"><i class="fa fa-edit "></i></a>
 												<a href="#" data-toggle="modal" data-target="#delete" >
-						                            <div class="btn btn-danger btn-sm">
-						                              	<i class="fa fa-trash "></i> Xóa
-						                            </div>
-						                        </a>
+													<div class="btn btn-danger btn-sm"><i class="fa fa-trash "></i></div>
+												</a>
 											</td>
 										</tr>
 										@php

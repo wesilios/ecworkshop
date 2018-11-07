@@ -14,6 +14,7 @@ use App\Color;
 use App\ItemStatus;
 use Validator;
 use Auth;
+use App\Folder;
 
 class AdminFullKitsController extends Controller
 {
@@ -94,7 +95,7 @@ class AdminFullKitsController extends Controller
         else{
             $fullkit->homepage_active = 0;
         }
-        
+
         $fullkit->brand_id = $request->brand_id;
         $fullkit->slug = Alpha::alpha_dash($item->name);
         $fullkit->item_category_id = 2;
@@ -132,6 +133,12 @@ class AdminFullKitsController extends Controller
         //
         $medias = Media::orderBy('id', 'desc')->get();
         $fullkit = FullKit::findOrFail($id);
+        $medias = Media::where('folder_id','=','1');
+        $medias = $medias->orderBy('id', 'desc')->get();
+        $folder = Folder::findOrFail(1);
+        $folder_list = Folder::where('folder_id',$folder->id)->get();
+        $new = ['folder_id' => $folder->id,'folder_name' => $folder->name, 'folder_slug'=>$folder->slug];
+        $folder_string[] = $new;
         $brands = Brand::all()->pluck('name','id');
         //$tags = Tag::all()->pluck('name', 'id');
         $colors = Color::all()->pluck('name','id');
@@ -145,7 +152,7 @@ class AdminFullKitsController extends Controller
             }
         }
         $media_remain = $fullkit->medias()->where('media_id','!=',  $fullkit->item->index_img)->get();
-        return view('admin.items.fullkits.edit', compact('fullkit','brands','colors','color_value','medias','index_img','media_remain','statuses'));
+        return view('admin.items.fullkits.edit', compact('fullkit','brands','colors','color_value','medias','index_img','media_remain','statuses','folder_list','folder_string','folder'));
     }
 
     /**
@@ -191,7 +198,7 @@ class AdminFullKitsController extends Controller
         else{
             $fullkit->homepage_active = 0;
         }
-        
+
         $fullkit->brand_id = $request->brand_id;
         $fullkit->slug = Alpha::alpha_dash($item->name);
         $fullkit->save();
@@ -323,5 +330,92 @@ class AdminFullKitsController extends Controller
         unlink(public_path() . '/images/' . $media->file_name);
         $media->delete();
         return redirect()->route('fullkits.edit', [$id])->with('status','Xóa hình ảnh thành công');
+    }
+
+    public function ajaxUpload(Request $request)
+    {
+        if($request->ajax())
+        {
+            $files     = $request->file('medias');
+            $folder    = Folder::find($request->folder_id);
+            $fullkit     = FullKit::find($request->fullkit_id);
+            $folder_id = $folder->id;
+
+            if($files === null)
+            {
+                return response()->json([
+                    'error'   => '1',
+                    'message' => 'File is empty',
+                ]);
+            }
+            foreach ($files as $file)
+            {
+                $file = Media::ajaxUploadImage($file, $folder_id);
+                if(empty($file))
+                {
+                    return response()->json([
+                        'error'   => '1',
+                        'message' => 'Upload failed!',
+                    ]);
+                }
+            }
+
+            if(!empty($files))
+            {
+                $medias = Media::where('folder_id', '=', $folder_id)->orderBy('id', 'desc')->get();
+                $data   = view('admin.ajax.media.items.fullkit.new_files', compact('medias', 'folder', 'fullkit'))->render();
+                return response()->json([
+                    'data'        => $data,
+                    'file'        => $files,
+                    'success'     => '1',
+                    'message'     => 'Success'
+                ]);
+            }
+            else
+            {
+                return response()->json([
+                    'error'   => '1',
+                    'message' => 'File must be a image type',
+                ]);
+            }
+        }
+    }
+
+    public function ajaxRemoveImg(Request $request)
+    {
+        if($request->ajax())
+        {
+            $fullkit     = FullKit::find($request->fullkit_id);
+            $media = $fullkit->medias->where('id',$request->media_id)->first();
+
+            $fullkit->medias()->detach($request->media_id);
+            $index_img = '';
+            foreach ($fullkit->medias as $media) {
+                if($media->id == $fullkit->item->index_img)
+                {
+                    $index_img = $media;
+                }
+            }
+            $media_remain = $fullkit->medias()->where('media_id','!=',  $fullkit->item->index_img)->get();
+            $fullkit     = FullKit::find($request->fullkit_id);
+            if($fullkit->medias->isNotEmpty())
+            {
+                $data = view('admin.ajax.media.items.fullkit.new_media_list', compact('fullkit','index_img', 'media_remain'))->render();
+                return response()->json([
+                    'data'      => $data,
+                    'fullkit'     => $fullkit->medias,
+                    'success'   => '1',
+                    'message'   => 'Sucess'
+                ]);
+            } else {
+                $data = view('admin.ajax.media.items.fullkit.new_media_list', compact('fullkit','index_img', 'media_remain'))->render();
+                return response()->json([
+                    'data'      => $data,
+                    'fullkit'     => $fullkit->medias,
+                    'error'     => '1',
+                    'message'   => 'Slider images for this item is empty'
+                ]);
+            }
+        }
     }
 }

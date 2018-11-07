@@ -184,9 +184,16 @@
 							@endif
 						</div>
 						<div class="box-footer">
+							@if($juice->medias->isNotEmpty())
+							<a href="#" data-toggle="modal" data-target="#slide_modal" >
+								<div class="btn btn-default btn-block" style="margin-bottom: 5px">
+									Edit slides
+								</div>
+							</a>
+							@endif
 							<a href="#" data-toggle="modal" data-target="#gallery_modal" >
 	                            <div class="btn btn-primary btn-block">
-	                              	Set feature image
+	                              	Select from gallery
 	                            </div>
 	                        </a>
 						</div>
@@ -302,174 +309,321 @@
 	    	</div>
 	 	</div>
 	</div>
-	<div class="example-modal">
-	  	<div class="modal fade item_modal" id="gallery_modal" role="dialog">
-	    	<div class="modal-dialog modal-dialog-95" style="border-top:5px solid #0097bc; border-radius:4px">
-	      		<div class="modal-content">
-	          		<div class="modal-header">
-	            		<div>
-	            			<span>Media Gallery</span>
-	              			<div class="pull-right">
-	                			<button type="button" class="btn-custom btn-default" data-dismiss="modal">
-	                				<i class="fa fa-close"></i>
-	                			</button>
-	              			</div>
-	            		</div>
-	          		</div>
-	          		<div class="modal-body">
-	            		<div class="row">
-	            			<div style="min-height:600px; width:100%">
-	                			<div class="nav-tabs-custom" style="height:100%">
-					                <ul class="nav nav-tabs">
-					                  	<li><a href="#tab_1" data-toggle="tab">Upload</a></li>
-					                  	<li {{ $juice->medias->isNotEmpty() == 1 ? '' : 'class=active' }}><a href="#tab_2" data-toggle="tab">Media gallery</a></li>
-					                  	<li {{ $juice->medias->isNotEmpty() == 1 ? 'class=active' : '' }}><a href="#tab_3" data-toggle="tab">Ảnh sản phẩm</a></li>
-					                  	<li class="pull-right"></li>
-					                </ul>
-					                <div class="tab-content">
-					                  	<div class="tab-pane" id="tab_1">
-				                			<div class="uploadZone">
-							        			<div class="fileSelectZone">
-								        			<div class="upload-ui">
-								        				<h2>Drop files anywhere to upload</h2>
-														<p>or</p>
-														<button class="btn btn-default selectFile">Select Files</button>
-								        			</div>
-								        		</div>
-							        		</div>
-							        		<div class="box box-hidden">
-												<div class="box-body">
-													<div class="form-hidden">
-									    				{!! Form::open(['method'=>'PUT', 'action'=>["AdminJuicesController@uploadImage",$juice->id] ,'files'=>true]) !!}
-															{!! Form::file('medias[]', array('multiple'=>true,'id'=>'form-file-hidden')) !!}
-															<div class="form-group">
-																<button class="btn btn-default selectFile">Select files</button>
-																{!! Form::submit('Upload', ['class'=>'btn btn-info']) !!}
-															</div>
-										    			{!! Form::close() !!}
-									    			</div>
-									    			<div id="preview-image">
 
-									    			</div>
+	@if($juice->medias->isNotEmpty())
+		<div class="example-modal">
+			<div class="modal fade item_modal" id="slide_modal" role="dialog">
+				<div class="modal-dialog modal-dialog-95">
+					<div class="modal-content">
+						<div class="modal-header">
+							<div>
+								<span>Slides details</span>
+								<div class="pull-right">
+									<button type="button" class="btn-custom btn-default" data-dismiss="modal">
+										<i class="fa fa-close"></i>
+									</button>
+								</div>
+							</div>
+						</div>
+						<div class="modal-body" id="selected_img">
+							@if($juice->medias->isNotEmpty())
+								<div id="carousel-slide-details" class="carousel slide" data-ride="carousel">
+									<ol class="carousel-indicators">
+										@for($i = 0; $i<count($juice->medias);$i++)
+											<li data-target="#carousel-slide-details" data-slide-to="{{ $i }}" class="{{ $i == 0 ? 'active' : ''}}"></li>
+										@endfor
+									</ol>
+									<div class="carousel-inner">
+										@php
+											$i = 0
+										@endphp
+										@if($index_img != null)
+											<div class="item {{ $i == 0 ? 'active' : ''}}">
+												<img src="{{ asset($index_img->url) }}" alt="{{ asset($index_img->file_name) }}">
+											</div>
+											@foreach($media_remain as $media)
+												<div class="item">
+													<img src="{{ asset($media->url) }}" alt="{{ asset($media->file_name) }}">
+												</div>
+												@php
+													$i++
+												@endphp
+											@endforeach
+										@else
+											@foreach($juice->medias as $media)
+												<div class="item {{ $i == 0 ? 'active' : ''}}">
+													<img src="{{ asset($media->url) }}" alt="{{ asset($media->file_name) }}">
+												</div>
+												@php
+													$i++
+												@endphp
+											@endforeach
+										@endif
+									</div>
+									<a class="left carousel-control" href="#carousel-slide-details" data-slide="prev">
+										<span class="fa fa-angle-left"></span>
+									</a>
+									<a class="right carousel-control" href="#carousel-slide-details" data-slide="next">
+										<span class="fa fa-angle-right"></span>
+									</a>
+								</div>
+							@else
+								<div id="carousel-slide-details" class="carousel slide" data-ride="carousel">
+									<ol class="carousel-indicators">
+										<li data-target="#carousel-slide-details" data-slide-to="0" class="active"></li>
+										<li data-target="#carousel-slide-details" data-slide-to="1" class=""></li>
+										<li data-target="#carousel-slide-details" data-slide-to="2" class=""></li>
+									</ol>
+									<div class="carousel-inner">
+										<div class="item active">
+											<img src="http://placehold.it/900x500/39CCCC/ffffff&text=Item+image" alt="First slide">
+											<div class="carousel-caption">
+												First Slide
+											</div>
+										</div>
+										<div class="item">
+											<img src="http://placehold.it/900x500/3c8dbc/ffffff&text=Item+image" alt="Second slide">
+											<div class="carousel-caption">
+												Second Slide
+											</div>
+										</div>
+										<div class="item">
+											<img src="http://placehold.it/900x500/f39c12/ffffff&text=Item+image" alt="Third slide">
+											<div class="carousel-caption">
+												Third Slide
+											</div>
+										</div>
+									</div>
+									<a class="left carousel-control" href="#carousel-slide-details" data-slide="prev">
+										<span class="fa fa-angle-left"></span>
+									</a>
+									<a class="right carousel-control" href="#carousel-slide-details" data-slide="next">
+										<span class="fa fa-angle-right"></span>
+									</a>
+								</div>
+							@endif
+							<hr>
+							<div class="row">
+								@foreach($juice->medias as $media)
+									<div class="col-sm-2">
+										<div class="thumbnails_img active" style="background-image:url('{{ asset($media->url) }}')">
+											<div class="caption">
+												<div class="caption-content">
+													<a href="#" data-media-id="{{ $media->id }}" class='removeSelectedImg'>
+														<div class="btn btn-success">
+															<i class="fa fa-trash"></i>
+														</div>
+													</a>
 												</div>
 											</div>
-							        	</div>
-							        	<div class="tab-pane {{ $juice->medias->isNotEmpty() == 1 ? '' : 'active' }}" id="tab_2">
-							        		<div class="box">
-							        			<div class="box-body" >
-													{!! Form::open(['method'=>'PUT', 'action'=>["AdminJuicesController@selectImage",$juice->id] ,'files'=>true]) !!}
-														<div class="form-group">
-								                      		<select multiple class="form-control" name="media_id[]" id="selForm">
-																@foreach($medias as $media)
-									                        		<option value="{{ $media->id }}">{{ $media->file_name }}</option>
-									                        	@endforeach
-									                      	</select>
-									                    </div>
-														<div class="form-group">
-															{!! Form::submit('Lưu vào sản phẩm', ['class'=>'btn btn-info pull-right','id'=>'selectImgbtn'.$media->id]) !!}
-														</div>
-													{!! Form::close() !!}
-			            						</div>
-							        		</div>
-		            						<div>
-		            							<div class="modalDisplayImages">
-								        			@foreach($medias as $media)
-													<div class="col-sm-2">
-														<div class="thumbnails_img" style="background-image:url('{{ asset($media->url) }}')" id="thumbnails_img{{ $media->id }}">
-															<div class="caption">
-																<div class="caption-content">
-																	<a href="#" id="{{ $media->id }}" class="selectMultImgA">
-											                            <div class="btn btn-info">
-											                              	<i class="fa fa-check"></i>
-											                            </div>
-											                        </a>
-																</div>
-															</div>
-														</div>
-													</div>
-													@endforeach
-								        		</div>
-		            						</div>
-							        	</div>
-							        	<div class="tab-pane {{ $juice->medias->isNotEmpty() == 1 ? 'active' : '' }}" id="tab_3">
-							        		<div class="box">
-							        			<div class="box-body" >
-													{!! Form::open(['method'=>'PUT', 'action'=>["AdminJuicesController@set_image_index",$juice->id]]) !!}
-														<div class="form-group">
-								                      		<select class="form-control" name="media_id" id="selIndexImgForm" style="display:none">
-																@foreach($juice->medias as $media)
-									                        		<option value="{{ $media->id }}">{{ $media->file_name }}</option>
-									                        	@endforeach
-									                      	</select>
-									                    </div>
-														<div class="form-group">
-															{!! Form::submit('Chọn ảnh đầu tiên', ['class'=>'btn btn-info pull-right','id'=>'selectImgIndexbtn'.$media->id]) !!}
-														</div>
-													{!! Form::close() !!}
-			            						</div>
-							        		</div>
-											<div class="box box-solid">
-												<div class="box-body">
-													<div class="modalItemImages">
-														@foreach($juice->medias as $media)
-														<div class="col-sm-2">
-															<div class="thumbnails_img" style="background-image:url('{{ asset($media->url) }}')" id="thumbnails_index_img{{ $media->id }}">
-																<div class="caption">
-																	<div class="caption-content">
-																		<a href="#" id="{{ $media->id }}" class="selectImgIndex">
-												                            <div class="btn btn-info">
-												                              	<i class="fa fa-check-square"></i>
-												                            </div>
-												                        </a>
-												                        <a href="#" class="delete" data-toggle="modal" data-target="#delete{{ $media->id }}">
-												                            <div class="btn btn-danger">
-												                              	<i class="fa fa-trash"></i>
-												                            </div>
-												                        </a>
-																	</div>
-																</div>
-															</div>
-														</div>
-														@endforeach
-			            							</div>
-												</div>
-		            						</div>
-							        	</div>
-							        </div>
-							    </div>
-	              			</div>
-	        			</div>
-	        		</div>
-	      		</div><!-- /.modal-content -->
-	    	</div><!-- /.modal -->
-	  	</div>
-	</div><!-- /.example-modal -->
-	@foreach($juice->medias as $media)
-		<div class="example-modal">
-		  	<div class="modal fade item_modal" id="delete{{ $media->id }}" role="dialog">
-		    	<div class="modal-dialog delete-dialog" style="">
-		      		<div class="modal-content">
-		        		<div class="modal-body">
-		         			<h5>Xóa hình này?</h5>
-		        		</div>
-		        		<div class="modal-footer">
-		        			{!! Form::open(['method'=>'DELETE', 'action'=>['AdminJuicesController@delete_image', $juice->id], 'class'=>'form-horizontal']) !!}
-		        				<input type="hidden" name="media_id" value="{{ $media->id }}"/>
-		        				<button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-								{!! Form::submit('Xóa', ['class'=>'btn btn-primary']) !!}
-	            			{!! Form::close() !!}
-		        		</div>
-		      		</div>
-		    	</div>
-		 	</div>
+										</div>
+									</div>
+								@endforeach
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
-	@endforeach
+	@endif
+
+
+	@include('admin.items.juices.include.media')
+
 @endsection
 
 @section('extendscripts')
 	<script>
 		$('.select2-multi').select2();
 		$('.select2-single').select2();
+		$('.removeSelectedImg').click(function(e){
+			e.preventDefault();
+			var id = $(this).attr('data-media-id');
+            var juice_id = '{{ $juice->id }}';
+			var token = $("input[name='_token']").val();
+            if(confirm('Are you sure?'))
+			{
+                $.ajax({
+                    url: "{{ route('admin.juice.remove_selected_img') }}",
+                    method:'POST',
+                    dataType:'json',
+                    data: {media_id:id, _token:token, juice_id:juice_id},
+                    success: function(data) {
+                        if(data.error) {
+                            console.log(data.message);
+                            window.location.reload(true);
+                            console.log(data.juice);
+                            $('#selected_img').html('');
+                            $('#selected_img').html(data.data);
+                        } else {
+                            $('#selected_img').html('');
+                            console.log(data.data);
+                            $('#selected_img').html(data.data);
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        console.log(xhr.status);
+                        console.log(xhr.responseText);
+                        console.log(thrownError);
+                    }
+                });
+			}
+		});
+        $('.selectMultImgA').click(function(event){
+            event.preventDefault();
+            var id = $(this).attr('data-media-id');
+            var thumbnails_img = '#thumbnails_img_';
+            $(thumbnails_img.concat(id)).toggleClass('active');
+
+            if($('#selForm option[value="' + id + '"]').attr('selected'))
+            {
+                $('#selForm option[value="' + id + '"]').attr('selected', false);
+            }
+            else
+            {
+                $('#selForm option[value="' + id + '"]').attr('selected', true);
+            }
+
+        });
+        $('#new_folder').click(function(e) {
+            e.preventDefault();
+            var $this = $(this);
+            var token = $("input[name='_token']").val();
+            var juice_id = '{{ $juice->id }}';
+            var folder_name = $("input[name='folder_name']").val();
+            var folder_id = $("input[name='folder_id']").val();
+            if(folder_name == '') {
+                alert('Trống tên');
+            } else {
+                $.ajax({
+                    url: "{{ route('admin.folder.createJuiceAjax') }}",
+                    method:'POST',
+                    dataType:'json',
+                    data: {folder_name:folder_name, _token:token, folder_id:folder_id, juice_id:juice_id},
+                    success: function(data) {
+                        if(data.error) {
+                            $('#newFolder .error').html(data.mess);
+                        } else {
+                            $('.modal_folder').html('');
+                            $('.modal_folder').html(data.option);
+                            $('#newFolder').modal('hide');
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        console.log(xhr.status);
+                        console.log(xhr.responseText);
+                        console.log(thrownError);
+                    }
+                });
+            }
+        });
+
+        $('.folder-link').click(function(e) {
+            e.preventDefault();
+            $(this).toggleClass('active');
+            if($(this).attr('data-active') == 1) {
+                $(this).attr('data-active',0);
+            } else {
+                $(this).attr('data-active',1);
+            }
+        });
+
+        function getFolderByAjax(folder_slug, folder_id, token, juice_id) {
+            $.ajax({
+                url: "{{ route('admin.folder.juice.ajax.show') }}",
+                method: 'POST',
+                dataType: 'json',
+                data: {folder_slug:folder_slug, folder_id:folder_id, _token:token, juice_id:juice_id},
+                success: function (data) {
+                    if(data.error) {
+                        alert(data.mess);
+                    } else {
+                        console.log(data.folder_string);
+                        $('#modal-medias').html(data.option);
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    console.log(xhr.status);
+                    console.log(xhr.responseText);
+                    console.log(thrownError);
+                }
+            });
+        };
+
+        $('.folder-link').dblclick(function(e){
+            var href = $(this).attr('href');
+            var juice_id = '{{ $juice->id }}';
+            var item_category_id = '{{ $juice->item_category_id }}';
+            var token = $("input[name='_token']").val();
+            var folder_slug = $(this).attr('data-folder-slug');
+            var folder_id = $(this).attr('data-folder-id');
+            if(folder_id == null || folder_slug == null) {
+                alert('Cant get this folder');
+            } else {
+                getFolderByAjax(folder_slug, folder_id, token, juice_id, item_category_id);
+            }
+        });
+
+        $('.custom').click(function (e) {
+            e.preventDefault();
+            var juice_id = '{{ $juice->id }}';
+            var token = $("input[name='_token']").val();
+            var folder_slug = $(this).attr('data-folder-slug');
+            var folder_id = $(this).attr('data-folder-id');
+            if(folder_id == null || folder_slug == null) {
+                alert('Cant get this folder');
+            } else {
+                getFolderByAjax(folder_slug, folder_id, token, juice_id);
+            }
+        });
+
+        function uploadImage() {};
+        function uploadImages() {};
+
+        $('.selectFile_1').click(function(e){
+            e.preventDefault();
+            $("input[name='medias[]']").click();
+        });
+
+        $("input[name='medias[]']").change(function(e) {
+            var medias = e.target.files;
+            var folder_id = $(this).attr('data-folder-id');
+            var juice_id = '{{ $juice->id }}';
+            var token = $("input[name='_token']").val();
+            $("#formUploadImage").trigger('submit');
+        });
+
+        $('#formUploadImage').on('submit', function (e) {
+            e.preventDefault();
+            var data = new FormData(this);
+            $.ajax({
+                url: "{{ route('admin.juice.ajaxUpload') }}",
+                method: 'POST',
+                dataType: 'json',
+                contentType: false,
+                cache: false,
+                processData: false,
+                data: data,
+                success: function (data){
+                    if(data.success == '1')
+                    {
+                        $('.modalDisplayImages').html();
+                        $('.modalDisplayImages').html(data.data);
+                    } else {
+                        if(data.error == '1')
+                        {
+                            console.log(data.message);
+                        }
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    console.log(xhr.status);
+                    console.log(xhr.responseText);
+                    console.log(thrownError);
+                }
+            });
+        });
+
 	</script>
 	@component('components.ajax_post')
 

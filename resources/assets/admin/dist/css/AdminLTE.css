@@ -1560,7 +1560,7 @@ a:focus {
 }
 .box.box-solid > .box-header .btn:hover,
 .box.box-solid > .box-header a:hover {
-  background: rgba(0, 0, 0, 0.1);
+  /*background: rgba(0, 0, 0, 0.1);*/
 }
 .box.box-solid.box-default {
   border: 1px solid #d2d6de;
@@ -4762,12 +4762,6 @@ a.closeZone:hover {
   width: 95%;
 }
 
-.btn-custom
-{
-  background-color: transparent;
-  border:none;
-}
-
 .modal-dialog-95 .modal-header span {
   font-size:20px;
 }
@@ -4784,6 +4778,18 @@ a.closeZone:hover {
   height:100%;
   border-left: 1px solid #ddd;
   padding: 12px 16px 0;
+}
+
+.btn-custom
+{
+  background-color: transparent;
+  border:none;
+}
+
+.modal-dialog-fullscreen
+{
+  width: 100%;
+  margin: 0;
 }
 
 #nothing {
@@ -4869,19 +4875,11 @@ a.closeZone:hover {
   font-size: 13px;
 }
 
-.folder-link-tree a {
-  color: #444;
-  padding: 5px 15px;
+.folder-link-tree .custom {
+  text-transform: capitalize;
 }
 
-.folder-link-tree a:hover {
-  color: #444;
-  padding: 5px 15px;
-  background-color: #eee;
-  border-radius: 5px;
-}
-
-.folder-link-tree span {
+.folder-link-tree span.custom {
   color: #444;
   margin:0px 10px;
 }

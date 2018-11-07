@@ -61,7 +61,7 @@ class PagesController extends Controller
                           ->where('order_id', '=', '0');
                     })->orderBy('order')->get();*/
         //
-        
+
         //dd($sub_nav);
     	return view('mainsite.home', compact(
 
@@ -88,7 +88,6 @@ class PagesController extends Controller
     {
         $pages = Page::all()->pluck('slug')->toArray();
         $itemCategory = ItemCategory::all()->pluck('slug')->toArray();
-        //dd($itemCategory);
         if(in_array($slug, $pages))
         {
             if(in_array($slug, $itemCategory))
@@ -96,7 +95,7 @@ class PagesController extends Controller
                 return $this->itemsController->getItemCat($slug);
             }
             else
-            {   
+            {
                 $settings = Setting::findOrFail(1);
                 $top_nav = Menu::where('id',1)->first();
                 $footer_1st_menu = Menu::where('id',2)->first();
@@ -104,6 +103,8 @@ class PagesController extends Controller
                 $page = Page::where('slug', $slug)->first();
                 return view('mainsite.page', compact('page','settings','top_nav','footer_1st_menu','footer_2nd_menu'));
             }
+        } else {
+            return redirect()->route('404.not.found');
         }
     }
 
@@ -115,12 +116,14 @@ class PagesController extends Controller
         {
             if($slug == 'review-blog')
             {
-                
+
             }
             else
             {
                 return $this->itemsController->getItemSubCat($slug, $slug_child);
             }
+        } else {
+            return redirect()->route('404.not.found');
         }
     }
 
@@ -136,8 +139,6 @@ class PagesController extends Controller
 
     public function getCart(Request $request)
     {
-        //dd($request->session()->get('cart'));
-        //$request->session()->flush('cart');
         $settings = Setting::findOrFail(1);
         $top_nav = Menu::where('id',1)->first();
         $footer_1st_menu = Menu::where('id',2)->first();
@@ -214,7 +215,7 @@ class PagesController extends Controller
         $footer_1st_menu = Menu::where('id',2)->first();
         $footer_2nd_menu = Menu::where('id',3)->first();
         $order = Order::where('orderCode',$orderCode)->first();
-        
+
         return view('mainsite.extracustomer.index', compact('settings','top_nav','footer_1st_menu','footer_2nd_menu','order','orderCode'));
     }
 
@@ -226,108 +227,113 @@ class PagesController extends Controller
         $footer_2nd_menu = Menu::where('id',3)->first();
 
         $itemSearch = new ItemSearch(null);
-        
-        switch ($request->item_category_id) {
-            case '1':
-                $items = Item::where('name','LIKE','%'.$request->search_query.'%')
-                                ->where('item_category_id',$request->item_category_id)->get();
-                foreach($items as $item)
-                {
-                    $box = Box::where('item_id',$item->id)->first();
-                    $itemSearch->add($item, $item->id, $box, $box->item_category_id); 
-                }
-                //dd($itemSearch);
-                break;
 
-            case '2':
-                $items = Item::where('name','LIKE','%'.$request->search_query.'%')
-                                ->where('item_category_id',$request->item_category_id)->get();
-                foreach($items as $item)
-                {
-                    $fullkit = FullKit::where('item_id',$item->id)->first();
-                    $itemSearch->add($item, $item->id, $fullkit, $fullkit->item_category_id); 
-                }
-                //dd($itemSearch);
-                break;
-
-            case '3':
-                $items = Item::where('name','LIKE','%'.$request->search_query.'%')
-                                ->where('item_category_id',$request->item_category_id)->get();
-                foreach($items as $item)
-                {
-                    $tank = Tank::where('item_id',$item->id)->first();
-                    $itemSearch->add($item, $item->id, $tank, $tank->item_category_id);
-                }
-                break;
-
-            case '4':
-                $items = Item::where('name','LIKE','%'.$request->search_query.'%')
-                                ->where('item_category_id',$request->item_category_id)->get();
-                foreach($items as $item)
-                {
-                    $juice = Juice::where('item_id',$item->id)->first();
-                    $itemSearch->add($item, $item->id, $juice, $juice->item_category_id);
-                }
-                break;
-
-            case '5':
-                $items = Item::where('name','LIKE','%'.$request->search_query.'%')
-                                ->where('item_category_id',$request->item_category_id)->get();
-                foreach($items as $item)
-                {
-                    $accessory = Accessory::where('item_id',$item->id)->first();
-                    $itemSearch->add($item, $item->id, $accessory, $accessory->item_category_id); 
-                }
-                break;
-            
-            default:
-                # code...
-                break;
-        }
-
-        $items = Item::where('name','LIKE','%'.$request->search_query.'%')->get();
-        foreach($items as $item)
+        if(!empty($request->search_query))
         {
-            if($item->item_category_id > 5)
-            {
-                $item_category_id = $item->itemCategory->itemCategory->id;
-            }
-            else
-            {
-                $item_category_id = $item->item_category_id;
-            }
-            switch ($item_category_id) {
+            switch ($request->item_category_id) {
                 case '1':
-                    $box = Box::where('item_id',$item->id)->first();
-                    $itemSearch->add($item, $item->id, $box, $box->item_category_id); 
+                    $items = Item::where('name','LIKE','%'.$request->search_query.'%')
+                        ->where('item_category_id',$request->item_category_id)->get();
+                    foreach($items as $item)
+                    {
+                        $box = Box::where('item_id',$item->id)->first();
+                        $itemSearch->add($item, $item->id, $box, $box->item_category_id);
+                    }
                     break;
 
                 case '2':
-                    $fullkit = FullKit::where('item_id',$item->id)->first();
-                    $itemSearch->add($item, $item->id, $fullkit, $fullkit->item_category_id); 
+                    $items = Item::where('name','LIKE','%'.$request->search_query.'%')
+                        ->where('item_category_id',$request->item_category_id)->get();
+                    foreach($items as $item)
+                    {
+                        $fullkit = FullKit::where('item_id',$item->id)->first();
+                        $itemSearch->add($item, $item->id, $fullkit, $fullkit->item_category_id);
+                    }
                     break;
 
                 case '3':
-                    $tank = Tank::where('item_id',$item->id)->first();
-                    $itemSearch->add($item, $item->id, $tank, $tank->item_category_id);
+                    $items = Item::where('name','LIKE','%'.$request->search_query.'%')
+                        ->where('item_category_id',$request->item_category_id)->get();
+                    foreach($items as $item)
+                    {
+                        $tank = Tank::where('item_id',$item->id)->first();
+                        $itemSearch->add($item, $item->id, $tank, $tank->item_category_id);
+                    }
                     break;
 
                 case '4':
-                    $juice = Juice::where('item_id',$item->id)->first();
-                    $itemSearch->add($item, $item->id, $juice, $juice->item_category_id);
+                    $items = Item::where('name','LIKE','%'.$request->search_query.'%')
+                        ->where('item_category_id',$request->item_category_id)->get();
+                    foreach($items as $item)
+                    {
+                        $juice = Juice::where('item_id',$item->id)->first();
+                        $itemSearch->add($item, $item->id, $juice, $juice->item_category_id);
+                    }
                     break;
 
                 case '5':
-                    $accessory = Accessory::where('item_id',$item->id)->first();
-                    $itemSearch->add($item, $item->id, $accessory, $accessory->item_category_id);
+                    $items = Item::where('name','LIKE','%'.$request->search_query.'%')
+                        ->where('item_category_id',$request->item_category_id)->get();
+                    foreach($items as $item)
+                    {
+                        $accessory = Accessory::where('item_id',$item->id)->first();
+                        $itemSearch->add($item, $item->id, $accessory, $accessory->item_category_id);
+                    }
                     break;
-                 
+
                 default:
                     # code...
                     break;
-             } 
+            }
+
+            $items = Item::where('name','LIKE','%'.$request->search_query.'%')->get();
+            foreach($items as $item)
+            {
+                if($item->item_category_id > 5)
+                {
+                    $item_category_id = $item->itemCategory->itemCategory->id;
+                }
+                else
+                {
+                    $item_category_id = $item->item_category_id;
+                }
+                switch ($item_category_id) {
+                    case '1':
+                        $box = Box::where('item_id',$item->id)->first();
+                        $itemSearch->add($item, $item->id, $box, $box->item_category_id);
+                        break;
+
+                    case '2':
+                        $fullkit = FullKit::where('item_id',$item->id)->first();
+                        $itemSearch->add($item, $item->id, $fullkit, $fullkit->item_category_id);
+                        break;
+
+                    case '3':
+                        $tank = Tank::where('item_id',$item->id)->first();
+                        $itemSearch->add($item, $item->id, $tank, $tank->item_category_id);
+                        break;
+
+                    case '4':
+                        $juice = Juice::where('item_id',$item->id)->first();
+                        $itemSearch->add($item, $item->id, $juice, $juice->item_category_id);
+                        break;
+
+                    case '5':
+                        $accessory = Accessory::where('item_id',$item->id)->first();
+                        $itemSearch->add($item, $item->id, $accessory, $accessory->item_category_id);
+                        break;
+
+                    default:
+                        # code...
+                        break;
+                }
+            }
+        } else {
+            $items = [];
         }
-        //dd($itemSearch);
+
+
+
         return view('mainsite.search', compact(
             'item_cat',
             'settings',
@@ -337,5 +343,14 @@ class PagesController extends Controller
             'page',
             'itemSearch'
         ));
+    }
+
+    public function get404()
+    {
+        $settings = Setting::findOrFail(1);
+        $top_nav = Menu::where('id',1)->first();
+        $footer_1st_menu = Menu::where('id',2)->first();
+        $footer_2nd_menu = Menu::where('id',3)->first();
+        return view('mainsite.404', compact('settings','top_nav','footer_1st_menu','footer_2nd_menu'));
     }
 }

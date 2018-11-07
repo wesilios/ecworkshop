@@ -25,7 +25,7 @@ class AdminMediaController extends Controller
         $folder_list = Folder::where('folder_id',$folder->id)->get();
         $media = Media::findOrFail(22);
         $width = Image::make($media->url)->width();
-        $new = ['folder_name' => $folder->name, 'folder_slug'=>$folder->slug];
+        $new = ['folder_id' => $folder->id,'folder_name' => $folder->name, 'folder_slug'=>$folder->slug];
         $folder_string[] = $new;
     	return view('admin.media.index', compact('medias','folder','folder_list','folder_string'));
     }
@@ -33,7 +33,7 @@ class AdminMediaController extends Controller
     public function create(Request $request)
     {
         $files     = $request->file('medias');
-        $folder    = Folder::findOrFail($request->folder_id);
+        $folder    = Folder::find($request->folder_id);
         $folder_id = $folder->id;
 
     	if($files === null)
@@ -71,13 +71,6 @@ class AdminMediaController extends Controller
                     $url = $path . '/' . $name;
                     $path = public_path($url);
                 }
-                $test = [
-                    'file_name'  =>  $name,
-                    'url'        =>  $url,
-                    'type'       =>  $type,
-                    'folder_id'  =>  $folder_id,
-                    'path'       =>  $path
-                ];
                 Image::make($file)->resize(1000, null, function ($constraint) {
                     $constraint->aspectRatio();})->save($path);
 	            $admin_id = Auth::user()->id;
@@ -131,11 +124,38 @@ class AdminMediaController extends Controller
         return redirect()->route('admin.media.index')->with('status','Update successfully!');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        $media = Media::findOrFail($id);
-        unlink(public_path() . '/images/' . $media->file_name);
+        $media     = Media::findOrFail($id);
+        $folder    = Folder::find($request->folder_id);
+        $folder_id = $folder->id;
+        if($folder->id > 1) {
+            $folder_temp_id = $folder_id;
+            $path = '';
+            while($folder_temp_id != 1)
+            {
+                $folder_temp = Folder::findOrFail($folder_temp_id);
+                $folder_temp_id = $folder_temp->folder->id;
+                $path_arr[] = $folder_temp->slug;
+            }
+            $path .= 'images/';
+            for($i = count($path_arr)-1; $i >= 0; $i--)
+            {
+                if($i == 0){
+                    $path .= $path_arr[$i];
+                } else {
+                    $path .= $path_arr[$i] . '/';
+                }
+            }
+            $url = $path . '/' . $media->file_name;
+            unlink(public_path() . '/'. $url);
+        } else {
+            unlink(public_path() . '/images/' . $media->file_name);
+        }
         $media->delete();
+        if($folder->id > 1) {
+            return redirect()->route('admin.folder.show', $folder->slug)->with('delete', 'Delete successfully!');
+        }
         return redirect()->route('admin.media.index')->with('delete','Delete successfully!');
     }
 }
