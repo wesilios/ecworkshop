@@ -489,22 +489,23 @@
             e.preventDefault();
             var $this = $(this);
             var token = $("input[name='_token']").val();
+            var juice_id = '{{ $juice->id }}';
             var folder_name = $("input[name='folder_name']").val();
             var folder_id = $("input[name='folder_id']").val();
             if(folder_name == '') {
                 alert('Trống tên');
             } else {
                 $.ajax({
-                    url: "{{ route('admin.folder.create') }}",
+                    url: "{{ route('admin.folder.createJuiceAjax') }}",
                     method:'POST',
                     dataType:'json',
-                    data: {folder_name:folder_name, _token:token, folder_id:folder_id},
+                    data: {folder_name:folder_name, _token:token, folder_id:folder_id, juice_id:juice_id},
                     success: function(data) {
                         if(data.error) {
                             $('#newFolder .error').html(data.mess);
                         } else {
-                            $('#folder-section').html('');
-                            $('#folder-section').html(data.option);
+                            $('.modal_folder').html('');
+                            $('.modal_folder').html(data.option);
                             $('#newFolder').modal('hide');
                         }
                     },
@@ -572,7 +573,7 @@
             if(folder_id == null || folder_slug == null) {
                 alert('Cant get this folder');
             } else {
-                getFolderByAjax(folder_slug, folder_id, token, juice_id, item_category_id);
+                getFolderByAjax(folder_slug, folder_id, token, juice_id);
             }
         });
 

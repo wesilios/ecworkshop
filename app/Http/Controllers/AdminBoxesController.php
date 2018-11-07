@@ -15,6 +15,7 @@ use App\ItemCategory;
 use App\ItemStatus;
 use Validator;
 use Auth;
+use App\Folder;
 
 class AdminBoxesController extends Controller
 {
@@ -97,7 +98,7 @@ class AdminBoxesController extends Controller
         else{
         	$box->homepage_active = 0;
         }
-        
+
         $box->brand_id = $request->brand_id;
         $box->slug = Alpha::alpha_dash($item->name);
         $box->item_category_id = 1;
@@ -134,7 +135,13 @@ class AdminBoxesController extends Controller
     {
         //
         $medias = Media::orderBy('id', 'desc')->get();
-        $box = Box::findOrFail($id);
+        $box = Box::find($id);
+        $medias = Media::where('folder_id','=','1');
+        $medias = $medias->orderBy('id', 'desc')->get();
+        $folder = Folder::findOrFail(1);
+        $folder_list = Folder::where('folder_id',$folder->id)->get();
+        $new = ['folder_id' => $folder->id,'folder_name' => $folder->name, 'folder_slug'=>$folder->slug];
+        $folder_string[] = $new;
         $brands = Brand::all()->pluck('name','id');
         //$tags = Tag::all()->pluck('name', 'id');
         $colors = Color::all()->pluck('name','id');
@@ -149,7 +156,7 @@ class AdminBoxesController extends Controller
         }
         $media_remain = $box->medias()->where('media_id','!=',  $box->item->index_img)->get();
         //dd($index_img);
-        return view('admin.items.boxes.edit', compact('box','brands','colors','color_value','medias','index_img','media_remain','statuses'));
+        return view('admin.items.boxes.edit', compact('box','brands','colors','color_value','medias','index_img','media_remain','statuses','folder_list','folder_string','folder'));
     }
 
     /**
@@ -195,7 +202,7 @@ class AdminBoxesController extends Controller
         else{
             $box->homepage_active = 0;
         }
-        
+
         $box->brand_id = $request->brand_id;
         $box->slug = Alpha::alpha_dash($item->name);
         $box->save();
@@ -321,5 +328,92 @@ class AdminBoxesController extends Controller
         unlink(public_path() . '/images/' . $media->file_name);
         $media->delete();
         return redirect()->route('boxes.edit', [$id])->with('status','Xóa hình ảnh thành công');
+    }
+
+    public function ajaxUpload(Request $request)
+    {
+        if($request->ajax())
+        {
+            $files     = $request->file('medias');
+            $folder    = Folder::find($request->folder_id);
+            $box     = Box::find($request->box_id);
+            $folder_id = $folder->id;
+
+            if($files === null)
+            {
+                return response()->json([
+                    'error'   => '1',
+                    'message' => 'File is empty',
+                ]);
+            }
+            foreach ($files as $file)
+            {
+                $file = Media::ajaxUploadImage($file, $folder_id);
+                if(empty($file))
+                {
+                    return response()->json([
+                        'error'   => '1',
+                        'message' => 'Upload failed!',
+                    ]);
+                }
+            }
+
+            if(!empty($files))
+            {
+                $medias = Media::where('folder_id', '=', $folder_id)->orderBy('id', 'desc')->get();
+                $data   = view('admin.ajax.media.items.box.new_files', compact('medias', 'folder', 'box'))->render();
+                return response()->json([
+                    'data'        => $data,
+                    'file'        => $files,
+                    'success'     => '1',
+                    'message'     => 'Success'
+                ]);
+            }
+            else
+            {
+                return response()->json([
+                    'error'   => '1',
+                    'message' => 'File must be a image type',
+                ]);
+            }
+        }
+    }
+
+    public function ajaxRemoveImg(Request $request)
+    {
+        if($request->ajax())
+        {
+            $box     = Box::find($request->box_id);
+            $media = $box->medias->where('id',$request->media_id)->first();
+
+            $box->medias()->detach($request->media_id);
+            $index_img = '';
+            foreach ($box->medias as $media) {
+                if($media->id == $box->item->index_img)
+                {
+                    $index_img = $media;
+                }
+            }
+            $media_remain = $box->medias()->where('media_id','!=',  $box->item->index_img)->get();
+            $box     = Box::find($request->box_id);
+            if($box->medias->isNotEmpty())
+            {
+                $data = view('admin.ajax.media.items.box.new_media_list', compact('box','index_img', 'media_remain'))->render();
+                return response()->json([
+                    'data'      => $data,
+                    'box'     => $box->medias,
+                    'success'   => '1',
+                    'message'   => 'Sucess'
+                ]);
+            } else {
+                $data = view('admin.ajax.media.items.box.new_media_list', compact('box','index_img', 'media_remain'))->render();
+                return response()->json([
+                    'data'      => $data,
+                    'box'     => $box->medias,
+                    'error'     => '1',
+                    'message'   => 'Slider images for this item is empty'
+                ]);
+            }
+        }
     }
 }

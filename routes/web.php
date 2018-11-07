@@ -163,15 +163,7 @@ Route::get('/admin/media', 'AdminMediaController@index')->name('admin.media.inde
 Route::post('/admin/media/create', 'AdminMediaController@create')->name('admin.media.create');
 Route::put('/admin/media/{id}/update', 'AdminMediaController@update')->name('admin.media.update');
 Route::delete('/admin/media/{id}/destroy', 'AdminMediaController@destroy')->name('admin.media.destroy');
-/*
-|--------------------------------------------------------------------------
-| Admin folders
-|--------------------------------------------------------------------------
-*/
-Route::post('/admin/folder/create','AdminFolderController@create')->name('admin.folder.create');
-Route::get('/admin/media/folder/{slug}','AdminFolderController@show')->name('admin.folder.show');
-Route::post('/admin/media/folder/ajax/','AdminFolderController@ajaxModalMedia')->name('admin.folder.ajax.show');
-Route::post('/admin/media/folder/ajax/juice','AdminFolderController@ajaxJuiceModalShow')->name('admin.folder.juice.ajax.show');
+
 /*
 |--------------------------------------------------------------------------
 | Admin orders
@@ -208,6 +200,26 @@ Route::prefix('/admin')->group(function() {
 
 	Route::get('/settings/{id}/edit', 'AdminSettingsController@edit')->name('admin.settings.edit');
 	Route::put('/settings/{id}', 'AdminSettingsController@update')->name('admin.settings.update');
+
+    /*
+|--------------------------------------------------------------------------
+| Admin folders
+|--------------------------------------------------------------------------
+*/
+    Route::post('/admin/folder/create','AdminFolderController@create')->name('admin.folder.create');
+    Route::get('/admin/media/folder/{slug}','AdminFolderController@show')->name('admin.folder.show');
+    Route::post('/admin/media/folder/ajax/','AdminFolderController@ajaxModalMedia')->name('admin.folder.ajax.show');
+    Route::post('/admin/media/folder/ajax/juice','AdminFolderController@ajaxJuiceModalShow')->name('admin.folder.juice.ajax.show');
+    Route::post('/admin/media/folder/ajax/accessory','AdminFolderController@ajaxAccessoryModalShow')->name('admin.folder.accessory.ajax.show');
+    Route::post('/admin/media/folder/ajax/box','AdminFolderController@ajaxBoxModalShow')->name('admin.folder.box.ajax.show');
+    Route::post('/admin/media/folder/ajax/tank','AdminFolderController@ajaxTankModalShow')->name('admin.folder.tank.ajax.show');
+    Route::post('/admin/media/folder/ajax/fullkit','AdminFolderController@ajaxFullKitModalShow')->name('admin.folder.fullkit.ajax.show');
+
+    Route::post('/admin/folder/juice/create_ajax','AdminFolderController@createJuiceAjax')->name('admin.folder.createJuiceAjax');
+    Route::post('/admin/folder/accessory/create_ajax','AdminFolderController@createAccessoryAjax')->name('admin.folder.createAccessoryAjax');
+    Route::post('/admin/folder/box/create_ajax','AdminFolderController@createBoxAjax')->name('admin.folder.createBoxAjax');
+    Route::post('/admin/folder/tank/create_ajax','AdminFolderController@createTankBoxAjax')->name('admin.folder.createTankAjax');
+    Route::post('/admin/folder/fullkit/create_ajax','AdminFolderController@createFullKitAjax')->name('admin.folder.createFullKitAjax');
 /*
 |--------------------------------------------------------------------------
 | Admin ajax
@@ -215,8 +227,16 @@ Route::prefix('/admin')->group(function() {
 */
 Route::post('/admin/article/ajaxUpload', 'AdminArticleController@ajaxUpload')->name('admin.article.ajaxUpload');
 Route::post('/admin/juice/ajaxUpload', 'AdminJuicesController@ajaxUpload')->name('admin.juice.ajaxUpload');
+Route::post('/admin/accessory/ajaxUpload', 'AdminAccessoriesController@ajaxUpload')->name('admin.accessory.ajaxUpload');
+Route::post('/admin/box/ajaxUpload', 'AdminBoxesController@ajaxUpload')->name('admin.box.ajaxUpload');
+Route::post('/admin/tank/ajaxUpload', 'AdminTanksController@ajaxUpload')->name('admin.tank.ajaxUpload');
+Route::post('/admin/fullkit/ajaxUpload', 'AdminFullKitsController@ajaxUpload')->name('admin.fullkit.ajaxUpload');
 
 Route::post('/admin/juice/remove_selected_img', 'AdminJuicesController@ajaxRemoveImg')->name('admin.juice.remove_selected_img');
+Route::post('/admin/accessory/remove_selected_img', 'AdminAccessoriesController@ajaxRemoveImg')->name('admin.accessory.remove_selected_img');
+Route::post('/admin/box/remove_selected_img', 'AdminBoxesController@ajaxRemoveImg')->name('admin.box.remove_selected_img');
+Route::post('/admin/tank/remove_selected_img', 'AdminTanksController@ajaxRemoveImg')->name('admin.tank.remove_selected_img');
+Route::post('/admin/fullkit/remove_selected_img', 'AdminFullKitsController@ajaxRemoveImg')->name('admin.fullkit.remove_selected_img');
 /*
 |--------------------------------------------------------------------------
 | Admin shipping fee

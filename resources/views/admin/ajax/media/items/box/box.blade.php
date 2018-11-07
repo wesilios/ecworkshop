@@ -59,10 +59,10 @@
         </div>
         <div class="col-md-12">
             <div class="form-hidden">
-                <form method="POST" action="{{ route('admin.articles.upload', $juice->id) }}" accept-charset="UTF-8" enctype="multipart/form-data" id="formUploadImage">
+                <form method="POST" action="{{ route('admin.articles.upload', $box->id) }}" accept-charset="UTF-8" enctype="multipart/form-data" id="formUploadImage">
                     <input type="file" name="medias[]" id="form-file-hidden1" value="" style="display: none" multiple>
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="juice_id" value="{{ $juice->id }}">
+                    <input type="hidden" name="box_id" value="{{ $box->id }}">
                     <input type="hidden" name="folder_id" value="{{ $folder->id }}"/>
                 </form>
             </div>
@@ -127,7 +127,7 @@
 
                         </div>
                     @endforeach
-                    @else
+                @else
                     <div id="nothing">
                         <div class="row">
                             <div class="col-md-8 col-md-offset-2">
@@ -144,7 +144,7 @@
 <div class="modal-footer">
     <div class="row">
         <div class="col-md-12">
-            {!! Form::open(['method'=>'PUT', 'action'=>["AdminJuicesController@selectImage",$juice->id] ,'files'=>true]) !!}
+            {!! Form::open(['method'=>'PUT', 'action'=>["AdminJuicesController@selectImage",$box->id] ,'files'=>true]) !!}
             <div class="form-group">
                 <select multiple class="form-control" name="media_id[]" id="selForm">
                     @foreach($medias as $media)
@@ -165,20 +165,20 @@
     $('.removeSelectedImg').click(function(e){
         e.preventDefault();
         var id = $(this).attr('data-media-id');
-        var juice_id = '{{ $juice->id }}';
+        var box_id = '{{ $box->id }}';
         var token = $("input[name='_token']").val();
         if(confirm('Are you sure?'))
         {
             $.ajax({
-                url: "{{ route('admin.juice.remove_selected_img') }}",
+                url: "{{ route('admin.box.remove_selected_img') }}",
                 method:'POST',
                 dataType:'json',
-                data: {media_id:id, _token:token, juice_id:juice_id},
+                data: {media_id:id, _token:token, box_id:box_id},
                 success: function(data) {
                     if(data.error) {
                         console.log(data.message);
                         window.location.reload(true);
-                        console.log(data.juice);
+                        console.log(data.box);
                         $('#selected_img').html('');
                         $('#selected_img').html(data.data);
                     } else {
@@ -222,12 +222,12 @@
         }
     });
 
-    function getFolderByAjax(folder_slug, folder_id, token, juice_id) {
+    function getFolderByAjax(folder_slug, folder_id, token, box_id) {
         $.ajax({
-            url: "{{ route('admin.folder.juice.ajax.show') }}",
+            url: "{{ route('admin.folder.box.ajax.show') }}",
             method: 'POST',
             dataType: 'json',
-            data: {folder_slug:folder_slug, folder_id:folder_id, _token:token, juice_id:juice_id},
+            data: {folder_slug:folder_slug, folder_id:folder_id, _token:token, box_id:box_id},
             success: function (data) {
                 if(data.error) {
                     alert(data.mess);
@@ -246,28 +246,28 @@
 
     $('.folder-link').dblclick(function(e){
         var href = $(this).attr('href');
-        var juice_id = '{{ $juice->id }}';
-        var item_category_id = '{{ $juice->item_category_id }}';
+        var box_id = '{{ $box->id }}';
+        var item_category_id = '{{ $box->item_category_id }}';
         var token = $("input[name='_token']").val();
         var folder_slug = $(this).attr('data-folder-slug');
         var folder_id = $(this).attr('data-folder-id');
         if(folder_id == null || folder_slug == null) {
             alert('Cant get this folder');
         } else {
-            getFolderByAjax(folder_slug, folder_id, token, juice_id, item_category_id);
+            getFolderByAjax(folder_slug, folder_id, token, box_id, item_category_id);
         }
     });
 
     $('.custom').click(function (e) {
         e.preventDefault();
-        var juice_id = '{{ $juice->id }}';
+        var box_id = '{{ $box->id }}';
         var token = $("input[name='_token']").val();
         var folder_slug = $(this).attr('data-folder-slug');
         var folder_id = $(this).attr('data-folder-id');
         if(folder_id == null || folder_slug == null) {
             alert('Cant get this folder');
         } else {
-            getFolderByAjax(folder_slug, folder_id, token, juice_id);
+            getFolderByAjax(folder_slug, folder_id, token, box_id);
         }
     });
 
@@ -282,7 +282,7 @@
     $("input[name='medias[]']").change(function(e) {
         var medias = e.target.files;
         var folder_id = $(this).attr('data-folder-id');
-        var juice_id = '{{ $juice->id }}';
+        var box_id = '{{ $box->id }}';
         var token = $("input[name='_token']").val();
         $("#formUploadImage").trigger('submit');
     });
@@ -291,7 +291,7 @@
         e.preventDefault();
         var data = new FormData(this);
         $.ajax({
-            url: "{{ route('admin.juice.ajaxUpload') }}",
+            url: "{{ route('admin.box.ajaxUpload') }}",
             method: 'POST',
             dataType: 'json',
             contentType: false,

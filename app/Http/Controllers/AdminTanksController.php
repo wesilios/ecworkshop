@@ -16,6 +16,7 @@ use App\ItemCategory;
 use App\ItemStatus;
 use Validator;
 use Auth;
+use App\Folder;
 
 class AdminTanksController extends Controller
 {
@@ -89,7 +90,7 @@ class AdminTanksController extends Controller
         $item->admin_id = Auth::user()->id;
         $item->item_status_id = $request->item_status_id;
         $item->save();
-        
+
         $tank->item_id = $item->id;
         if($request->homepage_active == "on")
         {
@@ -98,7 +99,7 @@ class AdminTanksController extends Controller
         else{
             $tank->homepage_active = 0;
         }
-        
+
         $tank->brand_id = $request->brand_id;
         $tank->slug = Alpha::alpha_dash($item->name);
         $tank->item_category_id = $request->tank_category_id;
@@ -136,6 +137,13 @@ class AdminTanksController extends Controller
         //
         $medias = Media::orderBy('id', 'desc')->get();
         $tank = Tank::findOrFail($id);
+        $tank = Tank::find($id);
+        $medias = Media::where('folder_id','=','1');
+        $medias = $medias->orderBy('id', 'desc')->get();
+        $folder = Folder::findOrFail(1);
+        $folder_list = Folder::where('folder_id',$folder->id)->get();
+        $new = ['folder_id' => $folder->id,'folder_name' => $folder->name, 'folder_slug'=>$folder->slug];
+        $folder_string[] = $new;
         $brands = Brand::all()->pluck('name','id');
         //$tags = Tag::all()->pluck('name', 'id');
         $tank_cats = ItemCategory::where('item_category_id','3')->pluck('name','id');
@@ -150,7 +158,7 @@ class AdminTanksController extends Controller
             }
         }
         $media_remain = $tank->medias()->where('media_id','!=',  $tank->item->index_img)->get();
-        return view('admin.items.tanks.edit', compact('tank','brands','tank_cats','medias','color_value','colors','index_img','media_remain','statuses'));
+        return view('admin.items.tanks.edit', compact('tank','brands','tank_cats','medias','color_value','colors','index_img','media_remain','statuses','folder_list','folder_string','folder'));
     }
 
     /**
@@ -198,7 +206,7 @@ class AdminTanksController extends Controller
         else{
             $tank->homepage_active = 0;
         }
-        
+
         $tank->brand_id = $request->brand_id;
         $tank->slug = Alpha::alpha_dash($item->name);
         $tank->item_category_id = $request->tank_category_id;
@@ -331,5 +339,92 @@ class AdminTanksController extends Controller
         unlink(public_path() . '/images/' . $media->file_name);
         $media->delete();
         return redirect()->route('tanks.edit', [$id])->with('status','Xóa hình ảnh thành công');
+    }
+
+    public function ajaxUpload(Request $request)
+    {
+        if($request->ajax())
+        {
+            $files     = $request->file('medias');
+            $folder    = Folder::find($request->folder_id);
+            $tank     = Tank::find($request->tank_id);
+            $folder_id = $folder->id;
+
+            if($files === null)
+            {
+                return response()->json([
+                    'error'   => '1',
+                    'message' => 'File is empty',
+                ]);
+            }
+            foreach ($files as $file)
+            {
+                $file = Media::ajaxUploadImage($file, $folder_id);
+                if(empty($file))
+                {
+                    return response()->json([
+                        'error'   => '1',
+                        'message' => 'Upload failed!',
+                    ]);
+                }
+            }
+
+            if(!empty($files))
+            {
+                $medias = Media::where('folder_id', '=', $folder_id)->orderBy('id', 'desc')->get();
+                $data   = view('admin.ajax.media.items.tank.new_files', compact('medias', 'folder', 'tank'))->render();
+                return response()->json([
+                    'data'        => $data,
+                    'file'        => $files,
+                    'success'     => '1',
+                    'message'     => 'Success'
+                ]);
+            }
+            else
+            {
+                return response()->json([
+                    'error'   => '1',
+                    'message' => 'File must be a image type',
+                ]);
+            }
+        }
+    }
+
+    public function ajaxRemoveImg(Request $request)
+    {
+        if($request->ajax())
+        {
+            $tank     = Tank::find($request->tank_id);
+            $media = $tank->medias->where('id',$request->media_id)->first();
+
+            $tank->medias()->detach($request->media_id);
+            $index_img = '';
+            foreach ($tank->medias as $media) {
+                if($media->id == $tank->item->index_img)
+                {
+                    $index_img = $media;
+                }
+            }
+            $media_remain = $tank->medias()->where('media_id','!=',  $tank->item->index_img)->get();
+            $tank     = Tank::find($request->tank_id);
+            if($tank->medias->isNotEmpty())
+            {
+                $data = view('admin.ajax.media.items.tank.new_media_list', compact('tank','index_img', 'media_remain'))->render();
+                return response()->json([
+                    'data'      => $data,
+                    'tank'      => $tank->medias,
+                    'success'   => '1',
+                    'message'   => 'Sucess'
+                ]);
+            } else {
+                $data = view('admin.ajax.media.items.tank.new_media_list', compact('tank','index_img', 'media_remain'))->render();
+                return response()->json([
+                    'data'      => $data,
+                    'tank'      => $tank->medias,
+                    'error'     => '1',
+                    'message'   => 'Slider images for this item is empty'
+                ]);
+            }
+        }
     }
 }

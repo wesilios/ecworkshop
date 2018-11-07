@@ -67,7 +67,7 @@
                                 <form method="POST" action="" accept-charset="UTF-8" enctype="multipart/form-data" id="formUploadImage">
                                     <input type="file" name="medias[]" id="form-file-hidden1" value="" style="display: none" multiple>
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                    <input type="hidden" name="juice_id" value="{{ $juice->id }}">
+                                    <input type="hidden" name="accessory_id" value="{{ $accessory->id }}">
                                     <input type="hidden" name="folder_id" value="{{ $folder->id }}"/>
                                 </form>
                             </div>
@@ -80,7 +80,7 @@
                                 @if(count($folder_list) >= 1)
                                     <div id="folder-section">
                                         <h5><strong>Folders</strong></h5>
-                                        <div class="row modal_folder">
+                                        <div class="row">
                                             @foreach($folder_list as $fd)
                                                 @if($folder->id != $fd->id)
                                                     <a href="{{ route('admin.folder.show',$fd->slug) }}" data-folder-id="{{ $fd->id }}" data-folder-slug="{{ $fd->slug }}" class="folder-link" data-active="1">
@@ -96,14 +96,10 @@
                                     </div>
                                     <hr>
                                 @else
-                                    <div id="folder-section">
-                                        <div class="row modal_folder"></div>
-                                    </div>
+                                    <div id="folder-section"></div>
                                 @endif
                             @else
-                                <div id="folder-section">
-                                    <div class="row modal_folder"></div>
-                                </div>
+                                <div id="folder-section"></div>
                             @endif
                         </div>
                         <div class="col-sm-10" >
@@ -134,7 +130,7 @@
                 <div class="modal-footer">
                     <div class="row">
                         <div class="col-md-12">
-                            {!! Form::open(['method'=>'PUT', 'action'=>["AdminJuicesController@selectImage",$juice->id] ,'files'=>true]) !!}
+                            {!! Form::open(['method'=>'PUT', 'action'=>["AdminAccessoriesController@selectImage",$accessory->id] ,'files'=>true]) !!}
                             <div class="form-group">
                                 <select multiple class="form-control" name="media_id[]" id="selForm">
                                     @foreach($medias as $media)
@@ -153,31 +149,7 @@
         </div><!-- /.modal -->
     </div>
 </div><!-- /.example-modal -->
-<div class="example-modal">
-    <div class="modal fade" id="newFolder" role="dialog">
-        <div class="modal-dialog" style="">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title">Tạo folder mới</h4>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="folder_name">Tên folder</label>
-                        <input type="text" name="folder_name" id="folder_name" class="form-control"/>
-                        <div class="error"></div>
-                        <input type="hidden" name="folder_id" value="{{ $folder->id }}" />
-                    </div>
-                    <div class="form-group">
-                        <button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-default">Thoát</button>
-                        <button class="btn btn-primary" id="new_folder">Taọ mới</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-@foreach($juice->medias as $media)
+@foreach($accessory->medias as $media)
     <div class="example-modal">
         <div class="modal fade item_modal" id="delete{{ $media->id }}" role="dialog">
             <div class="modal-dialog delete-dialog" style="">
@@ -186,7 +158,7 @@
                         <h5>Xóa hình này?</h5>
                     </div>
                     <div class="modal-footer">
-                        {!! Form::open(['method'=>'DELETE', 'action'=>['AdminJuicesController@delete_image', $juice->id], 'class'=>'form-horizontal']) !!}
+                        {!! Form::open(['method'=>'DELETE', 'action'=>['AdminAccessoriesController@delete_image', $accessory->id], 'class'=>'form-horizontal']) !!}
                         <input type="hidden" name="media_id" value="{{ $media->id }}"/>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
                         {!! Form::submit('Xóa', ['class'=>'btn btn-primary']) !!}

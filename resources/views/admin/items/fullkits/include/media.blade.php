@@ -67,7 +67,7 @@
                                 <form method="POST" action="" accept-charset="UTF-8" enctype="multipart/form-data" id="formUploadImage">
                                     <input type="file" name="medias[]" id="form-file-hidden1" value="" style="display: none" multiple>
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                    <input type="hidden" name="juice_id" value="{{ $juice->id }}">
+                                    <input type="hidden" name="fullkit_id" value="{{ $fullkit->id }}">
                                     <input type="hidden" name="folder_id" value="{{ $folder->id }}"/>
                                 </form>
                             </div>
@@ -134,7 +134,7 @@
                 <div class="modal-footer">
                     <div class="row">
                         <div class="col-md-12">
-                            {!! Form::open(['method'=>'PUT', 'action'=>["AdminJuicesController@selectImage",$juice->id] ,'files'=>true]) !!}
+                            {!! Form::open(['method'=>'PUT', 'action'=>["AdminFullKitsController@selectImage",$fullkit->id] ,'files'=>true]) !!}
                             <div class="form-group">
                                 <select multiple class="form-control" name="media_id[]" id="selForm">
                                     @foreach($medias as $media)
@@ -177,7 +177,7 @@
         </div>
     </div>
 </div>
-@foreach($juice->medias as $media)
+@foreach($fullkit->medias as $media)
     <div class="example-modal">
         <div class="modal fade item_modal" id="delete{{ $media->id }}" role="dialog">
             <div class="modal-dialog delete-dialog" style="">
@@ -186,7 +186,7 @@
                         <h5>Xóa hình này?</h5>
                     </div>
                     <div class="modal-footer">
-                        {!! Form::open(['method'=>'DELETE', 'action'=>['AdminJuicesController@delete_image', $juice->id], 'class'=>'form-horizontal']) !!}
+                        {!! Form::open(['method'=>'DELETE', 'action'=>['AdminFullKitsController@delete_image', $fullkit->id], 'class'=>'form-horizontal']) !!}
                         <input type="hidden" name="media_id" value="{{ $media->id }}"/>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
                         {!! Form::submit('Xóa', ['class'=>'btn btn-primary']) !!}
