@@ -290,8 +290,7 @@ class AdminTanksController extends Controller
     {
         $input = $request->all();
         $tank = Tank::findOrFail($id);
-        //dd($request->all());
-        if($input['media_id'])
+        if($request->get('media_id'))
         {
             $tank->medias()->detach();
             foreach($input['media_id'] as $input_media)
@@ -306,15 +305,16 @@ class AdminTanksController extends Controller
                     $tank->medias()->save($media);
                 }
             }
+            return redirect()->route('tanks.edit', [$id])->with('status','Cập nhật image thành công');
+        } else {
+            return redirect()->route('tanks.edit', [$id])->with('status','Vui lòng chọn ảnh cần cập nhật');
         }
-        return redirect()->route('tanks.edit', [$id])->with('status','Cập nhật image thành công');
     }
 
     public function set_image_index(Request $request, $id)
     {
         $input = $request->all();
         $tank = Tank::findOrFail($id);
-        //dd($input['media_id']);
         $tank->item->index_img = $input['media_id'];
         $tank->item->save();
         foreach ($tank->medias as $media) {

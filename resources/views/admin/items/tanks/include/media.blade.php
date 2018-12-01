@@ -67,7 +67,7 @@
                                 <form method="POST" action="" accept-charset="UTF-8" enctype="multipart/form-data" id="formUploadImage">
                                     <input type="file" name="medias[]" id="form-file-hidden1" value="" style="display: none" multiple>
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                    <input type="hidden" name="box_id" value="{{ $box->id }}">
+                                    <input type="hidden" name="tank_id" value="{{ $tank->id }}">
                                     <input type="hidden" name="folder_id" value="{{ $folder->id }}"/>
                                 </form>
                             </div>
