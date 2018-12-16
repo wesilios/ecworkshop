@@ -12,7 +12,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
     <link rel="shortcut icon" type="image/png" href="{{ asset('favicon.png') }}">
 
-    <title>EC Workshop Administration</title>
+    <title>{{ !empty($title) ? $title . ' | ' : '' }}EC Workshop Administration</title>
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
@@ -394,6 +394,18 @@
                                             <li><a href="{{ route('accessories.create') }}"><i class="fa fa-circle-o"></i> Thêm mới</a></li>
                                         </ul>
                                     </li>
+                                    @php $item_categories = \App\ItemCategory::where('item_category_id','=',0)->get() @endphp
+                                    @foreach($item_categories as $it_cat)
+                                        <li>
+                                            <a href="#">
+                                                <i class="fa fa-circle-o"></i> {{ $it_cat->name }}<i class="fa fa-angle-left pull-right"></i>
+                                            </a>
+                                            <ul class="treeview-menu">
+                                                <li><a href="{{ route('admin.items.index',['item_category'=>$it_cat->slug]) }}"><i class="fa fa-circle-o"></i> Xem tất cả</a></li>
+                                                <li><a href="{{ route('admin.items.create',['item_category'=>$it_cat->slug]) }}"><i class="fa fa-circle-o"></i> Thêm mới</a></li>
+                                            </ul>
+                                        </li>
+                                    @endforeach
                                 </ul>
                             </li>
                             <li>

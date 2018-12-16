@@ -8,7 +8,8 @@ class Order extends Model
 {
     //
     //use Searchable;
-    
+    protected $table = 'orders';
+
     protected $fillable = [
         'address', 'district', 'city', 'note', 'totalPrice', 'totalQty'
     ];

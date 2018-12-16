@@ -7,17 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 class Setting extends Model
 {
     //
+    protected $table = 'settings';
+
     protected $fillable = [
-    	'address', 
+    	'address',
     	'phone',
         'work_hour',
-    	'facebook', 
-    	'youtube', 
+    	'facebook',
+    	'youtube',
     	'instagram',
-        'email', 
-        'keywords', 
-    	'description', 
-    	'google_id', 
-    	'webmaster', 
+        'email',
+        'keywords',
+    	'description',
+    	'google_id',
+    	'webmaster',
     ];
 }

@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Item extends Model
 {
     //
+    protected $table = 'items';
+
     protected $fillable = [
     	'name', 'description', 'price', 'price_off'
     ];
@@ -41,13 +43,28 @@ class Item extends Model
     	return $this->hasMany('App\Assessory');
     }
 
-    public function itemCategory()
+    public function itemCategoryMain()
     {
-        return $this->belongsTo('App\ItemCategory');
+        return $this->belongsTo('App\ItemCategory' ,'item_category_id', 'id');
+    }
+
+    public function itemCategoryParent()
+    {
+        return $this->belongsTo('App\ItemCategory' ,'item_category_parent_id', 'id');
     }
 
     public function itemStatus()
     {
         return $this->belongsTo('App\ItemStatus');
+    }
+
+    public function colors()
+    {
+        return $this->belongsToMany('App\Color', 'color_item','item_id','color_id');
+    }
+
+    public function medias()
+    {
+        return $this->morphToMany('App\Media', 'mediaable');
     }
 }

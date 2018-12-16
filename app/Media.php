@@ -9,6 +9,7 @@ use Auth;
 class Media extends Model
 {
     //
+    protected $table = 'media';
 
     protected $location = 'images/';
 
@@ -39,6 +40,11 @@ class Media extends Model
     public function boxes()
     {
         return $this->morphedByMany('App\Box', 'mediaable');
+    }
+
+    public function items()
+    {
+        return $this->morphedByMany('App\Item', 'mediaable');
     }
 
     public static function ajaxUploadImage($file, $folder_id)

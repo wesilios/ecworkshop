@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class ItemCategory extends Model
 {
     //
+    protected $table = 'item_categories';
+
     protected $fillable = ['name','slug'];
 
     public function items()
@@ -22,5 +24,10 @@ class ItemCategory extends Model
     public function itemCategory()
     {
         return $this->belongsTo('App\ItemCategory');
+    }
+
+    public function itemCategories()
+    {
+        return $this->hasMany('App\ItemCategory','item_category_id','id');
     }
 }
