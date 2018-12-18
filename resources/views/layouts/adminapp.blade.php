@@ -345,56 +345,15 @@
                                     <i class="fa fa-circle-o"></i> Sản phẩm <i class="fa fa-angle-left pull-right"></i>
                                 </a>
                                 <ul class="treeview-menu">
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-circle-o"></i> Full kits <i class="fa fa-angle-left pull-right"></i>
-                                        </a>
-                                        <ul class="treeview-menu">
-                                            <li><a href="{{ route('fullkits.index') }}"><i class="fa fa-circle-o"></i> Xem tất cả</a></li>
-                                            <li><a href="{{ route('fullkits.create') }}"><i class="fa fa-circle-o"></i> Thêm mới</a></li>
-                                            <li><a href="{{ route('admin.colors.index') }}"><i class="fa fa-circle-o"></i> Màu sắc</a></li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-circle-o"></i> Thân máy <i class="fa fa-angle-left pull-right"></i>
-                                        </a>
-                                        <ul class="treeview-menu">
-                                            <li><a href="{{ route('boxes.index') }}"><i class="fa fa-circle-o"></i> Xem tất cả</a></li>
-                                            <li><a href="{{ route('boxes.create') }}"><i class="fa fa-circle-o"></i> Thêm mới</a></li>
-                                            <li><a href="{{ route('admin.colors.index') }}"><i class="fa fa-circle-o"></i> Màu sắc</a></li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-circle-o"></i> Buồng đốt <i class="fa fa-angle-left pull-right"></i>
-                                        </a>
-                                        <ul class="treeview-menu">
-                                            <li><a href="{{ route('tanks.index') }}"><i class="fa fa-circle-o"></i> Xem tất cả</a></li>
-                                            <li><a href="{{ route('tanks.create') }}"><i class="fa fa-circle-o"></i> Thêm mới</a></li>
-                                            <li><a href="{{ route('admin.colors.index') }}"><i class="fa fa-circle-o"></i> Màu sắc</a></li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-circle-o"></i> Tinh dầu <i class="fa fa-angle-left pull-right"></i>
-                                        </a>
-                                        <ul class="treeview-menu">
-                                            <li><a href="{{ route('juices.index') }}"><i class="fa fa-circle-o"></i> Xem tất cả</a></li>
-                                            <li><a href="{{ route('juices.create') }}"><i class="fa fa-circle-o"></i> Thêm mới</a></li>
-                                            <li><a href="{{ route('admin.juices.sizes.index') }}"><i class="fa fa-circle-o"></i> Dung tích tinh dầu</a></li>
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-circle-o"></i> Phụ kiện <i class="fa fa-angle-left pull-right"></i>
-                                        </a>
-                                        <ul class="treeview-menu">
-                                            <li><a href="{{ route('accessories.index') }}"><i class="fa fa-circle-o"></i> Xem tất cả</a></li>
-                                            <li><a href="{{ route('accessories.create') }}"><i class="fa fa-circle-o"></i> Thêm mới</a></li>
-                                        </ul>
-                                    </li>
-                                    @php $item_categories = \App\ItemCategory::where('item_category_id','=',0)->get() @endphp
+                                    @php
+                                        $item_cats_all = \App\ItemCategory::all();
+                                        foreach ($item_cats_all as $it_cat) {
+                                            if($it_cat->id === $it_cat->item_category_id)
+                                            {
+                                                $item_categories[$it_cat->id] = $it_cat;
+                                            }
+                                        }
+                                    @endphp
                                     @foreach($item_categories as $it_cat)
                                         <li>
                                             <a href="#">
@@ -408,16 +367,9 @@
                                     @endforeach
                                 </ul>
                             </li>
-                            <li>
-                                <a href="{{ route('admin.brands.index') }}">
-                                    <i class="fa fa-circle-o"></i> Hãng
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.items.cat.index') }}">
-                                    <i class="fa fa-circle-o"></i> Loại sản phẩm
-                                </a>
-                            </li>
+                            <li><a href="{{ route('admin.brands.index') }}"><i class="fa fa-circle-o"></i> Hãng</a></li>
+                            <li><a href="{{ route('admin.items.cat.index') }}"><i class="fa fa-circle-o"></i> Loại sản phẩm</a></li>
+                            <li><a href="{{ route('admin.colors.index') }}"><i class="fa fa-circle-o"></i> Màu sắc</a></li>
                         </ul>
                     </li>
                     <li>

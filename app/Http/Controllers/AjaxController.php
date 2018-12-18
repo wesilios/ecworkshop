@@ -49,21 +49,18 @@ class AjaxController extends Controller
         {
             $districts = FeeDistrict::where('fee_id',$request->city_id)->get()->pluck('name','id');
             $data = view('mainsite.ajax.districts',compact('districts'))->render();
-            //return response()->json(['option'=>$data]);
-            if($request->city_id == 0)
-            {
+            if($request->city_id == 0) {
                 $fee = 0;
                 $pre_fee = 0;
-            }
-            else
-            {
+            } else {
                 $pre_fee = Fee::findOrFail($request->city_id)->fee;
                 $fee =  number_format( $pre_fee , 0, ",",".");
             }
-            $pre_totalPrice = Session::get('cart')->totalPrice + $pre_fee;
+            //$pre_totalPrice = Session::get('cart')->totalPrice + $pre_fee;
+            $pre_totalPrice = Session::get('cart')->totalPrice + 0;
             $totalPrice =  number_format( $pre_totalPrice , 0, ",",".");
             $data = view('mainsite.ajax.districts',compact('districts'))->render();
-            return response()->json(['option'=>$data,'fee'=>$fee,'totalPrice'=>$totalPrice]);
+            return response()->json(['option'=>$data,'fee'=>0,'totalPrice'=>$totalPrice]);
         }
     }
 
@@ -106,7 +103,7 @@ class AjaxController extends Controller
                 case '5':
                     $item = Accessory::where('item_id', $request->item_id)->first();
                     break;
-                
+
                 default:
                     # code...
                     break;
@@ -150,7 +147,7 @@ class AjaxController extends Controller
                 case '5':
                     $item = Accessory::where('id', $request->item_id)->first();
                     break;
-                
+
                 default:
                     # code...
                     break;
@@ -276,7 +273,7 @@ class AjaxController extends Controller
                     }
                     break;
 
-                case __('ajax.library.color'): 
+                case __('ajax.library.color'):
                     $color = new Color;
                     $color->name = $request->post_value;
                     $color->save();

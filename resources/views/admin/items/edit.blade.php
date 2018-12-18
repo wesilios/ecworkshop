@@ -29,15 +29,23 @@
     <section class="content">
         <div class="row">
             <div class="col-md-12">
-                @if(session('status'))
+                @if(session('status') == 'success')
                     <div class="alert alert-info alert-dismissable">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                         <h4><i class="icon fa fa-info"></i> Alert!</h4>
-                        {{ session('status') }}
+                        {{ session('message') }}
+                    </div>
+                @endif
+                @if(session('status') == 'error')
+                    <div class="alert alert-warning alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <h4><i class="icon fa fa-info"></i> Alert!</h4>
+                        {{ session('message') }}
                     </div>
                 @endif
             </div>
             {!! Form::open(['method'=>'PUT', 'action'=>["AdminItemsController@update", $item->slug], 'class'=>'form-horizontal', 'files'=>true]) !!}
+            <input type="hidden" name="item_category" value="{{$item_category_slug}}">
             <div class="col-md-8">
                 <!-- Horizontal Form -->
                 <div class="box">
@@ -235,6 +243,7 @@
                             </div>
                         </div>
 
+                        @php $features = json_decode($item_category->item_cat_features,true) @endphp
                         @if($item_category->itemCategories->isNotEmpty())
                         <div class="col-md-12">
                             <div class="form-group">
@@ -248,19 +257,34 @@
                         </div>
                         @endif
 
-                        @if ($item->colors->count() > 0)
-                        <div class="col-md-12">
-                            <div class="form-group" id="select_color_div">
-                                <label>Màu đầu đốt</label>
-                                {!! Form::select(
-                                    'color_id[]',
-                                    $colors,
-                                    null,
-                                    ['class'=>'form-control select2-multi', 'multiple'=>'multiple', 'id'=>'colorSelect']
-                                    );
-                                !!}
+                        @if ($item->colors->count() > 0 || $features['color'])
+                            <div class="col-md-12">
+                                <div class="form-group" id="select_color_div">
+                                    <label>Màu {{ !empty($title) ? strtolower($title) : '' }}</label>
+                                    {!! Form::select(
+                                        'color_id[]',
+                                        $colors,
+                                        null,
+                                        ['class'=>'form-control select2-multi', 'multiple'=>'multiple', 'id'=>'colorSelect', 'required'=>'required']
+                                        );
+                                    !!}
+                                </div>
                             </div>
-                        </div>
+                        @endif
+
+                        @if(!empty($features['size']) || !empty($item->size_id))
+                            <div class="col-md-12">
+                                <div class="form-group" id="select_juice_size_div">
+                                    <label>Dung tích</label>
+                                    {!! Form::select(
+                                        'size_id',
+                                        $juice_sizes,
+                                        null,
+                                        ['class'=>'form-control select2-multi', 'required'=>'required']
+                                        );
+                                    !!}
+                                </div>
+                            </div>
                         @endif
 
                         <div class="col-md-12">
@@ -279,7 +303,12 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <a href="" class="custom-link" data-label="Hãng mới" data-type="brn"><strong>+ Hãng mới</strong></a>
-                                <a href="" class="custom-link" data-label="Màu mới" data-type="clr"><strong>+ Màu mới</strong></a>
+                                @if ($item->colors->count() > 0 || $features['color'])
+                                    <a href="" class="custom-link" data-label="Màu mới" data-type="clr"><strong>+ Màu mới</strong></a>
+                                @endif
+                                @if(!empty($features['size']))
+                                    <a href="" class="custom-link" data-label="Dung tích mới" data-type="sze"><strong>+ Dung tích mới</strong></a>
+                                @endif
                             </div>
                             <div class="form-group">
                                 <div class="alert alert-info alert-dismissable" style="display:none">
@@ -315,7 +344,7 @@
                     <div class="modal-footer">
                         {!! Form::open(['method'=>'DELETE', 'action'=>['AdminItemsController@destroy', $item->slug], 'class'=>'form-horizontal']) !!}
                         <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-                        <input type="hidden" name="item_category" value="{{$item_category_slug}}">
+                        <input type="hidden" name="item_category_id" value="{{$item->item_category_id}}">
                         {!! Form::submit('Xóa', ['class'=>'btn btn-primary']) !!}
                         {!! Form::close() !!}
                     </div>
@@ -447,6 +476,7 @@
     <script>
         $('.select2-multi').select2();
         $('.select2-single').select2();
+        $('#colorSelect').val({{json_encode($color_value)}}).trigger('change');
         $('.removeSelectedImg').click(function(e){
             e.preventDefault();
             var id = $(this).attr('data-media-id');

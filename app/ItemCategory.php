@@ -30,4 +30,9 @@ class ItemCategory extends Model
     {
         return $this->hasMany('App\ItemCategory','item_category_id','id');
     }
+
+    public function itemCategoryChild()
+    {
+        return $this->hasOne('App\ItemCategory', 'item_Category_id','id');
+    }
 }

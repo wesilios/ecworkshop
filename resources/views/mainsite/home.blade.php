@@ -75,372 +75,456 @@
 @endsection
 
 @section('content')
-	<section class="item-div">
-        <input type="hidden" id="_token" name="_token" value="{{ csrf_token() }}">
-        <div class="container">
-            <div class="col-lg-12 custom-no-padding">
-                <div class="items-title">
-                    <div class="active">Thân máy</div>
-                    <div><a href="">Mech</a></div>
-                    <div><a href="">Box</a></div>
-                    <select name="" id="">
-                        <option value="">Mech</option>
-                        <option value="">Box</option>
-                    </select>
-                    <div class="item-hr"></div>
-                </div>
-            </div>
-            <div class="col-lg-12 custom-no-padding">
-                <div class="items-carousel">
-                	@foreach($boxes as $box)
-                		@if($box->medias()->where('media_id', $box->item->index_img)->get()->isNotEmpty())
-	                    <div>
-                            <div class="item">
-                                <a href="{{ $box->item->itemCategory->slug }}/{{ $box->item->id }}/{{ $box->item->slug }}">
-                                    <img class="img-responsive"
-                                    src="
-                                    @foreach($box->medias()->where('media_id', $box->item->index_img)->get() as $img)
-                                    {{ asset($img->url) }}
-                                    @endforeach
-                                    " alt="">
-                                    <div class="item-name">{{ $box->brand->name . ' ' . $box->item->name }}</div>
-                                    <div class="item-price">
-                                        @if($box->item->price_off > 0 || $box->item->price_off != null)
-                                            {{ number_format($box->item->price_off,0, ",",".") }} VNĐ
-                                            <span>{{ number_format($box->item->price,0, ",",".") }} VNĐ</span>
+    @foreach ($item_parents as $key => $items)
+        @if($items->isNotEmpty())
+            <section class="item-div">
+                <input type="hidden" id="_token" name="_token" value="{{ csrf_token() }}">
+                <div class="container">
+                    <div class="col-lg-12 custom-no-padding">
+                        <div class="items-title">
+                            <div class="active">{{ $item_cats_parent[$key]->name }}</div>
+                            <div><a href="">Mech</a></div>
+                            <div><a href="">Box</a></div>
+                            <select name="" id="">
+                                <option value="">Mech</option>
+                                <option value="">Box</option>
+                            </select>
+                            <div class="item-hr"></div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12 custom-no-padding">
+                        <div class="items-carousel">
+                            @foreach($items as $item)
+                                @if($item->medias()->where('media_id', $item->index_img)->get()->isNotEmpty())
+                                    <div>
+                                        <div class="item">
+                                            <a href="{{ $item->itemCategoryMain->slug }}/{{ $item->id }}/{{ $item->slug }}">
+                                                <img class="img-responsive"
+                                                     src="
+                                             @foreach($item->medias()->where('media_id', $item->index_img)->get() as $img)
+                                                     {{ asset($img->url) }}
+                                                     @endforeach
+                                                             " alt="">
+                                                <div class="item-name">{{ $item->brand->name . ' ' . $item->name }}</div>
+                                                <div class="item-price">
+                                                    @if($item->price_off > 0 || $item->price_off != null)
+                                                        {{ number_format($item->price_off,0, ",",".") }} VNĐ
+                                                        <span>{{ number_format($item->price,0, ",",".") }} VNĐ</span>
 
-                                        @else
-                                            {{ number_format($box->item->price,0, ",",".") }} VNĐ
-                                        @endif
+                                                    @else
+                                                        {{ number_format($item->price,0, ",",".") }} VNĐ
+                                                    @endif
+                                                </div>
+
+                                            </a>
+                                            <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $item->id }}" value="{{ $item->id }}">
+                                            <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $item->id }}" value="{{ $item->item_category_id }}">
+                                            <div class="btn-cart" id="{{ $item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
+                                        </div>
                                     </div>
+                                @else
+                                    <div>
+                                        <div class="item">
+                                            <a href="{{ $item->itemCategoryMain->slug }}/{{ $item->id }}/{{ $item->slug }}">
+                                                @if($item->medias()->first() == null)
+                                                    <img class="img-responsive" src="https://via.placeholder.com/650x650?text=No+image" alt="">
+                                                @else
+                                                    <img class="img-responsive"
+                                                         src="{{ asset($item->medias()->first()->url) }}" alt="">
+                                                @endif
+                                                <div class="item-name">{{ $item->brand->name . ' ' . $item->name }}</div>
+                                                <div class="item-price">
+                                                    @if($item->price_off > 0 || $item->price_off != null)
+                                                        {{ number_format($item->price_off,0, ",",".") }} VNĐ
+                                                        <span>{{ number_format($item->price,0, ",",".") }} VNĐ</span>
 
-                                </a>
-                                <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $box->item->id }}" value="{{ $box->id }}">
-                                <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $box->item->id }}" value="{{ $box->item_category_id }}">
-                                <div class="btn-cart" id="{{ $box->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
-                            </div>
-	                    </div>
-	                    @else
-						<div>
-	                        <div class="item">
-                                <a href="{{ $box->item->itemCategory->slug }}/{{ $box->item->id }}/{{ $box->item->slug }}">
-                                    @if($box->medias()->first() == null)
-                                    <img class="img-responsive" src="https://via.placeholder.com/650x650?text=No+image" alt="">
-                                    @else
-                                    <img class="img-responsive"
-                                    src="
-                                    {{ asset($box->medias()->first()->url) }}
-                                    " alt="">
-                                    @endif
-                                    <div class="item-name">{{ $box->brand->name . ' ' . $box->item->name }}</div>
-                                    <div class="item-price">
-                                        @if($box->item->price_off > 0 || $box->item->price_off != null)
-                                            {{ number_format($box->item->price_off,0, ",",".") }} VNĐ
-                                            <span>{{ number_format($box->item->price,0, ",",".") }} VNĐ</span>
+                                                    @else
+                                                        {{ number_format($item->price,0, ",",".") }} VNĐ
+                                                    @endif
+                                                </div>
 
-                                        @else
-                                            {{ number_format($box->item->price,0, ",",".") }} VNĐ
-                                        @endif
+                                            </a>
+                                            <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $item->id }}" value="{{ $item->id }}">
+                                            <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $item->id }}" value="{{ $item->item_category_id }}">
+                                            <div class="btn-cart" id="{{ $item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
+                                        </div>
                                     </div>
-
-                                </a>
-                                <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $box->item->id }}" value="{{ $box->id }}">
-                                <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $box->item->id }}" value="{{ $box->item_category_id }}">
-                                <div class="btn-cart" id="{{ $box->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
-                            </div>
-	                    </div>
-	                    @endif
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="item-div">
-        <div class="container">
-            <div class="col-lg-12 custom-no-padding">
-                <div class="items-title">
-                    <div class="active">Buồng Đốt</div>
-                    @foreach($tankcategories as $category)
-                    <div><a href="/buong-dot/{{ $category['slug'] }}">{{ $category['name'] }}</a></div>
-                    @endforeach
-                    <select name="" id="">
-                        @foreach($tankcategories as $category)
-                        <option value="">{{ $category['name'] }}</option>
-                        @endforeach
-                    </select>
-                    <div class="item-hr"></div>
-                </div>
-            </div>
-            <div class="col-lg-12 custom-no-padding">
-                <div class="container-carousel no-padding" style="margin-bottom:20px">
-                    <div id="1st_sub_slider" class="carousel slide">
-                        <!-- Wrapper for slides -->
-                        <div class="carousel-inner">
-                            @php
-                                $i = 0
-                            @endphp
-                            @foreach($first_sub_slider->sliderDetails as $slider)
-                            <div class="item {{ $i ==0 ? 'active' : '' }}">
-                                <img class="img-responsive" src="{{ asset($slider->media->url) }}" alt="{{ $slider->media->alt_text }}">
-                            </div>
-                            @php
-                                $i++
-                            @endphp
+                                @endif
                             @endforeach
                         </div>
-
                     </div>
                 </div>
+            </section>
+        @endif
+    @endforeach
 
-                <div class="items-carousel">
-                    @foreach($tanks as $tank)
-                        @if($tank->medias()->where('media_id', $tank->item->index_img)->get()->isNotEmpty())
-                        <div>
-                            <div class="item">
-                                <a href="/buong-dot/{{ $tank->item->itemCategory->slug }}/{{ $tank->item->id }}/{{ $tank->item->slug }}">
-                                    <img class="img-responsive"
-                                    src="
-                                    @foreach($tank->medias()->where('media_id', $tank->item->index_img)->get() as $img)
-                                    {{ asset($img->url) }}
-                                    @endforeach
-                                    " alt="">
-                                    <div class="item-name">{{ $tank->brand->name . ' ' . $tank->item->name }}</div>
-                                    <div class="item-price">
-                                        @if($tank->item->price_off > 0 || $tank->item->price_off != null)
-                                            {{ number_format($tank->item->price_off,0, ",",".") }} VNĐ
-                                            <span>{{ number_format($tank->item->price,0, ",",".") }} VNĐ</span>
+	{{--<section class="item-div">--}}
+        {{--<input type="hidden" id="_token" name="_token" value="{{ csrf_token() }}">--}}
+        {{--<div class="container">--}}
+            {{--<div class="col-lg-12 custom-no-padding">--}}
+                {{--<div class="items-title">--}}
+                    {{--<div class="active">Thân máy</div>--}}
+                    {{--<div><a href="">Mech</a></div>--}}
+                    {{--<div><a href="">Box</a></div>--}}
+                    {{--<select name="" id="">--}}
+                        {{--<option value="">Mech</option>--}}
+                        {{--<option value="">Box</option>--}}
+                    {{--</select>--}}
+                    {{--<div class="item-hr"></div>--}}
+                {{--</div>--}}
+            {{--</div>--}}
+            {{--<div class="col-lg-12 custom-no-padding">--}}
+                {{--<div class="items-carousel">--}}
+                	{{--@foreach($boxes as $box)--}}
+                		{{--@if($box->medias()->where('media_id', $box->item->index_img)->get()->isNotEmpty())--}}
+	                    {{--<div>--}}
+                            {{--<div class="item">--}}
+                                {{--<a href="{{ $box->item->itemCategory->slug }}/{{ $box->item->id }}/{{ $box->item->slug }}">--}}
+                                    {{--<img class="img-responsive"--}}
+                                    {{--src="--}}
+                                    {{--@foreach($box->medias()->where('media_id', $box->item->index_img)->get() as $img)--}}
+                                    {{--{{ asset($img->url) }}--}}
+                                    {{--@endforeach--}}
+                                    {{--" alt="">--}}
+                                    {{--<div class="item-name">{{ $box->brand->name . ' ' . $box->item->name }}</div>--}}
+                                    {{--<div class="item-price">--}}
+                                        {{--@if($box->item->price_off > 0 || $box->item->price_off != null)--}}
+                                            {{--{{ number_format($box->item->price_off,0, ",",".") }} VNĐ--}}
+                                            {{--<span>{{ number_format($box->item->price,0, ",",".") }} VNĐ</span>--}}
 
-                                        @else
-                                            {{ number_format($tank->item->price,0, ",",".") }} VNĐ
-                                        @endif
-                                    </div>
+                                        {{--@else--}}
+                                            {{--{{ number_format($box->item->price,0, ",",".") }} VNĐ--}}
+                                        {{--@endif--}}
+                                    {{--</div>--}}
 
-                                </a>
-                                <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $tank->item->id }}" value="{{ $tank->id }}">
-                                <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $tank->item->id }}" value="{{ $tank->item_category_id }}">
-                                <div class="btn-cart" id="{{ $tank->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
-                            </div>
-                        </div>
-                        @else
-                        <div>
-                            <div class="item">
-                                <a href="/buong-dot/{{ $tank->item->itemCategory->slug }}/{{ $tank->item->id }}/{{ $tank->item->slug }}">
-                                    @if($tank->medias()->first() == null)
-                                    <img class="img-responsive" src="https://via.placeholder.com/650x650?text=No+image" alt="">
-                                    @else
-                                    <img class="img-responsive"
-                                    src="
-                                    {{ asset($tank->medias()->first()->url) }}
-                                    " alt="">
-                                    @endif
-                                    <div class="item-name">{{ $tank->brand->name . ' ' . $tank->item->name }}</div>
-                                    <div class="item-price">
-                                        @if($tank->item->price_off > 0 || $tank->item->price_off != null)
-                                            {{ number_format($tank->item->price_off,0, ",",".") }} VNĐ
-                                            <span>{{ number_format($tank->item->price,0, ",",".") }} VNĐ</span>
+                                {{--</a>--}}
+                                {{--<input type="hidden" name="hid_item_id" id="hid_item_id_{{ $box->item->id }}" value="{{ $box->id }}">--}}
+                                {{--<input type="hidden" name="hid_category_id" id="hid_category_id_{{ $box->item->id }}" value="{{ $box->item_category_id }}">--}}
+                                {{--<div class="btn-cart" id="{{ $box->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>--}}
+                            {{--</div>--}}
+	                    {{--</div>--}}
+	                    {{--@else--}}
+						{{--<div>--}}
+	                        {{--<div class="item">--}}
+                                {{--<a href="{{ $box->item->itemCategory->slug }}/{{ $box->item->id }}/{{ $box->item->slug }}">--}}
+                                    {{--@if($box->medias()->first() == null)--}}
+                                    {{--<img class="img-responsive" src="https://via.placeholder.com/650x650?text=No+image" alt="">--}}
+                                    {{--@else--}}
+                                    {{--<img class="img-responsive"--}}
+                                    {{--src="--}}
+                                    {{--{{ asset($box->medias()->first()->url) }}--}}
+                                    {{--" alt="">--}}
+                                    {{--@endif--}}
+                                    {{--<div class="item-name">{{ $box->brand->name . ' ' . $box->item->name }}</div>--}}
+                                    {{--<div class="item-price">--}}
+                                        {{--@if($box->item->price_off > 0 || $box->item->price_off != null)--}}
+                                            {{--{{ number_format($box->item->price_off,0, ",",".") }} VNĐ--}}
+                                            {{--<span>{{ number_format($box->item->price,0, ",",".") }} VNĐ</span>--}}
 
-                                        @else
-                                            {{ number_format($tank->item->price,0, ",",".") }} VNĐ
-                                        @endif
-                                    </div>
+                                        {{--@else--}}
+                                            {{--{{ number_format($box->item->price,0, ",",".") }} VNĐ--}}
+                                        {{--@endif--}}
+                                    {{--</div>--}}
 
-                                </a>
-                                <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $tank->item->id }}" value="{{ $tank->id }}">
-                                <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $tank->item->id }}" value="{{ $tank->item_category_id }}">
-                                <div class="btn-cart" id="{{ $tank->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
-                            </div>
-                        </div>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </section>
+                                {{--</a>--}}
+                                {{--<input type="hidden" name="hid_item_id" id="hid_item_id_{{ $box->item->id }}" value="{{ $box->id }}">--}}
+                                {{--<input type="hidden" name="hid_category_id" id="hid_category_id_{{ $box->item->id }}" value="{{ $box->item_category_id }}">--}}
+                                {{--<div class="btn-cart" id="{{ $box->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>--}}
+                            {{--</div>--}}
+	                    {{--</div>--}}
+	                    {{--@endif--}}
+                    {{--@endforeach--}}
+                {{--</div>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+    {{--</section>--}}
 
-    <section class="item-div">
-        <div class="container">
-            <div class="col-lg-12 custom-no-padding">
-                <div class="items-title">
-                    <div class="active">Tinh dầu</div>
-                    @foreach($juicecategories as $category)
-                    <div><a href="/tinh-dau-vape/{{ $category['slug'] }}">{{ $category['name'] }}</a></div>
-                    @endforeach
-                    <select name="" id="">
-                        @foreach($juicecategories as $category)
-                        <option value="">{{ $category['name'] }}</option>
-                        @endforeach
-                    </select>
-                    <div class="item-hr-2"></div>
-                </div>
-            </div>
-            <div class="col-lg-12 custom-no-padding">
-                <div class="container-carousel no-padding" style="margin-bottom:20px">
-                    <div id="2nd_sub_slider" class="carousel slide">
-                        <!-- Wrapper for slides -->
-                        <div class="carousel-inner">
-                            @php
-                                $i = 0
-                            @endphp
-                            @foreach($second_sub_slider->sliderDetails as $slider)
-                            <div class="item {{ $i ==0 ? 'active' : '' }}">
-                                <img class="img-responsive" src="{{ asset($slider->media->url) }}" alt="{{ $slider->media->alt_text }}">
-                            </div>
-                            @php
-                                $i++
-                            @endphp
-                            @endforeach
-                        </div>
+    {{--<section class="item-div">--}}
+        {{--<div class="container">--}}
+            {{--<div class="col-lg-12 custom-no-padding">--}}
+                {{--<div class="items-title">--}}
+                    {{--<div class="active">Buồng Đốt</div>--}}
+                    {{--@foreach($tankcategories as $category)--}}
+                    {{--<div><a href="/buong-dot/{{ $category['slug'] }}">{{ $category['name'] }}</a></div>--}}
+                    {{--@endforeach--}}
+                    {{--<select name="" id="">--}}
+                        {{--@foreach($tankcategories as $category)--}}
+                        {{--<option value="">{{ $category['name'] }}</option>--}}
+                        {{--@endforeach--}}
+                    {{--</select>--}}
+                    {{--<div class="item-hr"></div>--}}
+                {{--</div>--}}
+            {{--</div>--}}
+            {{--<div class="col-lg-12 custom-no-padding">--}}
+                {{--<div class="container-carousel no-padding" style="margin-bottom:20px">--}}
+                    {{--<div id="1st_sub_slider" class="carousel slide">--}}
+                        {{--<!-- Wrapper for slides -->--}}
+                        {{--<div class="carousel-inner">--}}
+                            {{--@php--}}
+                                {{--$i = 0--}}
+                            {{--@endphp--}}
+                            {{--@foreach($first_sub_slider->sliderDetails as $slider)--}}
+                            {{--<div class="item {{ $i ==0 ? 'active' : '' }}">--}}
+                                {{--<img class="img-responsive" src="{{ asset($slider->media->url) }}" alt="{{ $slider->media->alt_text }}">--}}
+                            {{--</div>--}}
+                            {{--@php--}}
+                                {{--$i++--}}
+                            {{--@endphp--}}
+                            {{--@endforeach--}}
+                        {{--</div>--}}
 
-                    </div>
-                </div>
+                    {{--</div>--}}
+                {{--</div>--}}
 
-                <div class="items-carousel">
-                    @foreach($juices as $juice)
-                        @if($juice->medias()->where('media_id', $juice->item->index_img)->get()->isNotEmpty())
-                        <div>
-                            <div class="item">
-                                <a href="/tinh-dau-vape/{{ $juice->item->itemCategory->slug }}/{{ $juice->item->id }}/{{ $juice->item->slug }}">
-                                    <img class="img-responsive"
-                                    src="
-                                    @foreach($juice->medias()->where('media_id', $juice->item->index_img)->get() as $img)
-                                    {{ asset($img->url) }}
-                                    @endforeach
-                                    " alt="">
-                                    <div class="item-name">{{ $juice->brand->name . ' ' . $juice->item->name }}</div>
-                                    <div class="item-price">
-                                        @if($juice->item->price_off > 0 || $juice->item->price_off != null)
-                                            {{ number_format($juice->item->price_off,0, ",",".") }} VNĐ
-                                            <span>{{ number_format($juice->item->price,0, ",",".") }} VNĐ</span>
+                {{--<div class="items-carousel">--}}
+                    {{--@foreach($tanks as $tank)--}}
+                        {{--@if($tank->medias()->where('media_id', $tank->item->index_img)->get()->isNotEmpty())--}}
+                        {{--<div>--}}
+                            {{--<div class="item">--}}
+                                {{--<a href="/buong-dot/{{ $tank->item->itemCategory->slug }}/{{ $tank->item->id }}/{{ $tank->item->slug }}">--}}
+                                    {{--<img class="img-responsive"--}}
+                                    {{--src="--}}
+                                    {{--@foreach($tank->medias()->where('media_id', $tank->item->index_img)->get() as $img)--}}
+                                    {{--{{ asset($img->url) }}--}}
+                                    {{--@endforeach--}}
+                                    {{--" alt="">--}}
+                                    {{--<div class="item-name">{{ $tank->brand->name . ' ' . $tank->item->name }}</div>--}}
+                                    {{--<div class="item-price">--}}
+                                        {{--@if($tank->item->price_off > 0 || $tank->item->price_off != null)--}}
+                                            {{--{{ number_format($tank->item->price_off,0, ",",".") }} VNĐ--}}
+                                            {{--<span>{{ number_format($tank->item->price,0, ",",".") }} VNĐ</span>--}}
 
-                                        @else
-                                            {{ number_format($juice->item->price,0, ",",".") }} VNĐ
-                                        @endif
-                                    </div>
+                                        {{--@else--}}
+                                            {{--{{ number_format($tank->item->price,0, ",",".") }} VNĐ--}}
+                                        {{--@endif--}}
+                                    {{--</div>--}}
 
-                                </a>
-                                <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $juice->item->id }}" value="{{ $juice->id }}">
-                                <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $juice->item->id }}" value="{{ $juice->item_category_id }}">
-                                <div class="btn-cart" id="{{ $juice->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
-                            </div>
-                        </div>
-                        @else
-                        <div>
-                            <div class="item">
-                                <a href="/tinh-dau-vape/{{ $juice->item->itemCategory->slug }}/{{ $juice->item->id }}/{{ $juice->item->slug }}">
-                                    @if($juice->medias()->first() == null)
-                                    <img class="img-responsive" src="https://via.placeholder.com/650x650?text=No+image" alt="">
-                                    @else
-                                    <img class="img-responsive"
-                                    src="
-                                    {{ asset($juice->medias()->first()->url) }}
-                                    " alt="">
-                                    @endif
-                                    <div class="item-name">{{ $juice->brand->name . ' ' . $juice->item->name }}</div>
-                                    <div class="item-price">
-                                        @if($juice->item->price_off > 0 || $juice->item->price_off != null)
-                                            {{ number_format($juice->item->price_off,0, ",",".") }} VNĐ
-                                            <span>{{ number_format($juice->item->price,0, ",",".") }} VNĐ</span>
+                                {{--</a>--}}
+                                {{--<input type="hidden" name="hid_item_id" id="hid_item_id_{{ $tank->item->id }}" value="{{ $tank->id }}">--}}
+                                {{--<input type="hidden" name="hid_category_id" id="hid_category_id_{{ $tank->item->id }}" value="{{ $tank->item_category_id }}">--}}
+                                {{--<div class="btn-cart" id="{{ $tank->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                        {{--@else--}}
+                        {{--<div>--}}
+                            {{--<div class="item">--}}
+                                {{--<a href="/buong-dot/{{ $tank->item->itemCategory->slug }}/{{ $tank->item->id }}/{{ $tank->item->slug }}">--}}
+                                    {{--@if($tank->medias()->first() == null)--}}
+                                    {{--<img class="img-responsive" src="https://via.placeholder.com/650x650?text=No+image" alt="">--}}
+                                    {{--@else--}}
+                                    {{--<img class="img-responsive"--}}
+                                    {{--src="--}}
+                                    {{--{{ asset($tank->medias()->first()->url) }}--}}
+                                    {{--" alt="">--}}
+                                    {{--@endif--}}
+                                    {{--<div class="item-name">{{ $tank->brand->name . ' ' . $tank->item->name }}</div>--}}
+                                    {{--<div class="item-price">--}}
+                                        {{--@if($tank->item->price_off > 0 || $tank->item->price_off != null)--}}
+                                            {{--{{ number_format($tank->item->price_off,0, ",",".") }} VNĐ--}}
+                                            {{--<span>{{ number_format($tank->item->price,0, ",",".") }} VNĐ</span>--}}
 
-                                        @else
-                                            {{ number_format($juice->item->price,0, ",",".") }} VNĐ
-                                        @endif
-                                    </div>
+                                        {{--@else--}}
+                                            {{--{{ number_format($tank->item->price,0, ",",".") }} VNĐ--}}
+                                        {{--@endif--}}
+                                    {{--</div>--}}
 
-                                </a>
-                                <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $juice->item->id }}" value="{{ $juice->id }}">
-                                <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $juice->item->id }}" value="{{ $juice->item_category_id }}">
-                                <div class="btn-cart" id="{{ $juice->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
-                            </div>
-                        </div>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </section>
+                                {{--</a>--}}
+                                {{--<input type="hidden" name="hid_item_id" id="hid_item_id_{{ $tank->item->id }}" value="{{ $tank->id }}">--}}
+                                {{--<input type="hidden" name="hid_category_id" id="hid_category_id_{{ $tank->item->id }}" value="{{ $tank->item_category_id }}">--}}
+                                {{--<div class="btn-cart" id="{{ $tank->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                        {{--@endif--}}
+                    {{--@endforeach--}}
+                {{--</div>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+    {{--</section>--}}
 
-    <section class="item-div">
-        <div class="container">
-            <div class="col-lg-12 custom-no-padding">
-                <div class="items-title">
-                    <div class="active">Phụ kiện</div>
-                    @foreach($accessorycategories as $category)
-                    <div><a href="/phu-kien/{{ $category['slug'] }}">{{ $category['name'] }}</a></div>
-                    @endforeach
-                    <select name="" id="">
-                        @foreach($accessorycategories as $category)
-                        <option value="">{{ $category['name'] }}</option>
-                        @endforeach
-                    </select>
-                    <div class="item-hr"></div>
-                </div>
-            </div>
-            <div class="col-lg-12 custom-no-padding">
-                <div class="items-carousel">
-                    @foreach($accessories as $accessory)
-                        @if($accessory->medias()->where('media_id', $accessory->item->index_img)->get()->isNotEmpty())
-                        <div>
-                            <div class="item">
-                                <a href="/phu-kien/{{ $accessory->item->itemCategory->slug }}/{{ $accessory->item->id }}/{{ $accessory->item->slug }}">
-                                    <img class="img-responsive"
-                                    src="
-                                    @foreach($accessory->medias()->where('media_id', $accessory->item->index_img)->get() as $img)
-                                    {{ asset($img->url) }}
-                                    @endforeach
-                                    " alt="">
-                                    <div class="item-name">{{ $accessory->brand->name . ' ' . $accessory->item->name }}</div>
-                                    <div class="item-price">
-                                        @if($accessory->item->price_off > 0 || $accessory->item->price_off != null)
-                                            {{ number_format($accessory->item->price_off,0, ",",".") }} VNĐ
-                                            <span>{{ number_format($accessory->item->price,0, ",",".") }} VNĐ</span>
+    {{--<section class="item-div">--}}
+        {{--<div class="container">--}}
+            {{--<div class="col-lg-12 custom-no-padding">--}}
+                {{--<div class="items-title">--}}
+                    {{--<div class="active">Tinh dầu</div>--}}
+                    {{--@foreach($juicecategories as $category)--}}
+                    {{--<div><a href="/tinh-dau-vape/{{ $category['slug'] }}">{{ $category['name'] }}</a></div>--}}
+                    {{--@endforeach--}}
+                    {{--<select name="" id="">--}}
+                        {{--@foreach($juicecategories as $category)--}}
+                        {{--<option value="">{{ $category['name'] }}</option>--}}
+                        {{--@endforeach--}}
+                    {{--</select>--}}
+                    {{--<div class="item-hr-2"></div>--}}
+                {{--</div>--}}
+            {{--</div>--}}
+            {{--<div class="col-lg-12 custom-no-padding">--}}
+                {{--<div class="container-carousel no-padding" style="margin-bottom:20px">--}}
+                    {{--<div id="2nd_sub_slider" class="carousel slide">--}}
+                        {{--<!-- Wrapper for slides -->--}}
+                        {{--<div class="carousel-inner">--}}
+                            {{--@php--}}
+                                {{--$i = 0--}}
+                            {{--@endphp--}}
+                            {{--@foreach($second_sub_slider->sliderDetails as $slider)--}}
+                            {{--<div class="item {{ $i ==0 ? 'active' : '' }}">--}}
+                                {{--<img class="img-responsive" src="{{ asset($slider->media->url) }}" alt="{{ $slider->media->alt_text }}">--}}
+                            {{--</div>--}}
+                            {{--@php--}}
+                                {{--$i++--}}
+                            {{--@endphp--}}
+                            {{--@endforeach--}}
+                        {{--</div>--}}
 
-                                        @else
-                                            {{ number_format($accessory->item->price,0, ",",".") }} VNĐ
-                                        @endif
-                                    </div>
+                    {{--</div>--}}
+                {{--</div>--}}
 
-                                </a>
-                                <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $accessory->item->id }}" value="{{ $accessory->id }}">
-                                <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $accessory->item->id }}" value="{{ $accessory->item_category_id }}">
-                                <div class="btn-cart" id="{{ $accessory->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
-                            </div>
-                        </div>
-                        @else
-                        <div>
-                            <div class="item">
-                                <a href="/phu-kien/{{ $accessory->item->itemCategory->slug }}/{{ $accessory->item->id }}/{{ $accessory->item->slug }}">
-                                    @if($accessory->medias()->first() == null )
-                                    <img class="img-responsive" src="https://via.placeholder.com/650x650?text=No+image" alt="">
-                                    @else
-                                    <img class="img-responsive"
-                                    src="
-                                    {{ asset($accessory->medias()->first()->url) }}
-                                    " alt="">
-                                    @endif
-                                    <div class="item-name">{{ $accessory->brand->name . ' ' . $accessory->item->name }}</div>
-                                    <div class="item-price">
-                                        @if($accessory->item->price_off > 0 || $accessory->item->price_off != null)
-                                            {{ number_format($accessory->item->price_off,0, ",",".") }} VNĐ
-                                            <span>{{ number_format($accessory->item->price,0, ",",".") }} VNĐ</span>
+                {{--<div class="items-carousel">--}}
+                    {{--@foreach($juices as $juice)--}}
+                        {{--@if($juice->medias()->where('media_id', $juice->item->index_img)->get()->isNotEmpty())--}}
+                        {{--<div>--}}
+                            {{--<div class="item">--}}
+                                {{--<a href="/tinh-dau-vape/{{ $juice->item->itemCategory->slug }}/{{ $juice->item->id }}/{{ $juice->item->slug }}">--}}
+                                    {{--<img class="img-responsive"--}}
+                                    {{--src="--}}
+                                    {{--@foreach($juice->medias()->where('media_id', $juice->item->index_img)->get() as $img)--}}
+                                    {{--{{ asset($img->url) }}--}}
+                                    {{--@endforeach--}}
+                                    {{--" alt="">--}}
+                                    {{--<div class="item-name">{{ $juice->brand->name . ' ' . $juice->item->name }}</div>--}}
+                                    {{--<div class="item-price">--}}
+                                        {{--@if($juice->item->price_off > 0 || $juice->item->price_off != null)--}}
+                                            {{--{{ number_format($juice->item->price_off,0, ",",".") }} VNĐ--}}
+                                            {{--<span>{{ number_format($juice->item->price,0, ",",".") }} VNĐ</span>--}}
 
-                                        @else
-                                            {{ number_format($accessory->item->price,0, ",",".") }} VNĐ
-                                        @endif
-                                    </div>
+                                        {{--@else--}}
+                                            {{--{{ number_format($juice->item->price,0, ",",".") }} VNĐ--}}
+                                        {{--@endif--}}
+                                    {{--</div>--}}
 
-                                </a>
-                                <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $accessory->item->id }}" value="{{ $accessory->id }}">
-                                <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $accessory->item->id }}" value="{{ $accessory->item_category_id }}">
-                                <div class="btn-cart" id="{{ $accessory->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
-                            </div>
-                        </div>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </section>
+                                {{--</a>--}}
+                                {{--<input type="hidden" name="hid_item_id" id="hid_item_id_{{ $juice->item->id }}" value="{{ $juice->id }}">--}}
+                                {{--<input type="hidden" name="hid_category_id" id="hid_category_id_{{ $juice->item->id }}" value="{{ $juice->item_category_id }}">--}}
+                                {{--<div class="btn-cart" id="{{ $juice->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                        {{--@else--}}
+                        {{--<div>--}}
+                            {{--<div class="item">--}}
+                                {{--<a href="/tinh-dau-vape/{{ $juice->item->itemCategory->slug }}/{{ $juice->item->id }}/{{ $juice->item->slug }}">--}}
+                                    {{--@if($juice->medias()->first() == null)--}}
+                                    {{--<img class="img-responsive" src="https://via.placeholder.com/650x650?text=No+image" alt="">--}}
+                                    {{--@else--}}
+                                    {{--<img class="img-responsive"--}}
+                                    {{--src="--}}
+                                    {{--{{ asset($juice->medias()->first()->url) }}--}}
+                                    {{--" alt="">--}}
+                                    {{--@endif--}}
+                                    {{--<div class="item-name">{{ $juice->brand->name . ' ' . $juice->item->name }}</div>--}}
+                                    {{--<div class="item-price">--}}
+                                        {{--@if($juice->item->price_off > 0 || $juice->item->price_off != null)--}}
+                                            {{--{{ number_format($juice->item->price_off,0, ",",".") }} VNĐ--}}
+                                            {{--<span>{{ number_format($juice->item->price,0, ",",".") }} VNĐ</span>--}}
+
+                                        {{--@else--}}
+                                            {{--{{ number_format($juice->item->price,0, ",",".") }} VNĐ--}}
+                                        {{--@endif--}}
+                                    {{--</div>--}}
+
+                                {{--</a>--}}
+                                {{--<input type="hidden" name="hid_item_id" id="hid_item_id_{{ $juice->item->id }}" value="{{ $juice->id }}">--}}
+                                {{--<input type="hidden" name="hid_category_id" id="hid_category_id_{{ $juice->item->id }}" value="{{ $juice->item_category_id }}">--}}
+                                {{--<div class="btn-cart" id="{{ $juice->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                        {{--@endif--}}
+                    {{--@endforeach--}}
+                {{--</div>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+    {{--</section>--}}
+
+    {{--<section class="item-div">--}}
+        {{--<div class="container">--}}
+            {{--<div class="col-lg-12 custom-no-padding">--}}
+                {{--<div class="items-title">--}}
+                    {{--<div class="active">Phụ kiện</div>--}}
+                    {{--@foreach($accessorycategories as $category)--}}
+                    {{--<div><a href="/phu-kien/{{ $category['slug'] }}">{{ $category['name'] }}</a></div>--}}
+                    {{--@endforeach--}}
+                    {{--<select name="" id="">--}}
+                        {{--@foreach($accessorycategories as $category)--}}
+                        {{--<option value="">{{ $category['name'] }}</option>--}}
+                        {{--@endforeach--}}
+                    {{--</select>--}}
+                    {{--<div class="item-hr"></div>--}}
+                {{--</div>--}}
+            {{--</div>--}}
+            {{--<div class="col-lg-12 custom-no-padding">--}}
+                {{--<div class="items-carousel">--}}
+                    {{--@foreach($accessories as $accessory)--}}
+                        {{--@if($accessory->medias()->where('media_id', $accessory->item->index_img)->get()->isNotEmpty())--}}
+                        {{--<div>--}}
+                            {{--<div class="item">--}}
+                                {{--<a href="/phu-kien/{{ $accessory->item->itemCategory->slug }}/{{ $accessory->item->id }}/{{ $accessory->item->slug }}">--}}
+                                    {{--<img class="img-responsive"--}}
+                                    {{--src="--}}
+                                    {{--@foreach($accessory->medias()->where('media_id', $accessory->item->index_img)->get() as $img)--}}
+                                    {{--{{ asset($img->url) }}--}}
+                                    {{--@endforeach--}}
+                                    {{--" alt="">--}}
+                                    {{--<div class="item-name">{{ $accessory->brand->name . ' ' . $accessory->item->name }}</div>--}}
+                                    {{--<div class="item-price">--}}
+                                        {{--@if($accessory->item->price_off > 0 || $accessory->item->price_off != null)--}}
+                                            {{--{{ number_format($accessory->item->price_off,0, ",",".") }} VNĐ--}}
+                                            {{--<span>{{ number_format($accessory->item->price,0, ",",".") }} VNĐ</span>--}}
+
+                                        {{--@else--}}
+                                            {{--{{ number_format($accessory->item->price,0, ",",".") }} VNĐ--}}
+                                        {{--@endif--}}
+                                    {{--</div>--}}
+
+                                {{--</a>--}}
+                                {{--<input type="hidden" name="hid_item_id" id="hid_item_id_{{ $accessory->item->id }}" value="{{ $accessory->id }}">--}}
+                                {{--<input type="hidden" name="hid_category_id" id="hid_category_id_{{ $accessory->item->id }}" value="{{ $accessory->item_category_id }}">--}}
+                                {{--<div class="btn-cart" id="{{ $accessory->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                        {{--@else--}}
+                        {{--<div>--}}
+                            {{--<div class="item">--}}
+                                {{--<a href="/phu-kien/{{ $accessory->item->itemCategory->slug }}/{{ $accessory->item->id }}/{{ $accessory->item->slug }}">--}}
+                                    {{--@if($accessory->medias()->first() == null )--}}
+                                    {{--<img class="img-responsive" src="https://via.placeholder.com/650x650?text=No+image" alt="">--}}
+                                    {{--@else--}}
+                                    {{--<img class="img-responsive"--}}
+                                    {{--src="--}}
+                                    {{--{{ asset($accessory->medias()->first()->url) }}--}}
+                                    {{--" alt="">--}}
+                                    {{--@endif--}}
+                                    {{--<div class="item-name">{{ $accessory->brand->name . ' ' . $accessory->item->name }}</div>--}}
+                                    {{--<div class="item-price">--}}
+                                        {{--@if($accessory->item->price_off > 0 || $accessory->item->price_off != null)--}}
+                                            {{--{{ number_format($accessory->item->price_off,0, ",",".") }} VNĐ--}}
+                                            {{--<span>{{ number_format($accessory->item->price,0, ",",".") }} VNĐ</span>--}}
+
+                                        {{--@else--}}
+                                            {{--{{ number_format($accessory->item->price,0, ",",".") }} VNĐ--}}
+                                        {{--@endif--}}
+                                    {{--</div>--}}
+
+                                {{--</a>--}}
+                                {{--<input type="hidden" name="hid_item_id" id="hid_item_id_{{ $accessory->item->id }}" value="{{ $accessory->id }}">--}}
+                                {{--<input type="hidden" name="hid_category_id" id="hid_category_id_{{ $accessory->item->id }}" value="{{ $accessory->item_category_id }}">--}}
+                                {{--<div class="btn-cart" id="{{ $accessory->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                        {{--@endif--}}
+                    {{--@endforeach--}}
+                {{--</div>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+    {{--</section>--}}
+
     <div class="modal fade" role="dialog" id="item_check">
         <div class="modal-dialog modal_item_check">
             <!-- Modal content-->

@@ -29,9 +29,9 @@ class Alpha
             $str = preg_replace("/($uni)/i", $nonUnicode, $str);
         }
         $str = preg_replace('/-/', '', $str);
+        $str = preg_replace('/&/', '', $str);
         $str = preg_replace('/\s+/', '-', $str);
         $str = preg_replace('/_/', '-', $str);
         return strtolower($str);
     }
 }
-    

@@ -27,7 +27,6 @@ class AdminPagesController extends Controller
     {
         //
         $pages = Page::orderBy('id', 'desc')->paginate(10);
-        //dd($articles);
         return view('admin.pages.index', compact('pages'));
     }
 
@@ -68,6 +67,7 @@ class AdminPagesController extends Controller
         $page = new Page;
         $page->name = $request->name;
         $page->description = $request->description;
+        $page->content = $request->content_page;
         $page->admin_id = Auth::user()->id;
         $page->slug = Alpha::alpha_dash($page->name);
         $page->page_id = $request->page_id;
@@ -103,9 +103,9 @@ class AdminPagesController extends Controller
         $pages = Page::whereNull ('page_id')->pluck('name','id');
         $article_media = $page->media;
         return view('admin.pages.edit', compact('page','medias','pages'));
-        
+
         //dd($tags);
-        
+
     }
 
     /**
@@ -135,7 +135,7 @@ class AdminPagesController extends Controller
         $page = Page::findOrFail($id);
         $page->name = $request->name;
         $page->description = $request->description;
-        $page->content = $request->content;
+        $page->content = $request->content_page;
         $page->page_id = $request->page_id;
         $page->save();
         //dd($input);
@@ -160,7 +160,6 @@ class AdminPagesController extends Controller
     public function uploadImage(Request $request, $id)
     {
         //
-        //dd($request->all());
         $file = $request->file('medias');
         $page = Page::findOrFail($id);
         if($file === null)
@@ -188,7 +187,6 @@ class AdminPagesController extends Controller
         {
             $page->media()->sync($media);
         }
-        //dd($page->media);
         return redirect()->route('pages.edit', [$id])->with('status','Cập nhật image thành công');
     }
 
@@ -196,7 +194,6 @@ class AdminPagesController extends Controller
     {
         $input = $request->all();
         $page = Page::findOrFail($id);
-        //dd($request->all());
         $media = Media::findOrFail($input['media_id']);
         $page->media()->sync($media);
         return redirect()->route('pages.edit', [$id])->with('status','Cập nhật image thành công');

@@ -20,7 +20,13 @@ class AdminItemCategoriesController extends Controller
     public function index()
     {
     	$item_cats = ItemCategory::orderBy('id', 'desc')->paginate(15);
-        $item_cats_parent = ItemCategory::where('item_category_id','<=',0)->get()->pluck('name','id');
+        $item_cats_all = ItemCategory::all();
+        foreach ($item_cats_all as $it_cat) {
+            if($it_cat->id === $it_cat->item_category_id)
+            {
+                $item_cats_parent[$it_cat->id] = $it_cat->name;
+            }
+        }
     	return view('admin.items.categories.index', compact('item_cats','item_cats_parent'));
     }
 
@@ -39,6 +45,9 @@ class AdminItemCategoriesController extends Controller
         $item_cat = new ItemCategory;
         $item_cat->name = $request->name;
         $item_cat->slug = Alpha::alpha_dash($request->name);
+        $item_cat->item_cat_features = json_encode($request->feature);
+        $item_cat->save();
+        $item_cat->item_category_id = $item_cat->id;
         $item_cat->save();
         return redirect()->route('admin.items.cat.index')->with('status', 'Thêm loại phụ kiện mới thành công!');
     }
@@ -58,9 +67,9 @@ class AdminItemCategoriesController extends Controller
             return redirect()->route('admin.items.cat.index')
                         ->withErrors($validator);
         }
-
         $item_cat = ItemCategory::findOrFail($id);
         $item_cat->slug = Alpha::alpha_dash($request->name);
+        $item_cat->item_cat_features = json_encode($request->feature);
         $item_cat->update($request->all());
         return redirect()->route('admin.items.cat.index')->with('status','Lưu thành công!');
     }

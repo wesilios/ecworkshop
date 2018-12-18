@@ -62,11 +62,11 @@
 			                    </div>
 
 			                    <div class="form-group {{ $errors->has('content') ? ' has-error' : '' }}">
-	                    			{!! Form::label('content', 'Nội dung chi tiết:', ['class' => 'control-label'] ) !!}
-									{!! Form::textarea('content', $page->content, ['class'=>'form-control textarea']) !!}
-		                      		@if ($errors->has('content'))
+	                    			{!! Form::label('content_page', 'Nội dung chi tiết:', ['class' => 'control-label'] ) !!}
+									{!! Form::textarea('content_page', $page->content, ['class'=>'form-control textarea']) !!}
+		                      		@if ($errors->has('content_page'))
 						                <span class="help-block">
-						                    <strong>{{ $errors->first('content') }}</strong>
+						                    <strong>{{ $errors->first('content_page') }}</strong>
 						                </span>
 						            @endif
 			                    </div>

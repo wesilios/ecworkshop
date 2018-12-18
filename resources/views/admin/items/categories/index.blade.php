@@ -25,6 +25,22 @@
 		                			{!! Form::label('name', 'Tên loại sản phẩm mới:', ['class' => 'control-label'] ) !!}
 									{!! Form::text('name', null, ['class'=>'form-control']) !!}
 			                    </div>
+								<div class="form-group">
+									<label for="">Màu sắc</label>
+									<select name="feature[color]" class="form-control">
+										<option value=""></option>
+										<option value="single">Single</option>
+										<option value="multiple">Multiple</option>
+									</select>
+								</div>
+								<div class="form-group">
+									<label for="">Dung tích</label>
+									<select name="feature[size]" class="form-control">
+										<option value=""></option>
+										<option value="single">Single</option>
+										<option value="multiple">Multiple</option>
+									</select>
+								</div>
 			                    <div class="form-group">
 			                    	{!! Form::submit('Lưu', ['class'=>'col-md-12 btn btn-primary']) !!}
 			                    </div>
@@ -84,14 +100,16 @@
 											<td>{{ $item_cat->id }}</td>
 											<td>{{ $item_cat->name }}</td>
 											<td>
-												{!! Form::select(
-													'item_category_id',
-													$item_cats_parent,
-													$item_cat->itemCategory['id'],
-													['class'=>'form-control','placeholder'=>'-- Không có loại sản phẩm cha --']
-													);
-												!!}
-
+												<select name="item_category_id" id="item_category_id" class="form-control">
+													@if($item_cat->id === $item_cat->item_category_id)
+														<option value="" selected>-- Không có loại sản phẩm cha --</option>
+													@endif
+													@foreach($item_cats_parent as $key => $it_cat_parent)
+														@if($key != $item_cat->id)
+															<option value="{{ $key }}" {{ $key == $item_cat->item_category_id ? 'selected' : '' }}>{{ $it_cat_parent }}</option>
+														@endif
+													@endforeach
+												</select>
 											</td>
 											<td>{{ $item_cat->created_at->diffForHumans() }}</td>
 											<td>{{ $item_cat->updated_at->diffForHumans() }}</td>
@@ -161,15 +179,32 @@
 			                			{!! Form::label('name', 'Tên loại sản phẩm mới:', ['class' => 'control-label'] ) !!}
 										{!! Form::text('name', $item_cat->name, ['class'=>'form-control']) !!}
 				                    </div>
+									@php $features = json_decode($item_cat->item_cat_features,true) @endphp
+									<div class="form-group">
+										<label for="">Màu sắc</label>
+										<select name="feature[color]" class="form-control">
+											<option value=""></option>
+											<option value="single" {{ $features['color'] == 'single' ? 'selected' : '' }}>Single</option>
+											<option value="multiple" {{ $features['color'] == 'multiple' ? 'selected' : '' }}>Multiple</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="">Dung tích</label>
+										<select name="feature[size]" class="form-control">
+											<option value=""></option>
+											<option value="single" {{ $features['size'] == 'single' ? 'selected' : '' }}>Single</option>
+											<option value="multiple" {{ $features['size'] == 'multiple' ? 'selected' : '' }}>Multiple</option>
+										</select>
+									</div>
 				                    <div class="form-group">
 				                    	{!! Form::submit('Lưu chỉnh sửa', ['class'=>'col-md-12 btn btn-primary']) !!}
 				                    </div>
 		            			{!! Form::close() !!}
 		        			</div>
 		        		</div>
-		        		<div class="modal-footer">
+						<div class="modal-footer">
 
-		        		</div>
+						</div>
 		      		</div>
 		    	</div>
 		 	</div>

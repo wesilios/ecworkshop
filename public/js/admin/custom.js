@@ -93,4 +93,8 @@ $(document).ready(function(){
 		$('#selIndexImgForm option').attr('selected', false);
 		$('#selIndexImgForm option[value="'+ id +'"]').attr('selected', true);
 	});
+
+	$('#feature_value').on('change click', function(){
+
+	});
 });

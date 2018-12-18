@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Alpha;
 use App\ItemCategory;
 use Illuminate\Http\Request;
 use App\Item;
@@ -9,6 +10,10 @@ use App\ItemStatus;
 use App\Brand;
 use App\Media;
 use App\Folder;
+use App\Color;
+use App\Size;
+use Validator;
+use Auth;
 
 class AdminItemsController extends Controller
 {
@@ -29,20 +34,12 @@ class AdminItemsController extends Controller
             $slug = $rq->get('item_category');
             if($slug) {
                 $item_category = ItemCategory::where('slug','=',$slug)->first();
-                if($item_category->itemCategories->isNotEmpty())
-                {
-                    $items = Item::where('item_category_parent_id','=',$item_category->id)->paginate(10);//->paginate(10);
-                } else {
-                    $items = Item::where('item_category_id','=',$item_category->id)->paginate(10);//->paginate(10);
-                }
-                if($items->count() > 0)
-                {
-                    return view('admin.items.index',[
-                        'items'             => $items,
-                        'item_category'     => $item_category,
-                        'title'             => $item_category->name,
-                    ]);
-                }
+                $items = Item::where('item_category_parent_id','=',$item_category->id)->paginate(10);//->paginate(10);
+                return view('admin.items.index',[
+                    'items'             => $items,
+                    'item_category'     => $item_category,
+                    'title'             => $item_category->name,
+                ]);
             } else {
                 return '';
             }
@@ -54,7 +51,21 @@ class AdminItemsController extends Controller
     public function create(Request $rq, $slug)
     {
         try {
-
+            if($slug) {
+                $item_category = ItemCategory::where('slug','=',$slug)->first();
+                $brands = Brand::all()->pluck('name','id');
+                $colors = Color::all()->pluck('name','id');
+                $juice_sizes = Size::all()->pluck('name','id');
+                $statuses = ItemStatus::all()->pluck('name','id');
+                return view('admin.items.create',[
+                    'title'             => $item_category->name,
+                    'brands'            => $brands,
+                    'colors'            => $colors,
+                    'juice_sizes'       => $juice_sizes,
+                    'item_category'     => $item_category,
+                    'statuses'          => $statuses
+                ]);
+            }
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -63,7 +74,56 @@ class AdminItemsController extends Controller
     public function store(Request $rq, $slug)
     {
         try {
+            $validator = Validator::make($rq->all(), [
+                'name'                      => 'required|string|max:255',
+                'summary'                   => 'required|string|max:255',
+                'description'               => 'required|string',
+                'price'                     => 'required|numeric',
+                'price_off'                 => 'nullable|numeric',
+                'brand_id'                  => 'required',
+                'item_category_id'          => 'required',
+                'item_category_parent_id'   => 'required'
+            ]);
 
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator)->withInput()->with(['status'=>'error','message'=>'Some attribute is missing.']);
+            }
+
+            $item = new Item();
+            $item->name                     = $rq->name;
+            $item->summary                  = $rq->summary;
+            $item->description              = $rq->description;
+            $item->price                    = $rq->price;
+            $item->price_off                = $rq->price_off;
+            $item->item_status_id           = $rq->item_status_id;
+            $item->size_id                  = $rq->size_id;
+            $item->homepage_active          = $rq->homepage_active == 'on' ? 1 : 0;
+            $item->brand_id                 = $rq->brand_id;
+            $item->slug                     = Alpha::alpha_dash($item->name);
+            $item->item_category_id         = $rq->item_category_id;
+            $item->item_category_parent_id  = $rq->item_category_parent_id;
+            $item->admin_id                 = Auth::user()->id;
+            if($item->save()){
+                $item->item_category_parent_id == 0 ? $item_cat_slug = $item->itemCategoryMain->slug : $item_cat_slug = $item->itemCategoryParent->slug;
+                $colors                         = $rq->post('color_id');
+                if(isset($colors))
+                {
+                    $item->colors()->detach();
+                    foreach($colors as $input_color)
+                    {
+                        $color = Color::findOrFail($input_color);
+                        if(in_array($input_color, $item->colors->pluck('id')->all()))
+                        {
+                            //echo "";
+                        }
+                        else
+                        {
+                            $item->colors()->save($color);
+                        }
+                    }
+                }
+                return redirect()->route('admin.items.edit',['slug'=>$item->slug,'item_category'=>$item_cat_slug])->with(['status'=>'success','message'=>'Tạo sản phẩm thành công.']);
+            }
         } catch (\Exception $e) {
             return $e->getMessage();
         }
@@ -78,6 +138,8 @@ class AdminItemsController extends Controller
             {
                 $brands = Brand::all()->pluck('name','id');
                 $statuses = ItemStatus::all()->pluck('name','id');
+                $colors = Color::all()->pluck('name','id');
+                $juice_sizes = Size::all()->pluck('name','id');
                 $medias = Media::where('folder_id','=','1');
                 $medias = $medias->orderBy('id', 'desc')->get();
                 $folder = Folder::findOrFail(1);
@@ -85,7 +147,7 @@ class AdminItemsController extends Controller
                 $new = ['folder_id' => $folder->id,'folder_name' => $folder->name, 'folder_slug'=>$folder->slug];
                 $folder_string[] = $new;
                 $item_category = ItemCategory::where('slug','=',$item_category_slug)->first();
-                if($item_category->item_category_id > 0 || $item_category->item_category_id != 0){
+                if($item_category->itemCategories->isNotEmpty()){
                     $item = Item::where('slug','=',$slug)->where('item_category_parent_id','=',$item_category->id)->first();
                 } else {
                     $item = Item::where('slug','=',$slug)->where('item_category_id','=',$item_category->id)->first();
@@ -112,7 +174,10 @@ class AdminItemsController extends Controller
                         'folder_list'           => $folder_list,
                         'folder_string'         => $folder_string,
                         'index_img'             => $index_img,
-                        'media_remain'          => $media_remain
+                        'media_remain'          => $media_remain,
+                        'colors'                => $colors,
+                        'juice_sizes'           => $juice_sizes,
+                        'color_value'           => $item->colors->isNotEmpty() ? $item->colors->pluck('id') : [],
                     ]);
                 }
                 return '';
@@ -120,33 +185,103 @@ class AdminItemsController extends Controller
                 return '';
             }
         } catch (\Exception $e){
-            return $e->getMessage();
+            return redirect()->back()->withInput()->with(['status'=>'error','message'=>$e->getMessage()]);
         }
     }
 
     public function update(Request $rq, $slug)
     {
         try {
-            dd($slug);
+            $validator = Validator::make($rq->all(), [
+                'name' => 'required|string|max:255',
+                'summary' => 'required|string|max:255',
+                'description' => 'required|string',
+                'price' => 'required|numeric',
+                'price_off' => 'nullable|numeric',
+                'brand_id' => 'required',
+                'item_category' => 'required'
+            ]);
+
+            if ($validator->fails()) {
+                return redirect()->route('admin.items.update',['slug'=>$slug,'item_category'=>$rq->item_category])
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+            $item_category = ItemCategory::where('slug','=',$rq->item_category)->first();
+            if($item_category->itemCategories->isNotEmpty())
+            {
+                $item = Item::where('slug','=',$slug)->where('item_category_parent_id','=',$item_category->id)->first();
+                $item->item_category_parent_id = $item_category->id;
+                $item->item_category_id        = $rq->item_category_id;
+            } else {
+                $item = Item::where('slug','=',$slug)->where('item_category_id','=',$item_category->id)->first();
+                $item->item_category_parent_id = $item_category->id;
+                $item->item_category_id        = $item_category->id;
+            }
+            if($item)
+            {
+                $item->name             = $rq->name;
+                $item->summary          = $rq->summary;
+                $item->description      = $rq->description;
+                $item->price            = $rq->price;
+                $item->price_off        = $rq->price_off;
+                $item->item_status_id   = $rq->item_status_id;
+                $item->size_id          = $rq->size_id;
+                $item->homepage_active  = $rq->homepage_active == 'on' ? 1 : 0;
+                $item->brand_id         = $rq->brand_id;
+                $item->slug             = Alpha::alpha_dash($item->name);
+                $colors                 = $rq->post('color_id');
+                if(isset($colors))
+                {
+                    $item->colors()->detach();
+                    foreach($colors as $input_color)
+                    {
+                        $color = Color::findOrFail($input_color);
+                        if(in_array($input_color, $item->colors->pluck('id')->all()))
+                        {
+                            //echo "";
+                        }
+                        else
+                        {
+                            $item->colors()->save($color);
+                        }
+                    }
+                }
+                if($item->save()){
+                    return redirect()->back()->with(['status'=>'success','message'=>'Cập nhật thành công.']);
+                }
+            } else {
+                return redirect()->back()->withInput()->with(['status'=>'error','message'=>'Something wrong!']);
+            }
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return redirect()->back()->withInput()->with(['status'=>'error','message'=>$e->getMessage()]);
         }
     }
 
     public function destroy(Request $rq, $slug)
     {
         try {
-            $item = Item::where('slug','=',$slug)->first();
-            $item_catgegory = ItemCategory::where('slug','=',$rq->item_category)->first();
-            if($item && $item_catgegory)
+            $item_category_id = $rq->item_category_id;
+            $item = Item::where('slug','=',$slug)->where('item_category_id','=',$item_category_id)->first();
+            $item_category = ItemCategory::find($item_category_id);
+            if($item_category->item_category_id != 0 || !empty($item_category->item_category_id ))
             {
-//                $item->detach();
-                return redirect()->route('admin.items.index',['item_category'=>$rq->item_category])->with('delete','Xóa '. strtolower($item_catgegory->name) .' thành công!');
+                $item_category_slug = $item_category->itemCategory->slug;
             } else {
-                return '';
+                $item_category_slug = $item_category->slug;
+            }
+            $name = $item->name;
+            if($item)
+            {
+                $item->colors()->detach();
+                $item->medias()->detach();
+                $item->delete();
+                return redirect()->route('admin.items.index',['item_category'=>$item_category_slug])->with('delete','Xóa '. strtolower($name) .' thành công!');
+            } else {
+                return redirect()->back()->withInput()->with(['status'=>'error','message'=>'Something wrong']);
             }
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return redirect()->back()->withInput()->with(['status'=>'error','message'=>$e->getMessage()]);
         }
     }
 
@@ -209,7 +344,7 @@ class AdminItemsController extends Controller
             }
             return redirect()->route('admin.items.edit', ['slug'=>$slug,'item_category'=>$request->item_category])->with('status','Cập nhật image thành công');
         } else {
-            return redirect()->route('admin.items.edit', ['slug'=>$slug,'item_category'=>$request->item_category])->with('status','Vui lòng chọn ảnh cần cập nhật');
+            return redirect()->back()->with(['status'=>'error','message'=>'Vui lòng chọn ảnh cần cập nhật']);
         }
     }
 

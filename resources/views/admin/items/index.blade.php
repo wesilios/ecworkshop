@@ -26,11 +26,11 @@
                 @php
                     $i = 1;
                 @endphp
-                @if(session('status'))
-                    <div class="alert alert-info alert-dismissable">
+                @if(session('status') == 'error')
+                    <div class="alert alert-warning alert-dismissable">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                         <h4><i class="icon fa fa-info"></i> Alert!</h4>
-                        {{ session('status') }}
+                        {{ session('message') }}
                     </div>
                 @endif
                 @if(session('delete'))
@@ -50,7 +50,7 @@
                                 <th>#Id</th>
                                 <th>{{ !empty($title) ? $title : '' }}</th>
                                 @if ($item_category->item_category_id > 0 || $item_category->item_category_id !=0)
-                                <th>Loại {{ !empty($title) ? strtoupper($title) : '' }}</th>
+                                <th>Loại {{ !empty($title) ? strtolower($title) : '' }}</th>
                                 @endif
                                 <th>Giá</th>
                                 <th>Giá giảm</th>
@@ -73,7 +73,7 @@
                                         <td>{{ $item->admin->name }}</th>
                                         <td>
                                             <a href="{{ route('admin.items.edit',['slug'=>$item->slug,'item_category'=>$item_category->slug]) }}" class="btn btn-info btn-sm"><i class="fa fa-edit "></i> Sửa</a>
-                                            <a href="#" data-toggle="modal" data-target="#delete" class="btn btn-danger btn-sm">
+                                            <a href="#" data-toggle="modal" data-target="#delete{{$item->id}}" class="btn btn-danger btn-sm">
                                                 <i class="fa fa-trash "></i> Xóa
                                             </a>
                                         </td>
@@ -89,21 +89,22 @@
                         </div>
                     </div>
                 </div>
-                <a href="{{ route('tanks.create') }}" class="btn btn-info"><i class="fa fa-plus"></i> {{ !empty($title) ? $title : '' }} mới</a>
+                <a href="{{ route('admin.items.create',[$item_category->slug]) }}" class="btn btn-info"><i class="fa fa-plus"></i> {{ !empty($title) ? $title : '' }} mới</a>
             </div>
         </div>
     </section>
     @if($items->count() > 0)
         @foreach($items as $item)
             <div class="example-modal">
-                <div class="modal fade item_modal" id="delete" role="dialog">
+                <div class="modal fade item_modal" id="delete{{$item->id}}" role="dialog">
                     <div class="modal-dialog delete-dialog" style="">
                         <div class="modal-content">
                             <div class="modal-body">
                                 <h5>Xóa sản phẩm này?</h5>
                             </div>
                             <div class="modal-footer">
-                                {!! Form::open(['method'=>'DELETE', 'action'=>['AdminTanksController@destroy', $item->id], 'class'=>'form-horizontal']) !!}
+                                {!! Form::open(['method'=>'DELETE', 'action'=>['AdminItemsController@destroy', $item->slug], 'class'=>'form-horizontal']) !!}
+                                <input type="hidden" name="item_category_id" value="{{$item->item_category_id}}">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
                                 {!! Form::submit('Xóa', ['class'=>'btn btn-primary']) !!}
                                 {!! Form::close() !!}

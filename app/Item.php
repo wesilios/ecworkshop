@@ -43,6 +43,11 @@ class Item extends Model
     	return $this->hasMany('App\Assessory');
     }
 
+    public function brand()
+    {
+        return $this->belongsTo('App\Brand');
+    }
+
     public function itemCategoryMain()
     {
         return $this->belongsTo('App\ItemCategory' ,'item_category_id', 'id');
@@ -61,6 +66,11 @@ class Item extends Model
     public function colors()
     {
         return $this->belongsToMany('App\Color', 'color_item','item_id','color_id');
+    }
+
+    public function size()
+    {
+        return $this->belongsTo('App\Size');
     }
 
     public function medias()

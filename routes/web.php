@@ -32,7 +32,6 @@ Route::post('/home/logout', 'Auth\LoginController@userLogout')->name('home.logou
 
 include ('admin.php');
 
-
 /*
 |---------------------------------------------------------------------------|
 | Mainsite                                                                  |

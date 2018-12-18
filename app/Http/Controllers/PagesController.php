@@ -41,47 +41,59 @@ class PagesController extends Controller
 
     public function getHome()
     {
-    	$settings = Setting::findOrFail(1);
-    	$main_slider = Slider::findOrFail(1);
-        $first_sub_slider = Slider::findOrFail(2);
-        $second_sub_slider = Slider::findOrFail(3);
-    	$boxes = Box::where('homepage_active', 1)->get();
-    	$tanks = Tank::where('homepage_active', 1)->get();
-        $tankcategories = ItemCategory::where('item_category_id','3')->get();
-        $juices = Juice::where('homepage_active', 1)->get();
-        $juicecategories = ItemCategory::where('item_category_id','4')->get();
-        $accessories = Accessory::where('homepage_active', 1)->get();
-        $accessorycategories = ItemCategory::where('item_category_id','5')->get();
-        $articles = Article::where('category_id','>','1')->paginate(5);
-        $footer_1st_menu = Menu::where('id',2)->first();
-        $footer_2nd_menu = Menu::where('id',3)->first();
-        $top_nav = Menu::where('id',1)->first();
-        /*$top_nav = MenuPage::where(function ($query) {
-                    $query->where('menu_id',1)
-                          ->where('order_id', '=', '0');
-                    })->orderBy('order')->get();*/
-        //
+    	try {
+            $settings = Setting::findOrFail(1);
+            $main_slider = Slider::findOrFail(1);
+            $first_sub_slider = Slider::findOrFail(2);
+            $second_sub_slider = Slider::findOrFail(3);
 
-        //dd($sub_nav);
-    	return view('mainsite.home', compact(
+            $items = Item::where('homepage_active','=',1);
+            $item_cats_all = ItemCategory::all();
+            foreach ($item_cats_all as $it_cat) {
+                if($it_cat->id === $it_cat->item_category_id)
+                {
+                    $item_cats_parent[$it_cat->id]  = $it_cat;
+                    $item_parents[$it_cat->id]      = $items->where('item_category_id','=',$it_cat->id)->get();
+                }
+            }
 
-            'settings',
-            'main_slider',
-            'first_sub_slider',
-            'second_sub_slider',
-            'boxes',
-            'tanks',
-            'tankcategories',
-            'juices',
-            'juicecategories',
-            'accessories',
-            'accessorycategories',
-            'articles',
-            'footer_1st_menu',
-            'footer_2nd_menu',
-            'top_nav'
+            $boxes = Box::where('homepage_active', 1)->get();
+            $tanks = Tank::where('homepage_active', 1)->get();
+            $tankcategories = ItemCategory::where('item_category_id','3')->get();
+            $juices = Juice::where('homepage_active', 1)->get();
+            $juicecategories = ItemCategory::where('item_category_id','4')->get();
+            $accessories = Accessory::where('homepage_active', 1)->get();
+            $accessorycategories = ItemCategory::where('item_category_id','5')->get();
 
-        ));
+            $articles = Article::where('category_id','>','1')->paginate(5);
+            $footer_1st_menu = Menu::where('id',2)->first();
+            $footer_2nd_menu = Menu::where('id',3)->first();
+            $top_nav = Menu::where('id',1)->first();
+
+            return view('mainsite.home', compact(
+
+                'settings',
+                'main_slider',
+                'first_sub_slider',
+                'second_sub_slider',
+                'boxes',
+                'tanks',
+                'tankcategories',
+                'juices',
+                'juicecategories',
+                'accessories',
+                'accessorycategories',
+                'articles',
+                'footer_1st_menu',
+                'footer_2nd_menu',
+                'top_nav',
+                'item_cats_parent',
+                'item_parents'
+
+            ));
+        } catch (\Exception $e) {
+    	    return $e->getMessage();
+        }
     }
 
     public function getPage($slug)
@@ -173,7 +185,6 @@ class PagesController extends Controller
         {
             $districts = null;
         }
-        //dd($cart);
         return view('mainsite.cart.checkout', compact('cart','settings','top_nav','footer_1st_menu','footer_2nd_menu','cities','districts'));
     }
 

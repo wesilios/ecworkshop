@@ -41,7 +41,7 @@
 
 	<script src="{{ asset('js/app.js') }}"></script>
 	<script src="{{ asset('js/mainsite/libs.js') }}"></script>
-  <script src="{{ asset('js/mainsite/cart.js') }}"></script>
+    <script src="{{ asset('js/mainsite/cart.js') }}"></script>
 	<script type="text/javascript">
         $('.dropdown-toggle').dropdown();
         $('#main_slider').carousel({
@@ -103,6 +103,21 @@
             });
         });
     </script>
+    <!-- Load Facebook SDK for JavaScript -->
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+
+    <!-- Your customer chat code -->
+    <div class="fb-customerchat"
+         attribution=setup_tool
+         page_id="356955021359698">
+    </div>
     @yield('scripts')
 </body>
 </html>

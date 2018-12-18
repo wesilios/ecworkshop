@@ -26,32 +26,7 @@ class ItemsController extends Controller
         $top_nav = Menu::where('id',1)->first();
         $page = Page::where('slug','=', $item_cat)->first();
     	$item_category = ItemCategory::where('slug',$item_cat)->first();
-    	switch ($item_category->id) {
-    		case '1':
-    			$items = Box::orderBy('id','desc')->paginate(24);
-    			break;
-
-    		case '2':
-    			$items = FullKit::orderBy('id','desc')->paginate(24);
-    			break;
-
-    		case '3':
-    			$items = Tank::orderBy('id','desc')->paginate(24);
-    			break;
-
-    		case '4':
-    			$items = Juice::orderBy('id','desc')->paginate(24);
-    			break;
-
-    		case '5':
-    			$items = Accessory::orderBy('id','desc')->paginate(24);
-    			break;
-
-    		default:
-    			# code...
-    			break;
-    	}
-    	//dd($item_cat);
+    	$items = Item::where('item_category_id','=',$item_category->id)->orderBy('id','desc')->paginate(24); //->paginate(24);
     	return view('mainsite.items', compact(
     		'item_cat',
     		'settings',
@@ -73,25 +48,8 @@ class ItemsController extends Controller
         $pageSub = Page::where('slug','=', $item_sub_cat)->first();
     	$item_category = ItemCategory::where('slug',$item_cat)->first();
     	$item_sub_category = ItemCategory::where('slug', $item_sub_cat)->first();
-    	//dd($item_sub_category);
-    	switch ($item_category->id) {
-    		case '3':
-    			$items = Tank::orderBy('id','desc')->where('item_category_id', $item_sub_category['id'])->paginate(24);
-    			break;
-
-    		case '4':
-    			$items = Juice::orderBy('id','desc')->where('item_category_id', $item_sub_category['id'])->paginate(24);
-    			break;
-
-    		case '5':
-    			$items = Accessory::orderBy('id','desc')->where('item_category_id', $item_sub_category['id'])->paginate(24);
-    			break;
-
-    		default:
-    			# code...
-    			break;
-    	}
-    	//dd($item_cat);
+        $items = Item::where('item_category_parent_id','=',$item_category->id)
+            ->where('item_category_id','=',$item_sub_category->id)->paginate(24);
     	return view('mainsite.items', compact(
     		'pageSub',
     		'settings',
