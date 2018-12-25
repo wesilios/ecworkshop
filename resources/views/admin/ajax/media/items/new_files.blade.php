@@ -76,7 +76,7 @@
                         <div class="row modal_folder">
                             @foreach($folder_list as $fd)
                                 @if($folder->id != $fd->id)
-                                    <a href="{{ route('admin.folder.show',$fd->slug) }}" data-folder-id="{{ $fd->id }}" data-folder-slug="{{ $fd->slug }}" class="folder-link" data-active="1">
+                                    <a href="{{ route('admin.folder.show',['id'=>$fd->id,'slug'=>$fd->slug]) }}" data-folder-id="{{ $fd->id }}" data-folder-slug="{{ $fd->slug }}" class="folder-link" data-active="1">
                                         <div class="col-md-12">
                                             <div class="folder">
                                                 <i class="fa fa-folder"></i> <span>{{ $fd->name }}</span>
@@ -143,7 +143,7 @@
 <div class="modal-footer">
     <div class="row">
         <div class="col-md-12">
-            {!! Form::open(['method'=>'PUT', 'action'=>["AdminItemsController@selectImage",$item->id] ,'files'=>true]) !!}
+            {!! Form::open(['method'=>'POST', 'action'=>["AdminItemsController@selectImage",$item->slug] ,'files'=>true]) !!}
             <div class="form-group">
                 <select multiple class="form-control" name="media_id[]" id="selForm">
                     @foreach($medias as $media)
@@ -221,7 +221,7 @@
             alert('Trống tên');
         } else {
             $.ajax({
-                url: "{{ route('admin.folder.createitemAjax') }}",
+                url: "{{ route('admin.folder.createItemAjax') }}",
                 method:'POST',
                 dataType:'json',
                 data: {folder_name:folder_name, _token:token, folder_id:folder_id, item_id:item_id},
@@ -332,8 +332,8 @@
             success: function (data){
                 if(data.success == '1')
                 {
-                    $('.modalDisplayImages').html();
-                    $('.modalDisplayImages').html(data.data);
+                    $('#gallery_modal .modal-content').html();
+                    $('#gallery_modal .modal-content').html(data.data);
                 } else {
                     if(data.error == '1')
                     {

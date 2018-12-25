@@ -137,8 +137,8 @@ class AdminPagesController extends Controller
         $page->description = $request->description;
         $page->content = $request->content_page;
         $page->page_id = $request->page_id;
+        $page->slug = Alpha::alpha_dash($page->name);
         $page->save();
-        //dd($input);
         return redirect()->route('pages.edit', [$id])->with('status','Cập nhật trang thành công');
     }
 

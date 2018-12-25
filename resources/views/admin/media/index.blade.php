@@ -46,11 +46,11 @@
         		<div class="box box-solid">
         			<div class="box-header folder-link-tree">
 						@if(isset($folder_string))
-							@foreach($folder_string as $fd_string)
-								@if($fd_string['folder_slug'] == 'root')
-									@if($fd_string['folder_id']  == $folder->id)
+							@for($i = count($folder_string)-1;$i>=0;$i--)
+								@if($folder_string[$i]['folder_slug'] == 'root')
+									@if($folder_string[$i]['folder_id']  == $folder->id)
 										<div class="btn-group btn-group-sm">
-											<button type="button" class="btn btn-info custom">{{ $fd_string['folder_name'] }}</button>
+											<button type="button" class="btn btn-info custom">{{ $folder_string[$i]['folder_name'] }}</button>
 											<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
 												<span class="caret"></span>
 												<span class="sr-only">Toggle Dropdown</span>
@@ -62,13 +62,13 @@
 											</ul>
 										</div>
 									@else
-										<a href="{{ route('admin.media.index')}}" class="btn btn-default btn-sm custom">{{ $fd_string['folder_name'] }}</a>
+										<a href="{{ route('admin.media.index')}}" class="btn btn-default btn-sm custom">{{ $folder_string[$i]['folder_name'] }}</a>
 										<span class="custom"><i class="fa fa-angle-right"></i></span>
 									@endif
 								@else
-									@if($fd_string['folder_id'] == $folder->id)
+									@if($folder_string[$i]['folder_id'] == $folder->id)
 										<div class="btn-group btn-group-sm">
-											<button type="button" class="btn btn-info custom">{{ $fd_string['folder_name'] }}</button>
+											<button type="button" class="btn btn-info custom">{{ $folder_string[$i]['folder_name'] }}</button>
 											<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
 												<span class="caret"></span>
 												<span class="sr-only">Toggle Dropdown</span>
@@ -80,11 +80,11 @@
 											</ul>
 										</div>
 									@else
-										<a href="{{ route('admin.folder.show',$fd_string['folder_slug'])}}" class="btn btn-default btn-sm custom">{{ $fd_string['folder_name'] }}</a>
+										<a href="{{ route('admin.folder.show',['id'=>$folder_string[$i]['folder_id'],'slug'=>$folder_string[$i]['folder_slug']])}}" class="btn btn-default btn-sm custom">{{ $folder_string[$i]['folder_name'] }}</a>
 										<span class="custom"><i class="fa fa-angle-right"></i></span>
 									@endif
 								@endif
-							@endforeach
+							@endfor
 						@endif
         			</div>
         			<div class="box-body">
@@ -120,11 +120,27 @@
 						@if($medias->isNotEmpty() || $folder_list->isNotEmpty())
 							@if(count($folder_list) >= 1)
 								<div id="folder-section">
-									<h5><strong>Folders</strong></h5>
+									<div class="row">
+										<div class="col-xs-6"><h5><strong>Folders</strong></h5></div>
+										<div class="col-xs-6">
+											<div class="btn-group btn-group-sm pull-right" id="folder_option">
+												<button type="button" class="btn btn-info custom">Folder option</button>
+												<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+													<span class="caret"></span>
+													<span class="sr-only">Toggle Dropdown</span>
+												</button>
+												<ul class="dropdown-menu" role="menu">
+													<li><a href="#" class="renameFolder">Rename</a></li>
+													{{--<li class="divider"></li>--}}
+													{{--<li><a href="#" class="deleteFolder">Delete</a></li>--}}
+												</ul>
+											</div>
+										</div>
+									</div>
 									<div class="row">
 										@foreach($folder_list as $fd)
 											@if($folder->id != $fd->id)
-												<a href="{{ route('admin.folder.show',$fd->slug) }}" data-folder-id="{{ $fd->id }}" data-folder-slug="{{ $fd->slug }}" class="folder-link" data-active="1">
+												<a href="{{ route('admin.folder.show',['id'=>$fd->id,'slug'=>$fd->slug]) }}" data-folder-id="{{ $fd->id }}" data-folder-slug="{{ $fd->slug }}"  data-folder-name="{{ $fd->name }}" class="folder-link" data-active="0">
 													<div class="col-md-2">
 														<div class="folder">
 															<i class="fa fa-folder"></i> <span>{{ $fd->name }}</span>
@@ -328,6 +344,54 @@
 			</div>
 		</div>
 	</div>
+	<div class="example-modal">
+		<div class="modal fade" id="renameFolder" role="dialog">
+			<div class="modal-dialog" style="">
+				<form action="{{ route('admin.folder.rename') }}" method="POST">
+					{{csrf_field()}}
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h4 class="modal-title">Đổi tên folder</h4>
+						</div>
+						<div class="modal-body">
+							<div class="form-group">
+								<label for="folder_name">Tên folder mới</label>
+								<input type="text" name="folder_name" class="form-control"/>
+								<div class="error"></div>
+								<input type="hidden" name="folder_id" value="{{ $folder->id }}" />
+								<input type="hidden" name="folder_slug" value="{{ $folder->id }}" />
+							</div>
+							<div class="form-group">
+								<button type="button" data-dismiss="modal" aria-label="Close" class="btn btn-default">Thoát</button>
+								<button class="btn btn-primary" id="new_folder">Lưu</button>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="example-modal">
+		<div class="modal fade item_modal" id="deleteFolder" role="dialog">
+			<div class="modal-dialog delete-dialog" style="">
+				<div class="modal-content">
+					<div class="modal-body">
+						<h5>Xóa folder này?</h5>
+					</div>
+					<div class="modal-footer">
+						{!! Form::open(['method'=>'DELETE', 'action'=>['AdminFolderController@delete'], 'class'=>'form-horizontal']) !!}
+
+						<button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+						<input type="hidden" name="folder_id" value="{{ $folder->id }}" />
+						<input type="hidden" name="folder_slug" value="{{ $folder->id }}" />
+						{!! Form::submit('Xóa', ['class'=>'btn btn-primary']) !!}
+						{!! Form::close() !!}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 @endsection
 
 @section('extendscripts')
@@ -364,14 +428,36 @@
 			}
 		});
 
+		$('.renameFolder').on('click',function (e) {
+		    e.preventDefault();
+			$('#renameFolder').modal('show');
+        });
+
+        $('.deleteFolder').on('click',function (e) {
+            e.preventDefault();
+            $('#deleteFolder').modal('show');
+        });
+
 		$('.folder-link').click(function(e) {
 			e.preventDefault();
+			$('.folder-link').removeClass('active');
+            $('.folder-link').attr('data-active',0);
+			var folder_id = $(this).attr('data-folder-id');
+			var folder_slug = $(this).attr('data-folder-slug');
+			var folder_name = $(this).attr('data-folder-name');
 			$(this).toggleClass('active');
 			if($(this).attr('data-active') == 1) {
 				$(this).attr('data-active',0);
+                $('#folder_option').hide();
 			} else {
 				$(this).attr('data-active',1);
-			}
+                $('#deleteFolder').find('input[name="folder_id"]').val(folder_id);
+                $('#deleteFolder').find('input[name="folder_slug"]').val(folder_slug);
+                $('#renameFolder').find('input[name="folder_name"]').val(folder_name);
+                $('#renameFolder').find('input[name="folder_id"]').val(folder_id);
+                $('#renameFolder').find('input[name="folder_slug"]').val(folder_slug);
+                $('#folder_option').show();
+            }
 		});
 
 		$('.folder-link').dblclick(function(e){

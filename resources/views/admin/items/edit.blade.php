@@ -645,8 +645,8 @@
                 success: function (data){
                     if(data.success == '1')
                     {
-                        $('.modalDisplayImages').html();
-                        $('.modalDisplayImages').html(data.data);
+                        $('#gallery_modal .modal-content').html();
+                        $('#gallery_modal .modal-content').html(data.data);
                     } else {
                         if(data.error == '1')
                         {

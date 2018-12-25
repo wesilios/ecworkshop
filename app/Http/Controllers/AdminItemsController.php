@@ -21,10 +21,8 @@ class AdminItemsController extends Controller
     protected $item;
     protected $item_category;
 
-    public function __construct(Item $item, ItemCategory $item_category)
+    public function __construct()
     {
-        $this->item = $item;
-        $this->item_category = $item_category;
         $this->middleware('auth:admin');
     }
 
@@ -208,6 +206,7 @@ class AdminItemsController extends Controller
                     ->withInput();
             }
             $item_category = ItemCategory::where('slug','=',$rq->item_category)->first();
+
             if($item_category->itemCategories->isNotEmpty())
             {
                 $item = Item::where('slug','=',$slug)->where('item_category_parent_id','=',$item_category->id)->first();
@@ -230,10 +229,13 @@ class AdminItemsController extends Controller
                 $item->homepage_active  = $rq->homepage_active == 'on' ? 1 : 0;
                 $item->brand_id         = $rq->brand_id;
                 $item->slug             = Alpha::alpha_dash($item->name);
-                $colors                 = $rq->post('color_id');
+                $colors                 = $rq->get('color_id');
                 if(isset($colors))
                 {
-                    $item->colors()->detach();
+                    if($item->colors->count()>0) {
+                        $item->colors()->detach();
+                    }
+
                     foreach($colors as $input_color)
                     {
                         $color = Color::findOrFail($input_color);
@@ -342,7 +344,7 @@ class AdminItemsController extends Controller
                     $item->medias()->save($media);
                 }
             }
-            return redirect()->route('admin.items.edit', ['slug'=>$slug,'item_category'=>$request->item_category])->with('status','Cập nhật image thành công');
+            return redirect()->back()->with('status','Cập nhật image thành công');
         } else {
             return redirect()->back()->with(['status'=>'error','message'=>'Vui lòng chọn ảnh cần cập nhật']);
         }
@@ -409,7 +411,8 @@ class AdminItemsController extends Controller
             if(!empty($files))
             {
                 $medias = Media::where('folder_id', '=', $folder_id)->orderBy('id', 'desc')->get();
-                $data   = view('admin.ajax.media.items.new_files', compact('medias', 'folder', 'item'))->render();
+                $folder_list = Folder::where('folder_id',$folder_id)->get();
+                $data   = view('admin.ajax.media.items.new_files', compact('medias', 'folder', 'folder_list','item'))->render();
                 return response()->json([
                     'data'        => $data,
                     'file'        => $files,

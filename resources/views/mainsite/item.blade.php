@@ -4,7 +4,7 @@
 
     @if(isset($slug_child))
 
-    <title>{{ $item->item->name }} | EC Distribution</title>
+    <title>{{ $item->name }} | EC Distribution</title>
     <meta name="keywords" content="{{ $settings->keywords }}" />
     <meta name="description" content="{{ $page->description }}" />
     <meta name="author" content="EC Distribution" />
@@ -19,7 +19,7 @@
 
     <!-- meta facebook -->
     <meta property="fb:app_id" content="" />
-    <meta property="og:url" content="{{ route('item.sub.index',[$item_cat,$item_sub_cat,$item->id,$item->item->name]) }}" />
+    <meta property="og:url" content="{{ route('item.sub.index',[$item_cat,$item_sub_cat,$item->id,$item->name]) }}" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="EC Distribution">
     <meta property="og:title" content="{{ $item->name }} | EC Distribution" />
@@ -28,7 +28,7 @@
 
     @else
 
-    <title>{{ $item->item->name }} | EC Distribution</title>
+    <title>{{ $item->name }} | EC Distribution</title>
     <meta name="keywords" content="{{ $settings->keywords }}" />
     <meta name="description" content="{{ $settings->description }}" />
     <meta name="author" content="EC Distribution" />
@@ -43,7 +43,7 @@
 
     <!-- meta facebook -->
     <meta property="fb:app_id" content="" />
-    <meta property="og:url" content="{{ route('item.index',[$item_cat,$item->id,$item->item->name]) }}" />
+    <meta property="og:url" content="{{ route('item.index',[$item_cat,$item->id,$item->name]) }}" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="EC Distribution">
     <meta property="og:title" content="{{ $item->name }} | EC Distribution" />
@@ -52,8 +52,6 @@
 
     @endif
 
-    {{ $settings->google_id }}
-    {{ $settings->webmaster }}
 
 @endsection
 
@@ -65,26 +63,26 @@
                     <div class="page-breadcrumb">
                         <div><a href="{{ route('index') }}">Trang chủ</a></div>
                         @if(isset($pageSub))
-                        <div><a href="{{ route('items.cat.index',[$item_cat]) }}">{{ $item->itemCategory->itemCategory->name }}</a></div>
-                        <div><a href="{{ route('items.cat.sub.index',[$item_cat, $item_sub_cat]) }}">{{ $item->itemCategory->name }}</a></div>
-                        <div><a href="" class="active">{{ $item->item->name }}</a></div>
+                        <div><a href="{{ route('items.cat.index',[$item_cat]) }}">{{ $item->itemCategoryParent->name }}</a></div>
+                        <div><a href="{{ route('items.cat.sub.index',[$item_cat, $item_sub_cat]) }}">{{ $item->itemCategoryMain->name }}</a></div>
+                        <div><a href="" class="active">{{ $item->name }}</a></div>
                         @else
-                        <div><a href="{{ route('items.cat.index',[$item_cat]) }}" >{{ $item->itemCategory->name }}</a></div>
-                        <div><a href="" class="active">{{ $item->item->name }}</a></div>
+                        <div><a href="{{ route('items.cat.index',[$item_cat]) }}" >{{ $item->itemCategoryParent ? $item->itemCategoryParent->name : '' }}</a></div>
+                        <div><a href="" class="active">{{ $item->name }}</a></div>
                         @endif
                     </div>
                 </div>
             </div>
             <div class="row">
-                 @if($item->medias()->where('media_id', $item->item->index_img)->get()->isNotEmpty())
+                 @if($item->medias()->where('media_id', $item->index_img)->get()->isNotEmpty())
                     <div class="col-sm-12 col-md-4 col-lg-4">
                         <div id="item_carousel" class="carousel slide">
                             <!-- Wrapper for slides -->
                             <div class="carousel-inner">
                                 <div class="item active">
-                                    <img class="img-responsive" src="{{ asset($item->medias()->where('media_id', $item->item->index_img)->first()->url) }} " alt="">
+                                    <img class="img-responsive" src="{{ asset($item->medias()->where('media_id', $item->index_img)->first()->url) }} " alt="">
                                 </div>
-                                @foreach($item->medias()->where('media_id', '!=' ,$item->item->index_img)->get() as $img)
+                                @foreach($item->medias()->where('media_id', '!=' ,$item->index_img)->get() as $img)
                                 <div class="item">
                                     <img class="img-responsive" src="{{ asset($img->url) }} " alt="">
                                 </div>
@@ -95,14 +93,14 @@
                                 <li data-target="#item_carousel" data-slide-to="0" class="active">
                                     <img
                                         src="
-                                        {{ asset($item->medias()->where('media_id', $item->item->index_img)->first()->url) }}
+                                        {{ asset($item->medias()->where('media_id', $item->index_img)->first()->url) }}
                                         "
                                     alt="">
                                 </li>
                                 @php
                                     $i = 1;
                                 @endphp
-                                @foreach($item->medias()->where('media_id', '!=' ,$item->item->index_img)->get() as $img)
+                                @foreach($item->medias()->where('media_id', '!=' ,$item->index_img)->get() as $img)
                                     <li data-target="#item_carousel" data-slide-to="{{ $i }}" class="">
                                         <img src="{{ asset($img->url) }}" alt="">
                                     </li>
@@ -116,16 +114,16 @@
                     </div>
                     <div class="col-sm-12 col-md-8 col-lg-8">
                         <div class="item-info">
-                            <div class="item-name">{{ $item->brand->name . ' ' . $item->item->name }}</div>
-                            <p>{{ $item->item->summary }}</p>
+                            <div class="item-name">{{ $item->brand->name . ' ' . $item->name }}</div>
+                            <p>{{ $item->summary }}</p>
                             <hr>
-                            @if($item->item->price_off > 0)
-                            <div class="item-price">Giá: <strike>{{ number_format($item->item->price,0, ",",".") }} VND </strike>
-                                <span class="saleoff">{{ number_format($item->item->price_off,0, ",",".") }} VND</span>
+                            @if($item->price_off > 0)
+                            <div class="item-price">Giá: <strike>{{ number_format($item->price,0, ",",".") }} VND </strike>
+                                <span class="saleoff">{{ number_format($item->price_off,0, ",",".") }} VND</span>
                             </div>
                             @else
                             <div class="item-price">
-                                Giá: {{ number_format($item->item->price,0, ",",".") }} VND
+                                Giá: {{ number_format($item->price,0, ",",".") }} VND
                             </div>
                             @endif
                             <div class="table-responsive">
@@ -133,7 +131,7 @@
                                     <tbody>
                                         <tr>
                                             <td>Tình trạng:</td>
-                                            <td>{{ $item->item->itemStatus->name }}</td>
+                                            <td>{{ $item->itemStatus ? $item->itemStatus->name : ''  }}</td>
                                         </tr>
                                         @if(isset($item->size))
                                         <tr>
@@ -174,10 +172,10 @@
                                 </table>
                                 <input type="hidden" id="_token" name="_token" value="{{ csrf_token() }}">
                                 <input type="hidden" id="item_id" value="{{ $item->id }}"/>
-                                @if($item->itemCategory->itemCategory == null)
+                                @if($item->itemCategoryParent == null)
                                     <input type="hidden" id="item_category_id" value="{{ $item->item_category_id }}"/>
                                 @else
-                                    <input type="hidden" id="item_category_id" value="{{ $item->itemCategory->itemCategory->id }}"/>
+                                    <input type="hidden" id="item_category_id" value="{{ $item->itemCategoryParent->id }}"/>
                                 @endif
                                 <input type="button" name="add_cart_btn" value="+ Thêm vào giỏ hàng" class="btn btn-primary btn-add-cart">
                                 <input type="button" name="add_buy_cart_btn" value="+ Mua ngay" class="btn btn-primary btn-add-buy-cart">
@@ -225,16 +223,16 @@
                     </div>
                     <div class="col-sm-12 col-md-8 col-lg-8">
                         <div class="item-info">
-                            <div class="item-name">{{ $item->brand->name . ' ' . $item->item->name }}</div>
-                            <p>{{ $item->item->summary }}</p>
+                            <div class="item-name">{{ $item->brand ? $item->brand->name : '' . ' ' . $item->name }}</div>
+                            <p>{{ $item->summary }}</p>
                             <hr>
-                            @if($item->item->price_off > 0)
-                            <div class="item-price">Giá: <strike>{{ number_format($item->item->price,0, ",",".") }} VND </strike>
-                                <span class="saleoff">{{ number_format($item->item->price_off,0, ",",".") }} VND</span>
+                            @if($item->price_off > 0)
+                            <div class="item-price">Giá: <strike>{{ number_format($item->price,0, ",",".") }} VND </strike>
+                                <span class="saleoff">{{ number_format($item->price_off,0, ",",".") }} VND</span>
                             </div>
                             @else
                             <div class="item-price">
-                                Giá: {{ number_format($item->item->price,0, ",",".") }} VND
+                                Giá: {{ number_format($item->price,0, ",",".") }} VND
                             </div>
                             @endif
                             <div class="table-responsive">
@@ -242,7 +240,7 @@
                                     <tbody>
                                         <tr>
                                             <td>Tình trạng:</td>
-                                            <td>{{ $item->item->itemStatus->name }}</td>
+                                            <td>{{ $item->itemStatus ? $item->itemStatus->name : '' }}</td>
                                         </tr>
                                         @if(isset($item->size))
                                         <tr>
@@ -282,10 +280,10 @@
                                 </table>
                                 <input type="hidden" id="_token" name="_token" value="{{ csrf_token() }}">
                                 <input type="hidden" id="item_id" value="{{ $item->id }}"/>
-                                @if($item->itemCategory->itemCategory == null)
+                                @if($item->itemCategoryParent == null)
                                     <input type="hidden" id="item_category_id" value="{{ $item->item_category_id }}"/>
                                 @else
-                                    <input type="hidden" id="item_category_id" value="{{ $item->itemCategory->itemCategory->id }}"/>
+                                    <input type="hidden" id="item_category_id" value="{{ $item->itemCategoryParent->id }}"/>
                                 @endif
                                 <input type="button" name="add_cart_btn" value="+ Thêm vào giỏ hàng" class="btn btn-primary btn-add-cart">
                                 <input type="button" name="add_buy_cart_btn" value="+ Mua ngay" class="btn btn-primary btn-add-buy-cart">
@@ -308,7 +306,7 @@
 
                         <!-- Tab panes -->
                         <div class="tab-content">
-                            <div role="tabpanel" class="tab-pane active" id="item_info">{!! $item->item->description !!}</div>
+                            <div role="tabpanel" class="tab-pane active" id="item_info">{!! $item->description !!}</div>
                             <div role="tabpanel" class="tab-pane" id="item_comment">...Chưa có bình luận nào.</div>
                         </div>
                     </div>
@@ -322,50 +320,54 @@
                     </div>
                 </div>
                 <div class="col-sm-12 col-md-12 col-lg-12">
-                    <div class="items-carousel">
-                    @foreach($random_items as $random_item)
-                        @if($random_item->medias()->where('media_id', $random_item->item->index_img)->get()->isNotEmpty())
-                        <div>
-                            <div class="item">
-                                <a href="../../{{ $random_item->item->itemCategory->slug }}/{{ $random_item->item->id }}/{{ $random_item->item->slug }}">
-                                    <img class="img-responsive"
-                                    src="
-                                    @foreach($random_item->medias()->where('media_id', $random_item->item->index_img)->get() as $img)
-                                    {{ asset($img->url) }}
-                                    @endforeach
-                                    " alt="">
-                                    <div class="item-name">{{ $random_item->brand->name . ' ' . $random_item->item->name }}</div>
-                                    <div class="item-price">{{ number_format($random_item->item->price,0, ",",".") }} VNĐ</div>
+                    @if(!empty($random_items))
+                        <div class="items-carousel">
+                        @foreach($random_items as $random_item)
+                            @if($random_item->medias()->where('media_id', $random_item->index_img)->get()->isNotEmpty())
+                            <div>
+                                <div class="item">
+                                    <a href="../../{{ $random_item->itemCategoryMain->slug }}/{{ $random_item->id }}/{{ $random_item->slug }}">
+                                        <img class="img-responsive"
+                                        src="
+                                        @foreach($random_item->medias()->where('media_id', $random_item->index_img)->get() as $img)
+                                        {{ asset($img->url) }}
+                                        @endforeach
+                                        " alt="">
+                                        <div class="item-name">{{ $random_item->brand ? $random_item->brand->name : '' . ' ' . $random_item->name }}</div>
+                                        <div class="item-price">{{ number_format($random_item->price,0, ",",".") }} VNĐ</div>
 
-                                </a>
-                                <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $random_item->item->id }}" value="{{ $random_item->id }}">
-                                <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $random_item->item->id }}" value="{{ $random_item->item_category_id }}">
-                                <div class="btn-cart" id="{{ $random_item->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
+                                    </a>
+                                    <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $random_item->id }}" value="{{ $random_item->id }}">
+                                    <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $random_item->id }}" value="{{ $random_item->item_category_id }}">
+                                    <div class="btn-cart" id="{{ $random_item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
+                                </div>
                             </div>
-                        </div>
-                        @else
-                        <div>
-                            <div class="item">
-                                <a href="../../{{ $random_item->item->itemCategory->slug }}/{{ $random_item->item->id }}/{{ $random_item->item->slug }}">
-                                    @if($random_item->medias()->first() == null)
-                                    <img class="img-responsive" src="https://via.placeholder.com/650x650?text=No+image" alt="">
-                                    @else
-                                    <img class="img-responsive"
-                                    src="
-                                    {{ asset($random_item->medias()->first()->url) }}
-                                    " alt="">
-                                    @endif
-                                    <div class="item-name">{{ $random_item->brand->name . ' ' . $random_item->item->name }}</div>
-                                    <div class="item-price">{{ number_format($random_item->item->price,0, ",",".") }} VNĐ</div>
+                            @else
+                            <div>
+                                <div class="item">
+                                    <a href="../../{{ $random_item->itemCategoryMain->slug }}/{{ $random_item->id }}/{{ $random_item->slug }}">
+                                        @if($random_item->medias()->first() == null)
+                                        <img class="img-responsive" src="https://via.placeholder.com/650x650?text=No+image" alt="">
+                                        @else
+                                        <img class="img-responsive"
+                                        src="
+                                        {{ asset($random_item->medias()->first()->url) }}
+                                        " alt="">
+                                        @endif
+                                        <div class="item-name">{{ $random_item->brand ? $random_item->brand->name : '' . ' ' . $random_item->name }}</div>
+                                        <div class="item-price">{{ number_format($random_item->price,0, ",",".") }} VNĐ</div>
 
-                                </a>
-                                <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $random_item->item->id }}" value="{{ $random_item->id }}">
-                                <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $random_item->item->id }}" value="{{ $random_item->item_category_id }}">
-                                <div class="btn-cart" id="{{ $random_item->item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
+                                    </a>
+                                    <input type="hidden" name="hid_item_id" id="hid_item_id_{{ $random_item->id }}" value="{{ $random_item->id }}">
+                                    <input type="hidden" name="hid_category_id" id="hid_category_id_{{ $random_item->id }}" value="{{ $random_item->item_category_id }}">
+                                    <div class="btn-cart" id="{{ $random_item->id }}">Thêm vào giỏ hàng <i class="fa fa-cart-plus"></i></div>
+                                </div>
                             </div>
-                        </div>
-                        @endif
-                    @endforeach
+                            @endif
+                        @endforeach
+                    @else
+                        <p class="text-center">Không có sản phẩm liên quan!</p>
+                    @endif
                 </div>
                 </div>
             </div>

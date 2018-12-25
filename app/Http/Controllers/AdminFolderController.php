@@ -90,13 +90,14 @@ class AdminFolderController extends Controller
 
 
 
-    public function show($slug)
+    public function show($id, $slug)
     {
-    	$folder = Folder::where('slug',$slug)->first();
+    	$folder = Folder::where([['id',$id],['slug',$slug]])->first();
         $folder_list = Folder::where('folder_id', $folder->id)->get();
         $medias = Media::where('folder_id',$folder->id)->orderBy('id', 'desc')->paginate(24);
     	$folder_id_parent = $folder->folder->id;
-    	$folder_string = [['folder_id' => '1','folder_name'=>'root','folder_slug'=>'root']];
+//    	$folder_string = [['folder_id' => '1','folder_name'=>'root','folder_slug'=>'root']];
+        $folder_string = [['folder_id'=>$folder->id,'folder_name'=>$folder->name,'folder_slug'=>$folder->slug]];
 
     	while($folder_id_parent != 1)
     	{
@@ -105,9 +106,7 @@ class AdminFolderController extends Controller
     		$new = ['folder_id' => $folder_temp->id,'folder_name' => $folder_temp->name, 'folder_slug'=>$folder_temp->slug];
     		$folder_string[] = $new;
     	}
-
-    	$new = ['folder_id' => $folder->id,'folder_name' => $folder->name, 'folder_slug'=>$folder->slug];
-        $folder_string[] = $new;
+        $folder_string[] = ['folder_id' => '1','folder_name'=>'root','folder_slug'=>'root'];
         return view('admin.media.index', compact('medias','folder','folder_list','folder_string'));
     }
 
@@ -713,6 +712,81 @@ class AdminFolderController extends Controller
             $folder_list = Folder::where('folder_id',$request->folder_id)->get();
             $data = view('admin.ajax.media.items.new_folder',compact('folder','folder_list', 'item'))->render();
             return response()->json(['option'=>$data]);
+        }
+    }
+
+    public function rename(Request $rq)
+    {
+        try {
+            $folder = Folder::where([
+               ['id',$rq->folder_id],
+               ['slug',$rq->folder_slug]
+            ])->first();
+            $folder->name = Alpha::alpha_dash($rq->folder_name);
+            $folder->slug = Alpha::alpha_dash($rq->folder_name);
+            $folder->origin = Alpha::alpha_dash($rq->folder_name);
+            $path = '';
+            $folder_id_parent = '';
+            $path_old = '';
+            $path_new = '';
+            if($folder->folder_id == 1) {
+                $path_old .= '/images/' . $rq->folder_slug;
+                $path_new .= '/images/' . $folder->slug;
+            }
+            else
+            {
+                $folder_id_parent = $folder->folder_id;
+                while($folder_id_parent != 1)
+                {
+                    $folder_temp = Folder::findOrFail($folder_id_parent);
+                    $folder_id_parent = $folder_temp->folder->id;
+                    $path_arr[] = $folder_temp->slug;
+                }
+                $path .= '/images/';
+                for($i = count($path_arr)-1; $i >= 0; $i--)
+                {
+                    $path .= $path_arr[$i] . '/';
+                }
+                $path_old = $path . $rq->folder_slug;
+                $path_new = $path . $folder->slug;
+            }
+            $path_old = public_path($path_old);
+            $path_new = public_path($path_new);
+            rename($path_old,$path_new);
+            $folder->save();
+            return redirect()->back()->with('status','Update successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('status',$e->getMessage());
+        }
+    }
+
+    public function delete(Request $rq)
+    {
+        try {
+            $folder = Folder::where([
+                ['id',$rq->folder_id],
+                ['slug',$rq->folder_slug]
+            ])->first();
+            $token = false;
+            $count = 1;
+            $list_folder_to_delete = '';
+            if($this->checkIfNotEmpty($folder)){
+                $token = true;
+                while($token==true)
+                {
+
+                }
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with('status',$e->getMessage());
+        }
+    }
+
+    public function checkIfNotEmpty($folder){
+        if($folder->folders->count()>1){
+            return $folder->folders;
+        } else {
+            return false;
         }
     }
 }

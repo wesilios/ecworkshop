@@ -2,7 +2,7 @@
 
 @section('meta')
     <title>Đăng nhập | EC Distribution</title>
-    
+
 
     <!-- seo thong thuong-->
     <meta name="keywords" content="{{ $settings->keywords }}" />
@@ -25,9 +25,6 @@
     <meta property="og:title" content="Đăng nhập | EC Distribution" />
     <meta property="og:description" content="{{ $settings->description }}" />
     <meta property="og:image" content="{{ asset('images/1531112245_media_Rouge-100-Back.jpg') }}" />
-
-    {{ $settings->google_id }}
-    {{ $settings->webmaster }}
 
 @endsection
 
@@ -76,7 +73,7 @@
                         </div>
                         <div class="checkbox">
                             <label style="font-size:12px">
-                                <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}> 
+                                <input type="checkbox" name="remember" {{ old('remember') ? 'checked' : '' }}>
                                 Nhớ đăng nhập
                             </label>
                         </div>

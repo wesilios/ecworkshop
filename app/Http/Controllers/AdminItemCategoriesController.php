@@ -22,7 +22,7 @@ class AdminItemCategoriesController extends Controller
     	$item_cats = ItemCategory::orderBy('id', 'desc')->paginate(15);
         $item_cats_all = ItemCategory::all();
         foreach ($item_cats_all as $it_cat) {
-            if($it_cat->id === $it_cat->item_category_id)
+            if($it_cat->id == $it_cat->item_category_id)
             {
                 $item_cats_parent[$it_cat->id] = $it_cat->name;
             }

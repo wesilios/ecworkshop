@@ -348,7 +348,7 @@
                                     @php
                                         $item_cats_all = \App\ItemCategory::all();
                                         foreach ($item_cats_all as $it_cat) {
-                                            if($it_cat->id === $it_cat->item_category_id)
+                                            if($it_cat->id == $it_cat->item_category_id)
                                             {
                                                 $item_categories[$it_cat->id] = $it_cat;
                                             }

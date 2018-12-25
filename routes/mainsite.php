@@ -46,15 +46,16 @@ Route::get('/thanh-toan', 'PagesController@getCheck')->name('cart.check');
 Route::get('/hoan-tat/{orderCode}/{fee}', 'PagesController@getDone')->name('cart.done');
 Route::group(['middleware'=>['web']], function() {
     // Articles routes
-    Route::get('/review-blog','ArticleController@getArticles')->name('article.index');
+    Route::get('/news','ArticleController@getArticles')->name('article.index');
     Route::get('/kiem-tra-don-hang', 'PagesController@getCheckOrders')->name('orders.check');
     Route::post('/kiem-tra-don-hang', 'PagesController@searchOrder')->name('orders.sear');
     Route::get('/kiem-tra-don-hang/{orderCode}', 'PagesController@resultOrder')->name('orders.result');
-    Route::get('/review-blog/{slug}', [
+    Route::get('/news/{slug}', [
         'as'=>'article.single',
         'uses'=>'ArticleController@getSingle'
     ])->where('slug','[\w\d\-\_]+');
-
+    Route::get('/contact','SendMailController@getContact')->name('contact');
+    Route::post('/contact-send','SendMailController@postContact')->name('contact.post');
     Route::get('/khong-tim-thay',['as'=>'404.not.found','uses'=>'PagesController@get404']);
 
     // Items routes

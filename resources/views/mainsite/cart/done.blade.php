@@ -2,7 +2,7 @@
 
 @section('meta')
     <title>Hoàn tất đơn hàng | EC Distribution</title>
-    
+
 
     <!-- seo thong thuong-->
     <meta name="keywords" content="{{ $settings->keywords }}" />
@@ -26,8 +26,6 @@
     <meta property="og:description" content="{{ $settings->description }}" />
     <meta property="og:image" content="{{ asset('images/1531112245_media_Rouge-100-Back.jpg') }}" />
 
-    {{ $settings->google_id }}
-    {{ $settings->webmaster }}
 
 @endsection
 
@@ -107,7 +105,7 @@
                             </div>
                         </div>
                     </div>
-                            
+
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="col-xs-6 col-sm-6 col-md-4 col-md-offset-4 order-totalPrice custom-no-padding">Tổng thanh toán</div>

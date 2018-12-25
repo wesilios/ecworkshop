@@ -2,7 +2,7 @@
 
 @section('meta')
     <title>Lịch sử mua hàng chi tiết | EC Distribution</title>
-    
+
     <!-- seo thong thuong-->
     <meta name="keywords" content="{{ $settings->keywords }}" />
     <meta name="description" content="{{ $settings->description }}" />
@@ -25,8 +25,7 @@
     <meta property="og:description" content="{{ $settings->description }}" />
     <meta property="og:image" content="{{ asset('images/1531112245_media_Rouge-100-Back.jpg') }}" />
 
-    {{ $settings->google_id }}
-    {{ $settings->webmaster }}
+
 
 @endsection
 
@@ -120,7 +119,7 @@
                                 </tbody>
                             </table>
                         </div>
-                    </div>   
+                    </div>
                 </div>
             </div>
         </div>

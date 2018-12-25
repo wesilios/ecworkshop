@@ -21,7 +21,7 @@ Route::resource('/admin/users', 'AdminUsersController');
 */
 Route::resource('/admin/pages', 'AdminPagesController');
 Route::put('/admin/pages/{id}/media', 'AdminPagesController@uploadImage')->name('admin.pages.upload');
-Route::put('/admin/pages/{id}/media/select', 'AdminPagesController@selectImage')->name('admin.pages.select');
+Route::post('/admin/pages/{id}/media/select', 'AdminPagesController@selectImage')->name('admin.pages.select');
 
 /*
 |--------------------------------------------------------------------------
@@ -191,41 +191,43 @@ Route::prefix('/admin')->group(function() {
 | Admin folders
 |--------------------------------------------------------------------------
 */
-    Route::post('/admin/folder/create','AdminFolderController@create')->name('admin.folder.create');
-    Route::get('/admin/media/folder/{slug}','AdminFolderController@show')->name('admin.folder.show');
-    Route::post('/admin/media/folder/ajax/','AdminFolderController@ajaxModalMedia')->name('admin.folder.ajax.show');
-    Route::post('/admin/media/folder/ajax/juice','AdminFolderController@ajaxJuiceModalShow')->name('admin.folder.juice.ajax.show');
-    Route::post('/admin/media/folder/ajax/accessory','AdminFolderController@ajaxAccessoryModalShow')->name('admin.folder.accessory.ajax.show');
-    Route::post('/admin/media/folder/ajax/box','AdminFolderController@ajaxBoxModalShow')->name('admin.folder.box.ajax.show');
-    Route::post('/admin/media/folder/ajax/tank','AdminFolderController@ajaxTankModalShow')->name('admin.folder.tank.ajax.show');
-    Route::post('/admin/media/folder/ajax/fullkit','AdminFolderController@ajaxFullKitModalShow')->name('admin.folder.fullkit.ajax.show');
-    Route::post('/admin/media/folder/ajax/item','AdminFolderController@ajaxItemModalShow')->name('admin.folder.item.ajax.show');
+    Route::post('/folder/create','AdminFolderController@create')->name('admin.folder.create');
+    Route::get('/media/folder/{id}/{slug}','AdminFolderController@show')->name('admin.folder.show');
+    Route::post('/media/folder/rename','AdminFolderController@rename')->name('admin.folder.rename');
+    Route::delete('/media/folder/delete','AdminFolderController@delete')->name('admin.folder.delete');
+    Route::post('/media/folder/ajax/','AdminFolderController@ajaxModalMedia')->name('admin.folder.ajax.show');
+    Route::post('/media/folder/ajax/juice','AdminFolderController@ajaxJuiceModalShow')->name('admin.folder.juice.ajax.show');
+    Route::post('/media/folder/ajax/accessory','AdminFolderController@ajaxAccessoryModalShow')->name('admin.folder.accessory.ajax.show');
+    Route::post('/media/folder/ajax/box','AdminFolderController@ajaxBoxModalShow')->name('admin.folder.box.ajax.show');
+    Route::post('/media/folder/ajax/tank','AdminFolderController@ajaxTankModalShow')->name('admin.folder.tank.ajax.show');
+    Route::post('/media/folder/ajax/fullkit','AdminFolderController@ajaxFullKitModalShow')->name('admin.folder.fullkit.ajax.show');
+    Route::post('/media/folder/ajax/item','AdminFolderController@ajaxItemModalShow')->name('admin.folder.item.ajax.show');
 
-    Route::post('/admin/folder/juice/create_ajax','AdminFolderController@createJuiceAjax')->name('admin.folder.createJuiceAjax');
-    Route::post('/admin/folder/accessory/create_ajax','AdminFolderController@createAccessoryAjax')->name('admin.folder.createAccessoryAjax');
-    Route::post('/admin/folder/box/create_ajax','AdminFolderController@createBoxAjax')->name('admin.folder.createBoxAjax');
-    Route::post('/admin/folder/tank/create_ajax','AdminFolderController@createTankBoxAjax')->name('admin.folder.createTankAjax');
-    Route::post('/admin/folder/fullkit/create_ajax','AdminFolderController@createFullKitAjax')->name('admin.folder.createFullKitAjax');
-    Route::post('/admin/folder/item/create_ajax','AdminFolderController@createItemAjax')->name('admin.folder.createItemAjax');
+    Route::post('/folder/juice/create_ajax','AdminFolderController@createJuiceAjax')->name('admin.folder.createJuiceAjax');
+    Route::post('/folder/accessory/create_ajax','AdminFolderController@createAccessoryAjax')->name('admin.folder.createAccessoryAjax');
+    Route::post('/folder/box/create_ajax','AdminFolderController@createBoxAjax')->name('admin.folder.createBoxAjax');
+    Route::post('/folder/tank/create_ajax','AdminFolderController@createTankBoxAjax')->name('admin.folder.createTankAjax');
+    Route::post('/folder/fullkit/create_ajax','AdminFolderController@createFullKitAjax')->name('admin.folder.createFullKitAjax');
+    Route::post('/folder/item/create_ajax','AdminFolderController@createItemAjax')->name('admin.folder.createItemAjax');
     /*
     |--------------------------------------------------------------------------
     | Admin ajax
     |--------------------------------------------------------------------------
     */
-    Route::post('/admin/article/ajaxUpload', 'AdminArticleController@ajaxUpload')->name('admin.article.ajaxUpload');
-    Route::post('/admin/juice/ajaxUpload', 'AdminJuicesController@ajaxUpload')->name('admin.juice.ajaxUpload');
-    Route::post('/admin/accessory/ajaxUpload', 'AdminAccessoriesController@ajaxUpload')->name('admin.accessory.ajaxUpload');
-    Route::post('/admin/box/ajaxUpload', 'AdminBoxesController@ajaxUpload')->name('admin.box.ajaxUpload');
-    Route::post('/admin/tank/ajaxUpload', 'AdminTanksController@ajaxUpload')->name('admin.tank.ajaxUpload');
-    Route::post('/admin/fullkit/ajaxUpload', 'AdminFullKitsController@ajaxUpload')->name('admin.fullkit.ajaxUpload');
-    Route::post('/admin/item/ajaxUpload', 'AdminItemsController@ajaxUpload')->name('admin.item.ajaxUpload');
+    Route::post('/article/ajaxUpload', 'AdminArticleController@ajaxUpload')->name('admin.article.ajaxUpload');
+    Route::post('/juice/ajaxUpload', 'AdminJuicesController@ajaxUpload')->name('admin.juice.ajaxUpload');
+    Route::post('/accessory/ajaxUpload', 'AdminAccessoriesController@ajaxUpload')->name('admin.accessory.ajaxUpload');
+    Route::post('/box/ajaxUpload', 'AdminBoxesController@ajaxUpload')->name('admin.box.ajaxUpload');
+    Route::post('/tank/ajaxUpload', 'AdminTanksController@ajaxUpload')->name('admin.tank.ajaxUpload');
+    Route::post('/fullkit/ajaxUpload', 'AdminFullKitsController@ajaxUpload')->name('admin.fullkit.ajaxUpload');
+    Route::post('/item/ajaxUpload', 'AdminItemsController@ajaxUpload')->name('admin.item.ajaxUpload');
 
-    Route::post('/admin/juice/remove_selected_img', 'AdminJuicesController@ajaxRemoveImg')->name('admin.juice.remove_selected_img');
-    Route::post('/admin/accessory/remove_selected_img', 'AdminAccessoriesController@ajaxRemoveImg')->name('admin.accessory.remove_selected_img');
-    Route::post('/admin/box/remove_selected_img', 'AdminBoxesController@ajaxRemoveImg')->name('admin.box.remove_selected_img');
-    Route::post('/admin/tank/remove_selected_img', 'AdminTanksController@ajaxRemoveImg')->name('admin.tank.remove_selected_img');
-    Route::post('/admin/fullkit/remove_selected_img', 'AdminFullKitsController@ajaxRemoveImg')->name('admin.fullkit.remove_selected_img');
-    Route::post('/admin/items/remove_selected_img', 'AdminItemsController@ajaxRemoveImg')->name('admin.item.remove_selected_img');
+    Route::post('/juice/remove_selected_img', 'AdminJuicesController@ajaxRemoveImg')->name('admin.juice.remove_selected_img');
+    Route::post('/accessory/remove_selected_img', 'AdminAccessoriesController@ajaxRemoveImg')->name('admin.accessory.remove_selected_img');
+    Route::post('/box/remove_selected_img', 'AdminBoxesController@ajaxRemoveImg')->name('admin.box.remove_selected_img');
+    Route::post('/tank/remove_selected_img', 'AdminTanksController@ajaxRemoveImg')->name('admin.tank.remove_selected_img');
+    Route::post('/fullkit/remove_selected_img', 'AdminFullKitsController@ajaxRemoveImg')->name('admin.fullkit.remove_selected_img');
+    Route::post('/items/remove_selected_img', 'AdminItemsController@ajaxRemoveImg')->name('admin.item.remove_selected_img');
     /*
     |--------------------------------------------------------------------------
     | Admin shipping fee

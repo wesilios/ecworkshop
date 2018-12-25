@@ -27,8 +27,6 @@
     <meta property="og:description" content="{{ $page->description }}" />
     <meta property="og:image" content="{{ asset('images/1531112245_media_Rouge-100-Back.jpg') }}" />
 
-    {{ $settings->google_id }}
-    {{ $settings->webmaster }}
 
 @endsection
 
@@ -46,7 +44,7 @@
 			<div class="row">
 				@foreach($articles as $article)
 				<div class="col-lg-4 col-article">
-					<a href="/review-blog/{{ $article->slug }}">
+					<a href="/news/{{ $article->slug }}">
                         @if(!empty($article->media->first()))
                         <img class="img-responsive" src="{{ asset($article->media()->first()->url) }}" alt="">
                             @else
@@ -55,7 +53,7 @@
                     </a>
                     <h5 class="blog-title">{{ $article->title }}</h5>
                     <p>{{ str_limit($article->summary, 110) }}</p>
-                    <a href="/review-blog/{{ $article->slug}}">Xem thêm >></a>
+                    <a href="/news/{{ $article->slug}}">Xem thêm >></a>
 				</div>
 				@endforeach
 			</div>

@@ -137,6 +137,16 @@
 						                </span>
 						            @endif
 	                  			</div>
+								{!! Form::label('fb_pixel', 'Facebook Pixel:', ['class' => 'control-label'] ) !!}
+								<div class="input-group {{ $errors->has('fb_pixel') ? ' has-error' : '' }}">
+									{!! Form::text('fb_pixel', $settings->fb_pixel, ['class'=>'form-control']) !!}
+									<span class="input-group-addon"><i class="fa fa-facebook"></i></span>
+									@if ($errors->has('fb_pixel'))
+										<span class="help-block">
+						                    <strong>{{ $errors->first('fb_pixel') }}</strong>
+						                </span>
+									@endif
+								</div>
 	                  			{!! Form::label('description', 'Meta Description:', ['class' => 'control-label'] ) !!}
 			                	<div class="input-group {{ $errors->has('description') ? ' has-error' : '' }}">
 	                    			{!! Form::textarea('description', $settings->description, ['class'=>'form-control', 'data-role'=>'tagsinput', 'rows'=>'5']) !!}

@@ -2339,6 +2339,6 @@ ul.list_terms li a{
 	}
 }
 
-.col-article {
-
+.navbar-center {
+	display: inline-block;
 }

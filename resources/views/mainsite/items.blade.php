@@ -53,9 +53,6 @@
 
     @endif
 
-    {{ $settings->google_id }}
-    {{ $settings->webmaster }}
-
 @endsection
 
 @section('content')
@@ -78,7 +75,7 @@
                 @if(count($items))
                     @foreach($items as $item)
                         @if($item->medias()->where('media_id', $item->index_img)->get()->isNotEmpty())
-                            @if(isset($item->itemCategoryMain->itemCategory))
+                            @if($item->item_category_id != $item->item_category_parent_id)
                                 <div class="col-sm-12 col-md-4 col-lg-3">
                                     <div class="item">
                                         <a href="/{{ $item->itemCategoryMain->itemCategory->slug }}/{{ $item->itemCategoryMain->slug }}/{{ $item->id }}/{{ $item->slug }}">
@@ -105,14 +102,14 @@
                                             @endforeach
                                             " alt="">
                                             <div class="item-name">{{ $item->brand->name . ' ' . $item->name }}</div>
-                                            <div class="item-price">{{ number_format($item->item->price,0, ",",".") }} VNĐ</div>
+                                            <div class="item-price">{{ number_format($item->price,0, ",",".") }} VNĐ</div>
                                             <div class="btn-cart">Thêm vào giỏ hàng</div>
                                         </a>
                                     </div>
                                 </div>
                             @endif
                         @else
-                            @if(isset($item->itemCategoryMain->itemCategory))
+                            @if($item->item_category_id != $item->item_category_parent_id)
                                 <div class="col-sm-12 col-md-4 col-lg-3">
                                     <div class="item">
                                         <a href="/{{ $item->itemCategoryMain->itemCategory->slug }}/{{ $item->itemCategoryMain->slug }}/{{ $item->id }}/{{ $item->slug }}">

@@ -25,9 +25,6 @@
     <meta property="og:description" content="{{ $settings->description }}" />
     <meta property="og:image" content="{{ asset('images/1531112245_media_Rouge-100-Back.jpg') }}" />
 
-    {{ $settings->google_id }}
-    {{ $settings->webmaster }}
-
 @endsection
 
 @section('content')
@@ -49,7 +46,7 @@
                                 <div class="col-sm-12 col-md-4 col-lg-3">
                                     <div class="item">
                                         <a href="/{{ $item['item']->itemCategory->itemCategory->slug }}/{{ $item['item']->itemCategory->slug }}/{{ $item['item']->id }}/{{ $item['item']->slug }}">
-                                            <img class="img-responsive" 
+                                            <img class="img-responsive"
                                             src="
                                             @foreach($item['itemSub']->medias()->where('media_id', $iitem['item']->index_img)->get() as $img)
                                             {{ asset($img->url) }}
@@ -59,13 +56,13 @@
                                             <div class="item-price">{{ number_format($item['item']->price,0, ",",".") }} VNĐ</div>
                                             <div class="btn-cart">Thêm vào giỏ hàng</div>
                                         </a>
-                                    </div> 
+                                    </div>
                                 </div>
                             @else
                                 <div class="col-sm-12 col-md-4 col-lg-3">
                                     <div class="item">
                                         <a href="/{{ $item['item']->itemCategory->slug }}/{{ $item['item']->id }}/{{ $item['item']->slug }}">
-                                            <img class="img-responsive" 
+                                            <img class="img-responsive"
                                             src="
                                             @foreach($item['itemSub']->medias()->where('media_id', $item['item']->index_img)->get() as $img)
                                             {{ asset($img->url) }}
@@ -75,7 +72,7 @@
                                             <div class="item-price">{{ number_format($item['item']->price,0, ",",".") }} VNĐ</div>
                                             <div class="btn-cart">Thêm vào giỏ hàng</div>
                                         </a>
-                                    </div> 
+                                    </div>
                                 </div>
                             @endif
                         @else
@@ -83,7 +80,7 @@
                                 <div class="col-sm-12 col-md-4 col-lg-3">
                                     <div class="item">
                                         <a href="/{{ $item['item']->itemCategory->itemCategory->slug }}/{{ $item['item']->itemCategory->slug }}/{{ $item['item']->id }}/{{ $item['item']->slug }}">
-                                            <img class="img-responsive" 
+                                            <img class="img-responsive"
                                             src="
                                             {{ asset($item['itemSub']->medias()->first()->url) }}
                                             " alt="">
@@ -97,7 +94,7 @@
                                 <div class="col-sm-12 col-md-4 col-lg-3">
                                     <div class="item">
                                         <a href="/{{ $item['item']->itemCategory->slug }}/{{ $item['item']->id }}/{{ $item['item']->slug }}">
-                                            <img class="img-responsive" 
+                                            <img class="img-responsive"
                                             src="
                                             {{ asset($item['itemSub']->medias()->first()->url) }}
                                             " alt="">
@@ -117,9 +114,9 @@
                         </p>
                     </div>
                 @endif
-                       
+
             </div>
         </div>
     </section>
-	
+
 @endsection

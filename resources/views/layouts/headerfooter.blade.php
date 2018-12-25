@@ -8,12 +8,12 @@
                 <div class="col-xs-4 col-sm-6 col-md-6 col-lg-6 account pull-right">
                     @if(Auth::guard('customer')->check())
                         <a href="/tai-khoan">
-                            <i class="fa fa-user"></i> 
+                            <i class="fa fa-user"></i>
                             <span>{{ Auth::guard('customer')->user()->name }}</span>
                         </a>
                     @else
                         <a href="{{ route('customer.login') }}">
-                            <i class="fa fa-user"></i> 
+                            <i class="fa fa-user"></i>
                             <span>Tài khoản</span>
                         </a>
                     @endif
@@ -29,7 +29,7 @@
                         <img class="img-responsive logo" src="{{ asset('images/black.png') }}"/>
                     </a>
                 </div>
-                
+
                 <div class="col-xs-12 col-sm-7 col-md-6 col-md-offset-1 col-lg-6 col-lg-offset-1 custom-no-padding">
                     <div class="input-custom-group">
                         {!! Form::open(['method'=>'GET','action'=>'PagesController@search']) !!}
@@ -56,7 +56,7 @@
                 </div>
             </div>
         </div>
-        
+
         <nav class="navbar navbar-default">
             <div class="container">
                 <div class="navbar-header">
@@ -86,36 +86,34 @@
                 </div>
 
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="nav navbar-nav">
-                        
-                    </ul>
-                    <div class="div-navbar-center col-lg-11 col-lg-offset-1">
+                    <div class="div-navbar-center">
                         <!-- Right Side Of Navbar -->
                         <ul class="nav navbar-nav navbar-center">
                             <!-- Authentication Links -->
-                            @foreach($top_nav->pages as $pageslist)
-                                @if($pageslist->pageChildren->isNotEmpty())
-                                    <li class="dropdown">
-                                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" v-pre>
-                                            {{ $pageslist->name }}
-                                            <i class="fa fa-angle-down"></i>
-                                        </a>
-                                        <ul class="dropdown-menu">
-                                            @foreach($pageslist->pageChildren as $pagechild)
-                                            <li>
-                                                <a href="/{{ $pageslist->slug }}/{{ $pagechild->slug }}">{{ $pagechild->name }}</a>
-                                            </li>
-                                            @endforeach
-                                        </ul>
-                                    </li>
-                                @else
-                                    <li><a href="/{{ $pageslist->slug }}">{{ $pageslist->name }}</a></li>
-                                @endif
-                            @endforeach 
+                            @if($top_nav->pages->isNotEmpty())
+                                @foreach($top_nav->pages as $pageslist)
+                                    @if($pageslist->pageChildren->isNotEmpty())
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" v-pre>
+                                                {{ $pageslist->name }}
+                                                <i class="fa fa-angle-down"></i>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                @foreach($pageslist->pageChildren as $pagechild)
+                                                    <li>
+                                                        <a href="/{{ $pageslist->slug }}/{{ $pagechild->slug }}">{{ $pagechild->name }}</a>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </li>
+                                    @else
+                                        <li><a href="/{{ $pageslist->slug }}">{{ $pageslist->name }}</a></li>
+                                    @endif
+                                @endforeach
+                            @endif
                         </ul>
                     </div>
-                    
+
                 </div>
             </div>
         </nav>
@@ -132,10 +130,10 @@
                         Ec distribution
                     </div>
                     <ul>
-                        <li>12/7 Nguyễn Thị Minh Khai, P. Đao Kao, Q1</li>
-                        <li>Hotline: 01232 798668</li>
-                        <li>Thời gian làm việc: 9g - 18g </li>
-                        <li>Email: <a href="mailto:ecworkshop.com@gmail.com">ecworkshop.com@gmail.com</a></li>
+                        <li>{{ $settings->address }}</li>
+                        <li>Hotline: {{ $settings->phone }}</li>
+                        <li>Thời gian làm việc: {{ $settings->work_hour }}</li>
+                        <li>Email: <a href="mailto:{{ $settings->email }}">{{ $settings->email }}</a></li>
                     </ul>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">
@@ -165,6 +163,20 @@
                     <div id="facebook-page"></div>
                 </div>
             </div>
+        </div>
+        <div id="fb-root"></div>
+        <script>(function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+                fjs.parentNode.insertBefore(js, fjs);
+            }(document, 'script', 'facebook-jssdk'));</script>
+
+        <!-- Your customer chat code -->
+        <div class="fb-customerchat"
+             attribution=setup_tool
+             page_id="356955021359698">
         </div>
     </footer>
 

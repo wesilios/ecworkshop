@@ -101,7 +101,7 @@
 											<td>{{ $item_cat->name }}</td>
 											<td>
 												<select name="item_category_id" id="item_category_id" class="form-control">
-													@if($item_cat->id === $item_cat->item_category_id)
+													@if($item_cat->id == $item_cat->item_category_id)
 														<option value="" selected>-- Không có loại sản phẩm cha --</option>
 													@endif
 													@foreach($item_cats_parent as $key => $it_cat_parent)

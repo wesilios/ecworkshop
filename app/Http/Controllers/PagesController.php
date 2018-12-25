@@ -49,8 +49,10 @@ class PagesController extends Controller
 
             $items = Item::where('homepage_active','=',1);
             $item_cats_all = ItemCategory::all();
+            $item_cats_parent = [];
+            $item_parents = [];
             foreach ($item_cats_all as $it_cat) {
-                if($it_cat->id === $it_cat->item_category_id)
+                if($it_cat->id == $it_cat->item_category_id)
                 {
                     $item_cats_parent[$it_cat->id]  = $it_cat;
                     $item_parents[$it_cat->id]      = $items->where('item_category_id','=',$it_cat->id)->get();
@@ -69,7 +71,6 @@ class PagesController extends Controller
             $footer_1st_menu = Menu::where('id',2)->first();
             $footer_2nd_menu = Menu::where('id',3)->first();
             $top_nav = Menu::where('id',1)->first();
-
             return view('mainsite.home', compact(
 
                 'settings',

@@ -2,7 +2,7 @@
 
 @section('meta')
     <title>Tài khoản | EC Distribution</title>
-    
+
     <!-- seo thong thuong-->
     <meta name="keywords" content="{{ $settings->keywords }}" />
     <meta name="description" content="{{ $settings->description }}" />
@@ -25,8 +25,7 @@
     <meta property="og:description" content="{{ $settings->description }}" />
     <meta property="og:image" content="{{ asset('images/1531112245_media_Rouge-100-Back.jpg') }}" />
 
-    {{ $settings->google_id }}
-    {{ $settings->webmaster }}
+
 
 @endsection
 
@@ -70,7 +69,7 @@
                         <h3>Thông tin tài khoản</h3>
                         <div class="account-title">Thông tin cơ bản</div>
                         {!! Form::open(['method'=>'PUT', 'action'=>['CustomerController@update'], 'class'=>'form-horizontal']) !!}
-                      
+
                             <div class="form-group {{ $errors->has('name') ? ' has-error' : '' }}">
                                 {!! Form::label('name', 'Họ tên khách hàng:', ['class' => 'col-sm-3 control-label'] ) !!}
                                 <div class="col-sm-8">
@@ -129,7 +128,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="form-group">
                                 <div class="col-sm-11">
                                     {!! Form::submit('Lưu thay đổi', ['class'=>'btn btn-primary pull-right']) !!}
@@ -140,7 +139,7 @@
 
                         <div class="account-title">Thông tin phụ (nếu có)</div>
                         {!! Form::open(['method'=>'PUT', 'action'=>['CustomerController@customInfoUpdate'], 'class'=>'form-horizontal']) !!}
-                      
+
                             <div class="form-group {{ $errors->has('address') ? ' has-error' : '' }}">
                                 {!! Form::label('address', 'Địa chỉ giao hàng:', ['class' => 'col-sm-3 control-label'] ) !!}
                                 <div class="col-sm-8">
@@ -164,7 +163,7 @@
                                             );
                                         !!}
                                     @else
-                                        
+
                                         {!! Form::select(
                                             'city_id',
                                             $cities,
@@ -201,7 +200,7 @@
                                     @endif
                                 </div>
                             </div>
-                            
+
                             <div class="form-group">
                                 <div class="col-sm-11">
                                     {!! Form::submit('Lưu thay đổi', ['class'=>'btn btn-primary pull-right']) !!}
@@ -209,7 +208,7 @@
                             </div>
 
                         {!! Form::close() !!}
-                    </div>   
+                    </div>
                 </div>
             </div>
         </div>

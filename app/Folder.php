@@ -18,6 +18,11 @@ class Folder extends Model
     	return $this->belongsTo('App\Folder');
     }
 
+    public function folders()
+    {
+        return $this->hasMany('App\Folder');
+    }
+
     public function medias()
     {
     	return $this->hasMany('App\Media');

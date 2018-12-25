@@ -26,8 +26,6 @@
     <meta property="og:description" content="{{ $article->summary }}" />
     <meta property="og:image" content="{{ !empty($article->media->first()) ? asset($article->media->first()->url) : asset('images/1531112245_media_Rouge-100-Back.jpg') }}" />
 
-    {{ $settings->google_id }}
-    {{ $settings->webmaster }}
 
 @endsection
 
@@ -38,7 +36,7 @@
 				<div class="col-sm-12 col-md-8 col-lg-8">
 					<h5 class="blog-title">{{ $article->title }}</h5>
 					<div class="time-publish"><i class="fa fa-calendar"></i> Ngày đăng:{{ date("j/n/Y", strtotime($article->created_at)) }}</div>
-					<a href="/review-blog/{{ $article->slug }}">
+					<a href="/news/{{ $article->slug }}">
                         @if(!empty($article->media->first()))
                         <img class="img-responsive" src="{{ asset($article->media()->first()->url) }}" alt="">
                             @else
@@ -61,7 +59,7 @@
 					</div>
 					@foreach($random_articles as $article)
 					<div class="article-related-item">
-						<a href="/review-blog/{{ $article->slug }}">
+						<a href="/news/{{ $article->slug }}">
                             @if(!empty($article->media->first()))
                             <img class="img-responsive" src="{{ asset($article->media()->first()->url) }}" alt="">
                                 @else

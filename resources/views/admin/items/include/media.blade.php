@@ -90,7 +90,7 @@
                                         <div class="row modal_folder">
                                             @foreach($folder_list as $fd)
                                                 @if($folder->id != $fd->id)
-                                                    <a href="{{ route('admin.folder.show',$fd->slug) }}" data-folder-id="{{ $fd->id }}" data-folder-slug="{{ $fd->slug }}" class="folder-link" data-active="1">
+                                                    <a href="{{ route('admin.folder.show',['id'=>$fd->id,'slug'=>$fd->slug]) }}" data-folder-id="{{ $fd->id }}" data-folder-slug="{{ $fd->slug }}" class="folder-link" data-active="1">
                                                         <div class="col-md-12">
                                                             <div class="folder">
                                                                 <i class="fa fa-folder"></i> <span>{{ $fd->name }}</span>
@@ -116,23 +116,25 @@
                         <div class="col-sm-10" >
                             <h5><strong>Files</strong></h5>
                             <div class="modalDisplayImages row">
-                                @foreach($medias as $media)
-                                    <div class="col-sm-2">
-                                        <div class="thumbnails_img" style="background-image:url('{{ asset($media->url) }}')" id="thumbnails_img_{{ $media->id }}">
-                                            <div class="caption">
-                                                <div class="caption-content">
-                                                    <a href="#" data-media-id="{{ $media->id }}" class="selectMultImgA">
-                                                        <div class="btn btn-info">
-                                                            <i class="fa fa-check"></i>
-                                                        </div>
-                                                    </a>
+                                @if($medias->isNotEmpty())
+                                    @foreach($medias as $media)
+                                        <div class="col-sm-2">
+                                            <div class="thumbnails_img" style="background-image:url('{{ asset($media->url) }}')" id="thumbnails_img_{{ $media->id }}">
+                                                <div class="caption">
+                                                    <div class="caption-content">
+                                                        <a href="#" data-media-id="{{ $media->id }}" class="selectMultImgA">
+                                                            <div class="btn btn-info">
+                                                                <i class="fa fa-check"></i>
+                                                            </div>
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="form-hidden-article">
-                                    </div>
-                                @endforeach
+                                        <div class="form-hidden-article">
+                                        </div>
+                                    @endforeach
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -145,13 +147,15 @@
                                 {{ csrf_field() }}
                                 <div class="form-group">
                                     <select multiple class="form-control" name="media_id[]" id="selForm">
-                                        @foreach($medias as $media)
-                                            <option value="{{ $media->id }}">{{ $media->file_name }}</option>
-                                        @endforeach
+                                        @if($medias->isNotEmpty())
+                                            @foreach($medias as $media)
+                                                <option value="{{ $media->id }}">{{ $media->file_name }}</option>
+                                            @endforeach
+                                        @endif
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-info pull-right" id="selectImgbtn{{$media->id}}">Lưu vào sản phẩm</button>
+                                    <button type="submit" class="btn btn-info pull-right" id="selectImgbtn">Lưu vào sản phẩm</button>
                                 </div>
                             </form>
                         </div>
@@ -185,23 +189,25 @@
         </div>
     </div>
 </div>
-@foreach($item->medias as $media)
-    <div class="example-modal">
-        <div class="modal fade item_modal" id="delete{{ $media->id }}" role="dialog">
-            <div class="modal-dialog delete-dialog" style="">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <h5>Xóa hình này?</h5>
-                    </div>
-                    <div class="modal-footer">
-                        {!! Form::open(['method'=>'DELETE', 'action'=>['AdminItemsController@delete_image', $item->id], 'class'=>'form-horizontal']) !!}
-                        <input type="hidden" name="media_id" value="{{ $media->id }}"/>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
-                        {!! Form::submit('Xóa', ['class'=>'btn btn-primary']) !!}
-                        {!! Form::close() !!}
+@if($medias->isNotEmpty())
+    @foreach($item->medias as $media)
+        <div class="example-modal">
+            <div class="modal fade item_modal" id="delete{{ $media->id }}" role="dialog">
+                <div class="modal-dialog delete-dialog" style="">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <h5>Xóa hình này?</h5>
+                        </div>
+                        <div class="modal-footer">
+                            {!! Form::open(['method'=>'DELETE', 'action'=>['AdminItemsController@delete_image', $item->id], 'class'=>'form-horizontal']) !!}
+                            <input type="hidden" name="media_id" value="{{ $media->id }}"/>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Đóng</button>
+                            {!! Form::submit('Xóa', ['class'=>'btn btn-primary']) !!}
+                            {!! Form::close() !!}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-@endforeach
+    @endforeach
+@endif

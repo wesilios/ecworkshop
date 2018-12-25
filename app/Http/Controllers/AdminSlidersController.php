@@ -35,7 +35,6 @@ class AdminSlidersController extends Controller
     public function upload(Request $request, $id)
     {
     	$files = $request->file('medias');
-        //dd($files);
     	$slider = Slider::findOrFail($id);
     	if($files === null)
     	{
@@ -49,12 +48,13 @@ class AdminSlidersController extends Controller
 	    		//echo $file->getMimeType();
 	    		if(substr($file->getMimeType(), 0, 5) == 'image') {
 				    $name = time() . '_media_' . $file->getClientOriginalName();
+				    $path = 'images/'.$name;
 				    $type = $file->getMimeType();
 		            //$file->move('images', $name);
 	                Image::make($file)->resize(1400, null, function ($constraint) {
-	                    $constraint->aspectRatio();})->save('images/'.$name);
+	                    $constraint->aspectRatio();})->save($path);
 		            $admin_id = Auth::user()->id;
-		            $media = Media::create(['file_name'=>$name, 'url'=>$name, 'type'=>$type, 'admin_id'=>$admin_id]);
+		            $media = Media::create(['file_name'=>$name, 'url'=>$path, 'type'=>$type, 'admin_id'=>$admin_id]);
 				}
 				else
 				{
@@ -69,8 +69,7 @@ class AdminSlidersController extends Controller
                 }
 	    	}
     	}
-    	//dd($sliderDetail);
-    	return redirect()->route('admin.sliders.edit', [$id])->with('status','Upload hình ảnh thành công');
+    	return redirect()->back()->with('status','Upload hình ảnh thành công');
     }
 
     public function selectImage(Request $request, $id)
@@ -87,7 +86,7 @@ class AdminSlidersController extends Controller
 		        $sliderDetail->save();
             }
         }
-        return redirect()->route('admin.sliders.edit', [$id])->with('status','Cập nhật hình ảnh thành công');
+        return redirect()->back()->with('status','Cập nhật hình ảnh thành công');
     }
 
     public function updateLink(Request $request, $slider_id, $id)

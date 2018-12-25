@@ -17,18 +17,18 @@ class ArticleController extends Controller
         $footer_1st_menu = Menu::where('id',2)->first();
         $footer_2nd_menu = Menu::where('id',3)->first();
         $top_nav = Menu::where('id',1)->first();
-        $page = Page::where('slug','=','review-blog')->first();
+        $page = Page::where('slug','=','news')->first();
         $articles = Article::where('category_id','>','1')->paginate(12);
         return view('mainsite.articles', compact('articles','settings','footer_1st_menu','footer_2nd_menu','top_nav','page'));
     }
-    
+
     public function getSingle($slug)
     {
     	$settings = Setting::findOrFail(1);
         $footer_1st_menu = Menu::where('id',2)->first();
         $footer_2nd_menu = Menu::where('id',3)->first();
         $top_nav = Menu::where('id',1)->first();
-        $page = Page::where('slug','=','review-blog')->first();
+        $page = Page::where('slug','=','news')->first();
     	$article = Article::where('slug','=', $slug)->first();
         $random_articles = Article::where('id', '!=', $article->id)->
                 where(function ($query) {

@@ -30,6 +30,7 @@ class AdminSettingsController extends Controller
             'youtube' => 'string|max:255',
             'instagram' => 'string|max:255',
             'google_id' => 'nullable|string',
+            'fb_pixel' => 'nullable|string',
             'description' => 'string',
             'webmaster' => 'nullable|string'
         ]);

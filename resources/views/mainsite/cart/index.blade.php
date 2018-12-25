@@ -2,7 +2,7 @@
 
 @section('meta')
     <title>Giỏ hàng | EC Distribution</title>
-    
+
 
     <!-- seo thong thuong-->
     <meta name="keywords" content="{{ $settings->keywords }}" />
@@ -26,8 +26,7 @@
     <meta property="og:description" content="{{ $settings->description }}" />
     <meta property="og:image" content="{{ asset('images/1531112245_media_Rouge-100-Back.jpg') }}" />
 
-    {{ $settings->google_id }}
-    {{ $settings->webmaster }}
+
 
 @endsection
 
@@ -54,7 +53,7 @@
                     </div>
                 @endif
                 <div class="col-lg-12">
-                    <i class="fa fa-3x fa-shopping-cart"></i> <span class="cart-summary">Giỏ hàng của bạn có {{ Session::has('cart') ? Session::get('cart')->totalQty : '0' }} sản phẩm</span> 
+                    <i class="fa fa-3x fa-shopping-cart"></i> <span class="cart-summary">Giỏ hàng của bạn có {{ Session::has('cart') ? Session::get('cart')->totalQty : '0' }} sản phẩm</span>
                 </div>
                 <div class="col-lg-12">
                     <div class="table-responsive">
@@ -80,8 +79,8 @@
                                 @foreach(Session::get('cart')->items as $item)
                                 <tr>
                                     <td>{{ $i }}</td>
-                                    <td><img class="img-responsive img-item img-hover" 
-                                        src="{{ asset($item['item']->medias()->first()->url) }}" 
+                                    <td><img class="img-responsive img-item img-hover"
+                                        src="{{ asset($item['item']->medias()->first()->url) }}"
                                         alt=""/>
                                     </td>
                                     <td>
@@ -91,7 +90,7 @@
                                         @endif
                                         @if(isset($item['colors'][0]))
                                         @else
-                                        Màu sắc: 
+                                        Màu sắc:
                                             @foreach($item['colors'] as $color)
                                                 {{ $color['quantity'] .'-'. $color['color']->name }}
                                             @endforeach
@@ -118,8 +117,8 @@
                                                 <div class="col-sm-4">
                                                     <input type='number' name='quantity{{ $item['item']->item['id'].'_'.$color['color']->id }}' value='{{ $color['quantity'] }}' class='form-control' id="quantity{{ $item['item']->item['id'].'_'.$color['color']->id }}" min="1" step="1"/>
                                                 </div>
-                                            </div>   
-                                        </div> 
+                                            </div>
+                                        </div>
                                     @endforeach
                                     @endif
                                     <td>{{ number_format( $item['price'] , 0, ",",".") }} đ</td>

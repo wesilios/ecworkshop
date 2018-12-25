@@ -4891,7 +4891,7 @@ a.closeZone:hover {
 #folder-section a .folder {
   border: 1px solid #c5c5c5;
   width: 100%;
-  padding: 10px 20px;
+  padding: 10px 15px;
   color: #444;
   transition: .5s;
   -moz-transition: .5s;
@@ -4900,8 +4900,9 @@ a.closeZone:hover {
 }
 
 #folder-section a.active .folder  {
-  color: #444;
+  color: #fff;
   border: 1px solid #00c0ef;
+  background-color: #00c0ef;
 }
 
 #folder-section a .folder i {
@@ -4914,4 +4915,8 @@ a.closeZone:hover {
 
 #h5-pre {
   display: none;
+}
+
+#folder_option {
+  display:none;
 }
