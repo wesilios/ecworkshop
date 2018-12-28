@@ -84,7 +84,7 @@
                                             <div class="row">
                                                 @foreach($folder_list as $fd)
                                                     @if($folder->id != $fd->id)
-                                                        <a href="{{ route('admin.folder.show',$fd->slug) }}" data-folder-id="{{ $fd->id }}" data-folder-slug="{{ $fd->slug }}" class="folder-link" data-active="1">
+                                                        <a href="{{ route('admin.folder.show',['id'=>$fd->id,'slug'=>$fd->slug]) }}" data-folder-id="{{ $fd->id }}" data-folder-slug="{{ $fd->slug }}" class="folder-link" data-active="1">
                                                             <div class="col-md-12">
                                                                 <div class="folder">
                                                                     <i class="fa fa-folder"></i> <span>{{ $fd->name }}</span>

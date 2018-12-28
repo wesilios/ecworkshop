@@ -257,34 +257,64 @@
                         </div>
                         @endif
 
-                        @if ($item->colors->count() > 0 || $features['color'])
-                            <div class="col-md-12">
-                                <div class="form-group" id="select_color_div">
-                                    <label>Màu {{ !empty($title) ? strtolower($title) : '' }}</label>
-                                    {!! Form::select(
-                                        'color_id[]',
-                                        $colors,
-                                        null,
-                                        ['class'=>'form-control select2-multi', 'multiple'=>'multiple', 'id'=>'colorSelect', 'required'=>'required']
-                                        );
-                                    !!}
+                        @if(!empty($features['color']))
+                            @if ($features['color'] == 'multiple')
+                                <div class="col-md-12">
+                                    <div class="form-group" id="select_color_div">
+                                        <label>Màu {{ !empty($title) ? strtolower($title) : '' }}</label>
+                                        {!! Form::select(
+                                            'color_id[]',
+                                            $colors,
+                                            null,
+                                            ['class'=>'form-control select2-multi', 'multiple'=>'multiple', 'id'=>'colorSelect', 'required'=>'required']
+                                            );
+                                        !!}
+                                    </div>
                                 </div>
-                            </div>
+                            @else
+                                <div class="col-md-12">
+                                    <div class="form-group" id="select_color_div">
+                                        <label>Màu {{ !empty($title) ? strtolower($title) : '' }}</label>
+                                        {!! Form::select(
+                                            'color_id[]',
+                                            $colors,
+                                            null,
+                                            ['class'=>'form-control select2-multi', 'id'=>'colorSelect', 'required'=>'required']
+                                            );
+                                        !!}
+                                    </div>
+                                </div>
+                            @endif
                         @endif
 
-                        @if(!empty($features['size']) || !empty($item->size_id))
-                            <div class="col-md-12">
-                                <div class="form-group" id="select_juice_size_div">
-                                    <label>Dung tích</label>
-                                    {!! Form::select(
-                                        'size_id',
-                                        $juice_sizes,
-                                        null,
-                                        ['class'=>'form-control select2-multi', 'required'=>'required']
-                                        );
-                                    !!}
+                        @if(!empty($features['size']))
+                            @if($features['size'] == 'multiple')
+                                <div class="col-md-12">
+                                    <div class="form-group" id="select_juice_size_div">
+                                        <label>Dung tích</label>
+                                        {!! Form::select(
+                                            'size_id[]',
+                                            $juice_sizes,
+                                            null,
+                                            ['class'=>'form-control select2-multi', 'multiple'=>'multiple','id'=>'sizeSelect', 'required'=>'required']
+                                            );
+                                        !!}
+                                    </div>
                                 </div>
-                            </div>
+                                @else
+                                <div class="col-md-12">
+                                    <div class="form-group" id="select_juice_size_div">
+                                        <label>Dung tích</label>
+                                        {!! Form::select(
+                                            'size_id[]',
+                                            $juice_sizes,
+                                            null,
+                                            ['class'=>'form-control select2-multi','id'=>'sizeSelect', 'required'=>'required']
+                                            );
+                                        !!}
+                                    </div>
+                                </div>
+                            @endif
                         @endif
 
                         <div class="col-md-12">
@@ -303,7 +333,7 @@
                         <div class="col-md-12">
                             <div class="form-group">
                                 <a href="" class="custom-link" data-label="Hãng mới" data-type="brn"><strong>+ Hãng mới</strong></a>
-                                @if ($item->colors->count() > 0 || $features['color'])
+                                @if (!empty($features['color']))
                                     <a href="" class="custom-link" data-label="Màu mới" data-type="clr"><strong>+ Màu mới</strong></a>
                                 @endif
                                 @if(!empty($features['size']))
@@ -477,6 +507,7 @@
         $('.select2-multi').select2();
         $('.select2-single').select2();
         $('#colorSelect').val({{json_encode($color_value)}}).trigger('change');
+        $('#sizeSelect').val({{json_encode($size_value)}}).trigger('change');
         $('.removeSelectedImg').click(function(e){
             e.preventDefault();
             var id = $(this).attr('data-media-id');

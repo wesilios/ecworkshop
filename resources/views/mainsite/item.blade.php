@@ -114,7 +114,7 @@
                     </div>
                     <div class="col-sm-12 col-md-8 col-lg-8">
                         <div class="item-info">
-                            <div class="item-name">{{ $item->brand->name . ' ' . $item->name }}</div>
+                            <div class="item-name">{{ ($item->brand ? $item->brand->name : '') . ' ' . $item->name }}</div>
                             <p>{{ $item->summary }}</p>
                             <hr>
                             @if($item->price_off > 0)
@@ -223,7 +223,7 @@
                     </div>
                     <div class="col-sm-12 col-md-8 col-lg-8">
                         <div class="item-info">
-                            <div class="item-name">{{ $item->brand ? $item->brand->name : '' . ' ' . $item->name }}</div>
+                            <div class="item-name">{{ ($item->brand ? $item->brand->name : '') . ' ' . $item->name }}</div>
                             <p>{{ $item->summary }}</p>
                             <hr>
                             @if($item->price_off > 0)

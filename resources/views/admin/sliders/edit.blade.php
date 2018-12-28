@@ -29,7 +29,7 @@
 									@endphp
 									@foreach($slider->sliderDetails as $sliderDetail)
 										<div class="item {{ $i == 0 ? 'active' : ''}}">
-											<img src="{{ asset($sliderDetail->media->url) }}" alt="{{ url($sliderDetail->media->file_name) }}">
+											<img src="{{ !empty($sliderDetail->media) ? asset($sliderDetail->media->url) : 'http://placehold.it/1900x1080' }}" alt="{{ !empty($sliderDetail->media) ? url($sliderDetail->media->file_name) : '' }}">
 										</div>
 										@php
 											$i++
@@ -52,19 +52,19 @@
 								</ol>
 								<div class="carousel-inner">
 									<div class="item active">
-										<img src="http://placehold.it/1400x500/39CCCC/ffffff&text=I+Love+Bootstrap" alt="First slide">
+										<img src="http://placehold.it/1900x1080/39CCCC/ffffff" alt="First slide">
 										<div class="carousel-caption">
 											First Slide
 										</div>
 									</div>
 									<div class="item">
-										<img src="http://placehold.it/1400x500/3c8dbc/ffffff&text=I+Love+Bootstrap" alt="Second slide">
+										<img src="http://placehold.it/1900x1080/3c8dbc/ffffff" alt="Second slide">
 										<div class="carousel-caption">
 											Second Slide
 										</div>
 									</div>
 									<div class="item">
-										<img src="http://placehold.it/1400x500/f39c12/ffffff&text=I+Love+Bootstrap" alt="Third slide">
+										<img src="http://placehold.it/1900x1080/f39c12/ffffff" alt="Third slide">
 										<div class="carousel-caption">
 											Third Slide
 										</div>
@@ -143,7 +143,7 @@
 								@if($slider->sliderDetails->isNotEmpty())
 									@foreach($slider->sliderDetails as $sliderDetail)
 										<div class="col-sm-2">
-											<div class="thumbnails_img" style="background-image:url('{{ url($sliderDetail->media->url) }}')">
+											<div class="thumbnails_img" style="background-image:url('{{ !empty($sliderDetail->media) ? url($sliderDetail->media->url) : ''}}')">
 												<div class="caption">
 													<div class="caption-content">
 														<a href="#" data-toggle="modal" data-target="#link{{ $sliderDetail->id }}">

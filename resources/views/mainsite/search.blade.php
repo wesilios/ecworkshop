@@ -39,67 +39,43 @@
                 </div>
             </div>
             <div class="row">
-                @if(!empty($itemSearch->items))
-                    @foreach($itemSearch->items as $item)
-                        @if($item['itemSub']->medias()->where('media_id', $item['itemSub']->item->index_img)->get()->isNotEmpty())
-                            @if(isset($item['item']->itemCategory->itemCategory))
+                @if(!empty($itemSearch))
+                    @foreach($itemSearch as $item)
+                        @if($item->medias->isNotEmpty())
+                            @if(!empty($item->index_img))
+                                @php
+                                    if($item->item_category_id != $item->item_category_parent_id){
+                                        $slug = $item->itemCategoryParent->slug . '/' .$item->itemCategoryMain->slug . '/' .$item->id.'/'.$item->slug;
+                                    } else {
+                                        $slug = $item->itemCategoryParent->slug . '/' .$item->id.'/'.$item->slug;
+                                    }
+                                @endphp
                                 <div class="col-sm-12 col-md-4 col-lg-3">
                                     <div class="item">
-                                        <a href="/{{ $item['item']->itemCategory->itemCategory->slug }}/{{ $item['item']->itemCategory->slug }}/{{ $item['item']->id }}/{{ $item['item']->slug }}">
+                                        <a href="/{{ $slug }}">
                                             <img class="img-responsive"
-                                            src="
-                                            @foreach($item['itemSub']->medias()->where('media_id', $iitem['item']->index_img)->get() as $img)
-                                            {{ asset($img->url) }}
-                                            @endforeach
-                                            " alt="">
-                                            <div class="item-name">{{ $item['itemSub']->brand->name . ' ' . $item['item']->name }}</div>
-                                            <div class="item-price">{{ number_format($item['item']->price,0, ",",".") }} VNĐ</div>
+                                                 src="{{ asset($item->medias()->first()->url) }}" alt="">
+                                            <div class="item-name">{{ $item->brand->name . ' ' . $item->name }}</div>
+                                            <div class="item-price">{{ number_format($item->price,0, ",",".") }} VNĐ</div>
                                             <div class="btn-cart">Thêm vào giỏ hàng</div>
                                         </a>
                                     </div>
                                 </div>
                             @else
+                                @php
+                                    if($item->item_category_id != $item->item_category_parent_id){
+                                        $slug = $item->itemCategoryParent->slug . '/' .$item->itemCategoryMain->slug . '/' .$item->id.'/'.$item->slug;
+                                    } else {
+                                        $slug = $item->itemCategoryParent->slug . '/' .$item->id.'/'.$item->slug;
+                                    }
+                                @endphp
                                 <div class="col-sm-12 col-md-4 col-lg-3">
                                     <div class="item">
-                                        <a href="/{{ $item['item']->itemCategory->slug }}/{{ $item['item']->id }}/{{ $item['item']->slug }}">
+                                        <a href="/{{ $slug }}">
                                             <img class="img-responsive"
-                                            src="
-                                            @foreach($item['itemSub']->medias()->where('media_id', $item['item']->index_img)->get() as $img)
-                                            {{ asset($img->url) }}
-                                            @endforeach
-                                            " alt="">
-                                            <div class="item-name">{{ $item['itemSub']->brand->name . ' ' . $item['item']->name }}</div>
-                                            <div class="item-price">{{ number_format($item['item']->price,0, ",",".") }} VNĐ</div>
-                                            <div class="btn-cart">Thêm vào giỏ hàng</div>
-                                        </a>
-                                    </div>
-                                </div>
-                            @endif
-                        @else
-                            @if(isset($item['item']->itemCategory->itemCategory))
-                                <div class="col-sm-12 col-md-4 col-lg-3">
-                                    <div class="item">
-                                        <a href="/{{ $item['item']->itemCategory->itemCategory->slug }}/{{ $item['item']->itemCategory->slug }}/{{ $item['item']->id }}/{{ $item['item']->slug }}">
-                                            <img class="img-responsive"
-                                            src="
-                                            {{ asset($item['itemSub']->medias()->first()->url) }}
-                                            " alt="">
-                                            <div class="item-name">{{ $item['itemSub']->brand->name . ' ' . $item['item']->name }}</div>
-                                            <div class="item-price">{{ number_format($item['item']->price,0, ",",".") }} VNĐ</div>
-                                            <div class="btn-cart">Thêm vào giỏ hàng</div>
-                                        </a>
-                                    </div>
-                                </div>
-                            @else
-                                <div class="col-sm-12 col-md-4 col-lg-3">
-                                    <div class="item">
-                                        <a href="/{{ $item['item']->itemCategory->slug }}/{{ $item['item']->id }}/{{ $item['item']->slug }}">
-                                            <img class="img-responsive"
-                                            src="
-                                            {{ asset($item['itemSub']->medias()->first()->url) }}
-                                            " alt="">
-                                            <div class="item-name">{{ $item['itemSub']->brand->name . ' ' . $item['item']->name }}</div>
-                                            <div class="item-price">{{ number_format($item['item']->price,0, ",",".") }} VNĐ</div>
+                                                 src="{{ asset($item->medias()->first()->url) }}" alt="">
+                                            <div class="item-name">{{ $item->brand->name . ' ' . $item->name }}</div>
+                                            <div class="item-price">{{ number_format($item->price,0, ",",".") }} VNĐ</div>
                                             <div class="btn-cart">Thêm vào giỏ hàng</div>
                                         </a>
                                     </div>

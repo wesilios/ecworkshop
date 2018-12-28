@@ -94,7 +94,6 @@ class AdminItemsController extends Controller
             $item->price                    = $rq->price;
             $item->price_off                = $rq->price_off;
             $item->item_status_id           = $rq->item_status_id;
-            $item->size_id                  = $rq->size_id;
             $item->homepage_active          = $rq->homepage_active == 'on' ? 1 : 0;
             $item->brand_id                 = $rq->brand_id;
             $item->slug                     = Alpha::alpha_dash($item->name);
@@ -104,20 +103,25 @@ class AdminItemsController extends Controller
             if($item->save()){
                 $item->item_category_parent_id == 0 ? $item_cat_slug = $item->itemCategoryMain->slug : $item_cat_slug = $item->itemCategoryParent->slug;
                 $colors                         = $rq->post('color_id');
+                $sizes                         = $rq->post('size_id');
                 if(isset($colors))
                 {
                     $item->colors()->detach();
                     foreach($colors as $input_color)
                     {
-                        $color = Color::findOrFail($input_color);
-                        if(in_array($input_color, $item->colors->pluck('id')->all()))
-                        {
-                            //echo "";
-                        }
-                        else
-                        {
-                            $item->colors()->save($color);
-                        }
+                        $color = Color::find($input_color);
+                        $item->colors()->save($color);
+                    }
+                }
+                if(isset($sizes))
+                {
+                    if($item->sizes->count() >0){
+                        $item->sizes()->detach();
+                    }
+                    foreach($sizes as $input_size)
+                    {
+                        $size = Size::find($input_size);
+                        $item->sizes()->save($size);
                     }
                 }
                 return redirect()->route('admin.items.edit',['slug'=>$item->slug,'item_category'=>$item_cat_slug])->with(['status'=>'success','message'=>'Tạo sản phẩm thành công.']);
@@ -140,7 +144,7 @@ class AdminItemsController extends Controller
                 $juice_sizes = Size::all()->pluck('name','id');
                 $medias = Media::where('folder_id','=','1');
                 $medias = $medias->orderBy('id', 'desc')->get();
-                $folder = Folder::findOrFail(1);
+                $folder = Folder::find(1);
                 $folder_list = Folder::where('folder_id',$folder->id)->get();
                 $new = ['folder_id' => $folder->id,'folder_name' => $folder->name, 'folder_slug'=>$folder->slug];
                 $folder_string[] = $new;
@@ -176,6 +180,7 @@ class AdminItemsController extends Controller
                         'colors'                => $colors,
                         'juice_sizes'           => $juice_sizes,
                         'color_value'           => $item->colors->isNotEmpty() ? $item->colors->pluck('id') : [],
+                        'size_value'           => $item->sizes->isNotEmpty() ? $item->sizes->pluck('id') : [],
                     ]);
                 }
                 return '';
@@ -225,11 +230,11 @@ class AdminItemsController extends Controller
                 $item->price            = $rq->price;
                 $item->price_off        = $rq->price_off;
                 $item->item_status_id   = $rq->item_status_id;
-                $item->size_id          = $rq->size_id;
                 $item->homepage_active  = $rq->homepage_active == 'on' ? 1 : 0;
                 $item->brand_id         = $rq->brand_id;
                 $item->slug             = Alpha::alpha_dash($item->name);
                 $colors                 = $rq->get('color_id');
+                $sizes                         = $rq->post('size_id');
                 if(isset($colors))
                 {
                     if($item->colors->count()>0) {
@@ -238,15 +243,19 @@ class AdminItemsController extends Controller
 
                     foreach($colors as $input_color)
                     {
-                        $color = Color::findOrFail($input_color);
-                        if(in_array($input_color, $item->colors->pluck('id')->all()))
-                        {
-                            //echo "";
-                        }
-                        else
-                        {
-                            $item->colors()->save($color);
-                        }
+                        $color = Color::find($input_color);$item->colors()->save($color);
+                    }
+
+                }
+                if(isset($sizes))
+                {
+                    if($item->sizes->count() >0){
+                        $item->sizes()->detach();
+                    }
+                    foreach($sizes as $input_size)
+                    {
+                        $size = Size::find($input_size);
+                        $item->sizes()->save($size);
                     }
                 }
                 if($item->save()){
@@ -292,7 +301,7 @@ class AdminItemsController extends Controller
         //
         //dd($request->all());
         $files = $request->file('medias');
-        $item = Item::findOrFail($id);
+        $item = Item::find($id);
         if($files === null)
         {
             return redirect()->route('admin.items.edit', [$id])->with('error','No input');
@@ -334,7 +343,7 @@ class AdminItemsController extends Controller
             $item->medias()->detach();
             foreach($input['media_id'] as $input_media)
             {
-                $media = Media::findOrFail($input_media);
+                $media = Media::find($input_media);
                 if(in_array($input_media, $item->medias->pluck('id')->all()))
                 {
                     //echo "";
@@ -353,7 +362,7 @@ class AdminItemsController extends Controller
     public function set_image_index(Request $request, $id)
     {
         $input = $request->all();
-        $item = Item::findOrFail($id);
+        $item = Item::find($id);
         $item->item->index_img = $input['media_id'];
         $item->item->save();
         foreach ($item->medias as $media) {
@@ -369,7 +378,7 @@ class AdminItemsController extends Controller
     public function delete_image(Request $request, $id)
     {
         $input = $request->all();
-        $item = Item::findOrFail($id);
+        $item = Item::find($id);
         //dd($input['media_id']);
         //dd($item->medias->where('id',$input['media_id'])->first());
         $media = $item->medias->where('id',$input['media_id'])->first();

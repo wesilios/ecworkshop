@@ -58,37 +58,41 @@ class AdminArticleController extends Controller
     public function store(Request $request)
     {
         //
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'content' => 'required|string',
-            'summary' => 'required|string',
-            'category_id' => 'required'
-        ]);
+        try {
+            $validator = Validator::make($request->all(), [
+                'title' => 'required|string|max:255',
+                'content_ar' => 'required|string',
+                'summary' => 'required|string',
+                'category_id' => 'required'
+            ]);
 
-        if ($validator->fails()) {
-            return redirect()->route('articles.create')
-                        ->withErrors($validator)
-                        ->withInput();
-        }
-        $input = $request->all();
-        $article = new Article;
-        $article->title = $request->title;
-        $article->content = $request->content_ar;
-        $article->summary = $request->summary;
-        $article->category_id = $request->category_id;
-        $article->admin_id = Auth::user()->id;
-        $article->slug = Alpha::alpha_dash($article->title);
-        $article->save();
-
-        if(isset($input['tag_id']))
-        {
-            foreach($input['tag_id'] as $input_tag)
-            {
-                $tag = Tag::findOrFail($input_tag);
-                $article->tags()->save($tag);
+            if ($validator->fails()) {
+                return redirect()->route('articles.create')
+                    ->withErrors($validator)
+                    ->withInput();
             }
+            $input = $request->all();
+            $article = new Article;
+            $article->title = $request->title;
+            $article->content = $request->content_ar;
+            $article->summary = $request->summary;
+            $article->category_id = $request->category_id;
+            $article->admin_id = Auth::user()->id;
+            $article->slug = Alpha::alpha_dash($article->title);
+            $article->save();
+
+            if(isset($input['tag_id']))
+            {
+                foreach($input['tag_id'] as $input_tag)
+                {
+                    $tag = Tag::findOrFail($input_tag);
+                    $article->tags()->save($tag);
+                }
+            }
+            return redirect()->route('articles.index')->with('status','Thêm bài viết mới thành công');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('status',$e->getMessage());
         }
-        return redirect()->route('articles.index')->with('status','Thêm bài viết mới thành công');
     }
 
     /**
@@ -144,7 +148,7 @@ class AdminArticleController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
-            'content' => 'required|string',
+            'content_ar' => 'required|string',
             'summary' => 'required|string',
             'category_id' => 'required'
         ]);

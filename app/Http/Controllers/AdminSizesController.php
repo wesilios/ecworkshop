@@ -18,8 +18,12 @@ class AdminSizesController extends Controller
 
     public function index()
     {
-    	$juice_sizes = Size::orderBy('id', 'desc')->paginate(10);
-    	return view('admin.juicesizes.index', compact('juice_sizes'));
+    	try {
+            $juice_sizes = Size::orderBy('id', 'desc')->paginate(10);
+            return view('admin.juicesizes.index', compact('juice_sizes'));
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     public function store(Request $request)

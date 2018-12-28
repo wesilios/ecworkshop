@@ -354,22 +354,25 @@
                                             }
                                         }
                                     @endphp
-                                    @foreach($item_categories as $it_cat)
-                                        <li>
-                                            <a href="#">
-                                                <i class="fa fa-circle-o"></i> {{ $it_cat->name }}<i class="fa fa-angle-left pull-right"></i>
-                                            </a>
-                                            <ul class="treeview-menu">
-                                                <li><a href="{{ route('admin.items.index',['item_category'=>$it_cat->slug]) }}"><i class="fa fa-circle-o"></i> Xem tất cả</a></li>
-                                                <li><a href="{{ route('admin.items.create',['item_category'=>$it_cat->slug]) }}"><i class="fa fa-circle-o"></i> Thêm mới</a></li>
-                                            </ul>
-                                        </li>
-                                    @endforeach
+                                    @if(!empty($item_categories))
+                                        @foreach($item_categories as $it_cat)
+                                            <li>
+                                                <a href="#">
+                                                    <i class="fa fa-circle-o"></i> {{ $it_cat->name }}<i class="fa fa-angle-left pull-right"></i>
+                                                </a>
+                                                <ul class="treeview-menu">
+                                                    <li><a href="{{ route('admin.items.index',['item_category'=>$it_cat->slug]) }}"><i class="fa fa-circle-o"></i> Xem tất cả</a></li>
+                                                    <li><a href="{{ route('admin.items.create',['item_category'=>$it_cat->slug]) }}"><i class="fa fa-circle-o"></i> Thêm mới</a></li>
+                                                </ul>
+                                            </li>
+                                        @endforeach
+                                    @endif
                                 </ul>
                             </li>
                             <li><a href="{{ route('admin.brands.index') }}"><i class="fa fa-circle-o"></i> Hãng</a></li>
                             <li><a href="{{ route('admin.items.cat.index') }}"><i class="fa fa-circle-o"></i> Loại sản phẩm</a></li>
                             <li><a href="{{ route('admin.colors.index') }}"><i class="fa fa-circle-o"></i> Màu sắc</a></li>
+                            <li><a href="{{ route('admin.sizes.index') }}"><i class="fa fa-circle-o"></i> Dung tích</a></li>
                         </ul>
                     </li>
                     <li>

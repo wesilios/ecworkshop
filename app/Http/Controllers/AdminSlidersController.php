@@ -27,7 +27,7 @@ class AdminSlidersController extends Controller
     public function edit($id)
     {
     	$medias = Media::orderBy('id', 'desc')->paginate(24);
-    	$slider = Slider::findOrFail($id);
+    	$slider = Slider::find($id);
     	//dd($slider->sliderDetails->media->id);
     	return view('admin.sliders.edit', compact('slider','medias'));
     }

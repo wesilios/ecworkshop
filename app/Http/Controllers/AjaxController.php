@@ -79,45 +79,21 @@ class AjaxController extends Controller
             {
                 $item_category_id = $itemCategory->itemCategory->id;
             }
-            switch ($item_category_id) {
-                case '1':
-                    $item = Box::where('item_id', $request->item_id)->first();
-                    $colors = $item->colors;
-                    break;
-
-                case '2':
-                    $item = FullKit::where('item_id', $request->item_id)->first();
-                    $colors = $item->colors;
-                    break;
-
-                case '3':
-                    $item = Tank::where('item_id', $request->item_id)->first();
-                    $colors = $item->colors;
-                    break;
-
-                case '4':
-                    $item = Juice::where('item_id', $request->item_id)->first();
-                    $size = $item->size;
-                    break;
-
-                case '5':
-                    $item = Accessory::where('item_id', $request->item_id)->first();
-                    break;
-
-                default:
-                    # code...
-                    break;
-            }
-            if($item->medias()->where('media_id', $item->item->index_img)->get()->isNotEmpty())
-            {
-                $url = asset($item->medias()->where('media_id', $item->item->index_img)->first()->url);
-            }
-            else
-            {
-                 $url = asset($item->medias()->first()->url);
+            $item = Item::where('id',$request->item_id)->first();
+            if($item->medias->isNotEmpty()) {
+                if($item->medias()->where('media_id', $item->index_img)->get()->isNotEmpty())
+                {
+                    $url = asset($item->medias()->where('media_id', $item->index_img)->first()->url);
+                }
+                else
+                {
+                    $url = asset($item->medias()->first()->url);
+                }
+            } else {
+                $url = 'https://via.placeholder.com/650x650?text=No+image';
             }
             $data = view('mainsite.ajax.cartcheck',compact('item','colors','size'))->render();
-            return response()->json(['option'=>$data,'img'=>$url,'item_id'=>$item->id,'item_category_id'=>$item_category_id,'item_id_id'=>$item->item->id]);
+            return response()->json(['option'=>$data,'img'=>$url,'item_id'=>$item->id,'item_category_id'=>$item_category_id]);
             //return view('mainsite.ajax.cartcheck',compact('item'));
         }
     }
@@ -127,45 +103,25 @@ class AjaxController extends Controller
         if($request->ajax())
         {
             $item_category_id = $request->item_category_id;
-            switch ($item_category_id) {
-                case '1':
-                    $item = Box::where('id', $request->item_id)->first();
-                    break;
-
-                case '2':
-                    $item = FullKit::where('id', $request->item_id)->first();
-                    break;
-
-                case '3':
-                    $item = Tank::where('id', $request->item_id)->first();
-                    break;
-
-                case '4':
-                    $item = Juice::where('id', $request->item_id)->first();
-                    break;
-
-                case '5':
-                    $item = Accessory::where('id', $request->item_id)->first();
-                    break;
-
-                default:
-                    # code...
-                    break;
-            }
-            if($item->medias()->where('media_id', $item->item->index_img)->get()->isNotEmpty())
-            {
-                $url = $item->medias()->where('media_id', $item->item->index_img)->first()->url;
-            }
-            else
-            {
-                $url = $item->medias()->first()->url;
+            $item = Item::where('id',$request->item_id)->first();
+            if($item->medias->isNotEmpty()) {
+                if($item->medias()->where('media_id', $item->index_img)->get()->isNotEmpty())
+                {
+                    $url = $item->medias()->where('media_id', $item->index_img)->first()->url;
+                }
+                else
+                {
+                    $url = $item->medias()->first()->url;
+                }
+            } else {
+                $url = 'https://via.placeholder.com/650x650?text=No+image';
             }
             $quantity = $request->quantity;
-            $total = $request->quantity * $item->item->price;
+            $total = $request->quantity * $item->price;
             $data = view('mainsite.ajax.cartsuccess',compact('item','url','quantity','total'))->render();
-            $this->addToCart($request, $item->item->id, $item);
+            $this->addToCart($request, $item->id, $item);
             $totalQty = Session::get('cart')->totalQty;
-            return  response()->json(['item_name'=>$item->item->name,'option'=>$data,'totalQty'=>$totalQty,'route'=>route('cart.index')]);
+            return  response()->json(['item_name'=>$item->name,'option'=>$data,'totalQty'=>$totalQty,'route'=>route('cart.index')]);
         }
     }
 
@@ -181,9 +137,17 @@ class AjaxController extends Controller
             $color = Color::findOrFail($request->color);
             $color_id = $request->color;
         }
+        if($request->size == null) {
+            $size = null;
+            $size_id = 0;
+        }
+        else {
+            $size = Size::findOrFail($request->size);
+            $size_id = $request->size;
+        }
         $oldCart = Session::has('cart') ? Session::get('cart') : null;
         $cart = new Cart($oldCart);
-        $cart->add($item, $id, $request->quantity, $color, $color_id);
+        $cart->add($item, $id, $request->quantity, $color, $color_id, $size, $size_id);
         $request->session()->put('cart', $cart);
         //dd($request->session()->get('cart'));
         //return redirect()->route('test.cart');
@@ -198,7 +162,6 @@ class AjaxController extends Controller
 
     public function cartUpdate(Request $request)
     {
-        //dd($request->all());
         $cart = $request->session()->get('cart');
         if($cart == null)
         {
@@ -206,28 +169,39 @@ class AjaxController extends Controller
         }
         $cart->totalQty = 0;
         $cart->totalPrice = 0;
-        foreach($cart->items as $item)
+        foreach($cart->items as $key => $item)
         {
             //echo $item['item']->item['id'].': '. $request['quantity'.$item['item']->item['id']] . '<br>';
             $totalColorQty = 0;
+            $totalSizeQty = 0;
+            $price = 0;
             if(isset($item['colors'][0]))
             {
-                $cart->items[$item['item']->item['id']]['quantity'] = $request['quantity'.$item['item']->item['id']];
-                $cart->items[$item['item']->item['id']]['price'] = $request['quantity'.$item['item']->item['id']] * $item['item']->item['price'];
+                $cart->items[$key]['quantity'] = $request['quantity'.$item['item']->item['id']];
+                $cart->items[$key]['price'] = $request['quantity'.$item['item']->item['id']] * $item['item']->item['price'];
             }
             else
             {
                 foreach($item['colors'] as $color)
                 {
                     //echo $color['color']['id'].': '. $request['quantity'.$item['item']->item['id'].'_'.$color['color']['id']] . '<br>';
-                    $cart->items[$item['item']->item['id']]['colors'][$color['color']['id']]['quantity'] = $request['quantity'.$item['item']->item['id'].'_'.$color['color']['id']];
-                    $totalColorQty += $cart->items[$item['item']->item['id']]['colors'][$color['color']['id']]['quantity'];
+                    $cart->items[$key]['colors'][$color['color']['id']]['quantity'] = $request['quantity'.$key.'_'.$color['color']['id']];
+                    $totalColorQty += $cart->items[$key]['colors'][$color['color']['id']]['quantity'];
                 }
-                $cart->items[$item['item']->item['id']]['quantity'] = $totalColorQty;
-                $cart->items[$item['item']->item['id']]['price'] = $totalColorQty * $item['item']->item['price'];
+                $cart->items[$key]['quantity'] = $totalColorQty;
+                $price = $item['item']->price_off ? $item['item']->price_off : $item['item']->price;
+                $cart->items[$key]['price'] = $totalColorQty * $price;
+//                foreach($item['sizes'] as $size)
+//                {
+//                    //echo $color['color']['id'].': '. $request['quantity'.$item['item']->item['id'].'_'.$color['color']['id']] . '<br>';
+//                    $cart->items[$item['item']->item['id']]['sizes'][$size['size']['id']]['quantity'] = $request['quantity'.$item['item']->item['id'].'_'.$size['size']['id']];
+//                    $totalSizeQty += $cart->items[$item['item']->item['id']]['sizes'][$size['size']['id']]['quantity'];
+//                }
+//                $cart->items[$item['item']->item['id']]['quantity'] = $totalSizeQty;
+//                $cart->items[$item['item']->item['id']]['price'] = $totalSizeQty * $item['item']->item['price'];
             }
-            $cart->totalQty += $cart->items[$item['item']->item['id']]['quantity'];
-            $cart->totalPrice += $cart->items[$item['item']->item['id']]['price'];
+            $cart->totalQty += $cart->items[$key]['quantity'];
+            $cart->totalPrice += $cart->items[$key]['price'];
         }
         $request->session()->forget('cart');
         $request->session()->put('cart', $cart);
@@ -237,9 +211,9 @@ class AjaxController extends Controller
     public function cartDelete(Request $request, $id)
     {
         $cart = $request->session()->get('cart');
-        foreach($cart->items as $item)
+        foreach($cart->items as $key => $item)
         {
-            if($item['item']->item['id'] == $id)
+            if($key == $id)
             {
                 $quantity = $item['quantity'];
                 $price = $item['price'];

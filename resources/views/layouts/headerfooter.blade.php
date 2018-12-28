@@ -36,11 +36,11 @@
                             <input type="text" class="input-text" aria-label="..." placeholder="Bạn cần tìm gì?" name="search_query">
                             <select name="item_category_id">
                                 <option value="0">Tất cả</option>
-                                <option value="2">Full kits</option>
-                                <option value="1">Thân máy</option>
-                                <option value="3">Buồng đốt</option>
-                                <option value="4">Tinh dầu</option>
-                                <option value="5">Phụ kiện</option>
+                                @if(!empty($item_cats_parent))
+                                    @foreach($item_cats_parent as $key => $it_cat)
+                                    <option value="{{$it_cat->id}}">{{ $it_cat->name }}</option>
+                                    @endforeach
+                                @endif
                             </select>
                             <button type="submit" name="search" id="search-btn" class="input-submit" value="tim_kiem"><i class="fa fa-search"></i></button>
                         {!! Form::close() !!}

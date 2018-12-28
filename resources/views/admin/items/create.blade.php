@@ -147,33 +147,63 @@
 
                         @php $features = json_decode($item_category->item_cat_features,true) @endphp
                         @if(!empty($features['color']))
-                            <div class="col-md-12">
-                                <div class="form-group" id="select_color_div">
-                                    <label>Màu {{ !empty($title) ? strtolower($title) : '' }}</label>
-                                    {!! Form::select(
-                                        'color_id[]',
-                                        $colors,
-                                        null,
-                                        ['class'=>'form-control select2-multi', 'multiple'=>'multiple']
-                                        );
-                                    !!}
+                            @if($features['color'] == 'multiple')
+                                <div class="col-md-12">
+                                    <div class="form-group" id="select_color_div">
+                                        <label>Màu {{ !empty($title) ? strtolower($title) : '' }}</label>
+                                        {!! Form::select(
+                                            'color_id[]',
+                                            $colors,
+                                            null,
+                                            ['class'=>'form-control select2-multi', 'multiple'=>'multiple']
+                                            );
+                                        !!}
+                                    </div>
                                 </div>
-                            </div>
+                            @else
+                                <div class="col-md-12">
+                                    <div class="form-group" id="select_color_div">
+                                        <label>Màu {{ !empty($title) ? strtolower($title) : '' }}</label>
+                                        {!! Form::select(
+                                            'color_id[]',
+                                            $colors,
+                                            null,
+                                            ['class'=>'form-control select2-multi']
+                                            );
+                                        !!}
+                                    </div>
+                                </div>
+                            @endif
                         @endif
 
                         @if(!empty($features['size']))
-                            <div class="col-md-12">
-                                <div class="form-group" id="select_juice_size_div">
-                                    <label>Dung tích</label>
-                                    {!! Form::select(
-                                        'size_id',
-                                        $juice_sizes,
-                                        null,
-                                        ['class'=>'form-control select2-multi']
-                                        );
-                                    !!}
+                            @if($features['size'] == 'multiple')
+                                <div class="col-md-12">
+                                    <div class="form-group" id="select_juice_size_div">
+                                        <label>Dung tích</label>
+                                        {!! Form::select(
+                                            'size_id[]',
+                                            $juice_sizes,
+                                            null,
+                                            ['class'=>'form-control select2-multi', 'multiple'=>'multiple']
+                                            );
+                                        !!}
+                                    </div>
                                 </div>
-                            </div>
+                                @else
+                                <div class="col-md-12">
+                                    <div class="form-group" id="select_juice_size_div">
+                                        <label>Dung tích</label>
+                                        {!! Form::select(
+                                            'size_id[]',
+                                            $juice_sizes,
+                                            null,
+                                            ['class'=>'form-control select2-multi']
+                                            );
+                                        !!}
+                                    </div>
+                                </div>
+                            @endif
                         @endif
 
                         <div class="col-md-12">

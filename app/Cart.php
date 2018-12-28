@@ -19,10 +19,11 @@ class Cart
     	}
     }
 
-    public function add($item, $id, $quantity, $color, $color_id)
+    public function add($item, $id, $quantity, $color, $color_id, $size, $size_id)
     {
     	$storedColor = ['color'=>$color, 'quantity'=>0];
-        $storedItem = ['quantity'=>0, 'price'=>0, 'item'=>$item, 'colors'=>[]];
+    	$storedSize = ['size'=>$size, 'quantity'=>0];
+        $storedItem = ['quantity'=>0, 'price'=>0, 'item'=>$item, 'colors'=>[], 'sizes'=>[]];
     	if($this->items)
     	{
     		if(array_key_exists($id, $this->items))
@@ -36,27 +37,34 @@ class Cart
             $storedColor = $storedItem['colors'][$color_id];
         }
 
-        if($item->item->price_off > 0 || $item->item->price_off != null)
+        if(array_key_exists($size_id, $storedItem['sizes']))
         {
-            $itemTruePrice = $item->item->price_off;
+            $storedSize = $storedItem['sizes'][$size_id];
+        }
+
+        if($item->price_off > 0 || $item->price_off != null)
+        {
+            $itemTruePrice = $item->price_off;
         }
         else
         {
-            $itemTruePrice = $item->item->price;
+            $itemTruePrice = $item->price;
         }
 
     	$storedItem['quantity'] += $quantity;
     	$storedItem['price'] = $itemTruePrice * $storedItem['quantity'];
-        
+
         if($color_id === 0)
         {
            $storedColor['quantity'] = 0;
            $storedItem['colors'][$color_id] = [];
+           $storedItem['sizes'][$size_id] = [];
         }
         else
         {
             $storedColor['quantity'] += $quantity;
             $storedItem['colors'][$color_id] = $storedColor;
+            $storedItem['sizes'][$size_id] = $storedSize;
         }
 
     	$this->items[$id] = $storedItem;
@@ -70,6 +78,6 @@ class Cart
         {
             $this->totalPrice += $itemTruePrice;
         }
-    	
+
     }
 }

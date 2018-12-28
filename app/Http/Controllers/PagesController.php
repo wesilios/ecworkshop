@@ -47,15 +47,16 @@ class PagesController extends Controller
             $first_sub_slider = Slider::findOrFail(2);
             $second_sub_slider = Slider::findOrFail(3);
 
-            $items = Item::where('homepage_active','=',1);
+
             $item_cats_all = ItemCategory::all();
             $item_cats_parent = [];
             $item_parents = [];
             foreach ($item_cats_all as $it_cat) {
+                $items = Item::where('homepage_active','=',1);
                 if($it_cat->id == $it_cat->item_category_id)
                 {
                     $item_cats_parent[$it_cat->id]  = $it_cat;
-                    $item_parents[$it_cat->id]      = $items->where('item_category_id','=',$it_cat->id)->get();
+                    $item_parents[$it_cat->id]      = $items->where('item_category_parent_id','=',$it_cat->id)->get();
                 }
             }
 
@@ -99,24 +100,36 @@ class PagesController extends Controller
 
     public function getPage($slug)
     {
-        $pages = Page::all()->pluck('slug')->toArray();
-        $itemCategory = ItemCategory::all()->pluck('slug')->toArray();
-        if(in_array($slug, $pages))
-        {
-            if(in_array($slug, $itemCategory))
-            {
-                return $this->itemsController->getItemCat($slug);
+        try {
+            $pages = Page::all()->pluck('slug')->toArray();
+            $itemCategory = ItemCategory::all()->pluck('slug')->toArray();
+            $item_cats_all = ItemCategory::all();
+            $item_cats_parent = [];
+            foreach ($item_cats_all as $it_cat) {
+                if($it_cat->id == $it_cat->item_category_id)
+                {
+                    $item_cats_parent[$it_cat->id]  = $it_cat;
+                }
             }
-            else
+            if(in_array($slug, $pages))
             {
-                $settings = Setting::findOrFail(1);
-                $top_nav = Menu::where('id',1)->first();
-                $footer_1st_menu = Menu::where('id',2)->first();
-                $footer_2nd_menu = Menu::where('id',3)->first();
-                $page = Page::where('slug', $slug)->first();
-                return view('mainsite.page', compact('page','settings','top_nav','footer_1st_menu','footer_2nd_menu'));
+                if(in_array($slug, $itemCategory))
+                {
+                    return $this->itemsController->getItemCat($slug);
+                }
+                else
+                {
+                    $settings = Setting::findOrFail(1);
+                    $top_nav = Menu::where('id',1)->first();
+                    $footer_1st_menu = Menu::where('id',2)->first();
+                    $footer_2nd_menu = Menu::where('id',3)->first();
+                    $page = Page::where('slug', $slug)->first();
+                    return view('mainsite.page', compact('page','settings','top_nav','footer_1st_menu','footer_2nd_menu','item_cats_parent'));
+                }
+            } else {
+                return redirect()->route('404.not.found');
             }
-        } else {
+        } catch (\Exception $e) {
             return redirect()->route('404.not.found');
         }
     }
@@ -152,11 +165,19 @@ class PagesController extends Controller
 
     public function getCart(Request $request)
     {
-        $settings = Setting::findOrFail(1);
+        $settings = Setting::find(1);
         $top_nav = Menu::where('id',1)->first();
         $footer_1st_menu = Menu::where('id',2)->first();
         $footer_2nd_menu = Menu::where('id',3)->first();
-        return view('mainsite.cart.index', compact('settings','top_nav','footer_1st_menu','footer_2nd_menu'));
+        $item_cats_all = ItemCategory::all();
+        $item_cats_parent = [];
+        foreach ($item_cats_all as $it_cat) {
+            if($it_cat->id == $it_cat->item_category_id)
+            {
+                $item_cats_parent[$it_cat->id]  = $it_cat;
+            }
+        }
+        return view('mainsite.cart.index', compact('settings','top_nav','footer_1st_menu','footer_2nd_menu','item_cats_parent'));
     }
 
     public function getCheck(Request $request)
@@ -186,19 +207,35 @@ class PagesController extends Controller
         {
             $districts = null;
         }
-        return view('mainsite.cart.checkout', compact('cart','settings','top_nav','footer_1st_menu','footer_2nd_menu','cities','districts'));
+        $item_cats_all = ItemCategory::all();
+        $item_cats_parent = [];
+        foreach ($item_cats_all as $it_cat) {
+            if($it_cat->id == $it_cat->item_category_id)
+            {
+                $item_cats_parent[$it_cat->id]  = $it_cat;
+            }
+        }
+        return view('mainsite.cart.checkout', compact('cart','settings','top_nav','footer_1st_menu','footer_2nd_menu','cities','districts','item_cats_parent'));
     }
 
     public function getDone(Request $request, $orderCode, $fee)
     {
-        $settings = Setting::findOrFail(1);
+        $settings = Setting::find(1);
         $top_nav = Menu::where('id',1)->first();
         $footer_1st_menu = Menu::where('id',2)->first();
         $footer_2nd_menu = Menu::where('id',3)->first();
         $cart = $request->session()->get('cart');
         $order = Order::where('orderCode',$orderCode)->first();
         $request->session()->forget('cart');
-        return view('mainsite.cart.done', compact('cart','settings','top_nav','footer_1st_menu','footer_2nd_menu','orderCode','order','fee'));
+        $item_cats_all = ItemCategory::all();
+        $item_cats_parent = [];
+        foreach ($item_cats_all as $it_cat) {
+            if($it_cat->id == $it_cat->item_category_id)
+            {
+                $item_cats_parent[$it_cat->id]  = $it_cat;
+            }
+        }
+        return view('mainsite.cart.done', compact('cart','settings','top_nav','footer_1st_menu','footer_2nd_menu','orderCode','order','fee','item_cats_parent'));
     }
 
     public function getCheckOrders()
@@ -212,7 +249,15 @@ class PagesController extends Controller
         $top_nav = Menu::where('id',1)->first();
         $footer_1st_menu = Menu::where('id',2)->first();
         $footer_2nd_menu = Menu::where('id',3)->first();
-        return view('mainsite.extracustomer.index', compact('settings','top_nav','footer_1st_menu','footer_2nd_menu'));
+        $item_cats_all = ItemCategory::all();
+        $item_cats_parent = [];
+        foreach ($item_cats_all as $it_cat) {
+            if($it_cat->id == $it_cat->item_category_id)
+            {
+                $item_cats_parent[$it_cat->id]  = $it_cat;
+            }
+        }
+        return view('mainsite.extracustomer.index', compact('settings','top_nav','footer_1st_menu','footer_2nd_menu','item_cats_parent'));
     }
 
     public function searchOrder(Request $request)
@@ -222,130 +267,55 @@ class PagesController extends Controller
 
     public function resultOrder($orderCode)
     {
-        $settings = Setting::findOrFail(1);
+        $settings = Setting::find(1);
         $top_nav = Menu::where('id',1)->first();
         $footer_1st_menu = Menu::where('id',2)->first();
         $footer_2nd_menu = Menu::where('id',3)->first();
         $order = Order::where('orderCode',$orderCode)->first();
-
-        return view('mainsite.extracustomer.index', compact('settings','top_nav','footer_1st_menu','footer_2nd_menu','order','orderCode'));
+        $item_cats_all = ItemCategory::all();
+        $item_cats_parent = [];
+        foreach ($item_cats_all as $it_cat) {
+            if($it_cat->id == $it_cat->item_category_id)
+            {
+                $item_cats_parent[$it_cat->id]  = $it_cat;
+            }
+        }
+        return view('mainsite.extracustomer.index', compact('settings','top_nav','footer_1st_menu','footer_2nd_menu','order','orderCode','item_cats_parent'));
     }
 
     public function search(Request $request)
     {
-        $settings = Setting::findOrFail(1);
+        $settings = Setting::find(1);
         $top_nav = Menu::where('id',1)->first();
         $footer_1st_menu = Menu::where('id',2)->first();
         $footer_2nd_menu = Menu::where('id',3)->first();
 
         $itemSearch = new ItemSearch(null);
-
+        $item_cats_all = ItemCategory::all();
+        $item_cats_parent = [];
+        foreach ($item_cats_all as $it_cat) {
+            if($it_cat->id == $it_cat->item_category_id)
+            {
+                $item_cats_parent[$it_cat->id]  = $it_cat;
+            }
+        }
+        $it_cat_rq = $request->get('item_category_id','');
         if(!empty($request->search_query))
         {
-            switch ($request->item_category_id) {
-                case '1':
-                    $items = Item::where('name','LIKE','%'.$request->search_query.'%')
-                        ->where('item_category_id',$request->item_category_id)->get();
-                    foreach($items as $item)
-                    {
-                        $box = Box::where('item_id',$item->id)->first();
-                        $itemSearch->add($item, $item->id, $box, $box->item_category_id);
-                    }
-                    break;
-
-                case '2':
-                    $items = Item::where('name','LIKE','%'.$request->search_query.'%')
-                        ->where('item_category_id',$request->item_category_id)->get();
-                    foreach($items as $item)
-                    {
-                        $fullkit = FullKit::where('item_id',$item->id)->first();
-                        $itemSearch->add($item, $item->id, $fullkit, $fullkit->item_category_id);
-                    }
-                    break;
-
-                case '3':
-                    $items = Item::where('name','LIKE','%'.$request->search_query.'%')
-                        ->where('item_category_id',$request->item_category_id)->get();
-                    foreach($items as $item)
-                    {
-                        $tank = Tank::where('item_id',$item->id)->first();
-                        $itemSearch->add($item, $item->id, $tank, $tank->item_category_id);
-                    }
-                    break;
-
-                case '4':
-                    $items = Item::where('name','LIKE','%'.$request->search_query.'%')
-                        ->where('item_category_id',$request->item_category_id)->get();
-                    foreach($items as $item)
-                    {
-                        $juice = Juice::where('item_id',$item->id)->first();
-                        $itemSearch->add($item, $item->id, $juice, $juice->item_category_id);
-                    }
-                    break;
-
-                case '5':
-                    $items = Item::where('name','LIKE','%'.$request->search_query.'%')
-                        ->where('item_category_id',$request->item_category_id)->get();
-                    foreach($items as $item)
-                    {
-                        $accessory = Accessory::where('item_id',$item->id)->first();
-                        $itemSearch->add($item, $item->id, $accessory, $accessory->item_category_id);
-                    }
-                    break;
-
-                default:
-                    # code...
-                    break;
-            }
-
-            $items = Item::where('name','LIKE','%'.$request->search_query.'%')->get();
-            foreach($items as $item)
+            if($it_cat_rq == 0 || empty($it_cat_rq))
             {
-                if($item->item_category_id > 5)
-                {
-                    $item_category_id = $item->itemCategory->itemCategory->id;
-                }
-                else
-                {
-                    $item_category_id = $item->item_category_id;
-                }
-                switch ($item_category_id) {
-                    case '1':
-                        $box = Box::where('item_id',$item->id)->first();
-                        $itemSearch->add($item, $item->id, $box, $box->item_category_id);
-                        break;
-
-                    case '2':
-                        $fullkit = FullKit::where('item_id',$item->id)->first();
-                        $itemSearch->add($item, $item->id, $fullkit, $fullkit->item_category_id);
-                        break;
-
-                    case '3':
-                        $tank = Tank::where('item_id',$item->id)->first();
-                        $itemSearch->add($item, $item->id, $tank, $tank->item_category_id);
-                        break;
-
-                    case '4':
-                        $juice = Juice::where('item_id',$item->id)->first();
-                        $itemSearch->add($item, $item->id, $juice, $juice->item_category_id);
-                        break;
-
-                    case '5':
-                        $accessory = Accessory::where('item_id',$item->id)->first();
-                        $itemSearch->add($item, $item->id, $accessory, $accessory->item_category_id);
-                        break;
-
-                    default:
-                        # code...
-                        break;
-                }
+                $items = Item::where('name','LIKE','%'.$request->search_query.'%')->get();
+            } else {
+                $itmes = Item::where([
+                    ['name','LIKE','%'.$request->search_query.'%'],
+                    ['item_category_id','=',$it_cat_rq]
+                ])->get();
             }
+
         } else {
             $items = [];
         }
-
-
-
+        $itemSearch = $items;
         return view('mainsite.search', compact(
             'item_cat',
             'settings',
@@ -353,7 +323,8 @@ class PagesController extends Controller
             'footer_2nd_menu',
             'top_nav',
             'page',
-            'itemSearch'
+            'itemSearch',
+            'item_cats_parent'
         ));
     }
 
@@ -363,6 +334,14 @@ class PagesController extends Controller
         $top_nav = Menu::where('id',1)->first();
         $footer_1st_menu = Menu::where('id',2)->first();
         $footer_2nd_menu = Menu::where('id',3)->first();
-        return view('mainsite.404', compact('settings','top_nav','footer_1st_menu','footer_2nd_menu'));
+        $item_cats_all = ItemCategory::all();
+        $item_cats_parent = [];
+        foreach ($item_cats_all as $it_cat) {
+            if($it_cat->id == $it_cat->item_category_id)
+            {
+                $item_cats_parent[$it_cat->id]  = $it_cat;
+            }
+        }
+        return view('mainsite.404', compact('settings','top_nav','footer_1st_menu','footer_2nd_menu','item_cats_parent'));
     }
 }

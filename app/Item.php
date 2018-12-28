@@ -58,6 +58,11 @@ class Item extends Model
         return $this->belongsTo('App\ItemCategory' ,'item_category_parent_id', 'id');
     }
 
+    public function itemCategoryChild()
+    {
+        return $this->hasMany('App\ItemCategory' ,'item_category_parent_id', 'id');
+    }
+
     public function itemStatus()
     {
         return $this->belongsTo('App\ItemStatus');
@@ -68,9 +73,9 @@ class Item extends Model
         return $this->belongsToMany('App\Color', 'color_item','item_id','color_id');
     }
 
-    public function size()
+    public function sizes()
     {
-        return $this->belongsTo('App\Size');
+        return $this->belongsToMany('App\Size','size_item','item_id','size_id');
     }
 
     public function medias()

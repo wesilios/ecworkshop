@@ -11,13 +11,13 @@
                     <img class="img-responsive img-item img-hover" src="{{ asset($url) }}" alt="" id="img_item_preview">
                 </div>
                 <div class="col-lg-7">
-                    <div class="item_name_nw" id="title_item_preview">{{ $item->brand->name . ' ' .$item->item->name }}</div>
+                    <div class="item_name_nw" id="title_item_preview">{{ $item->brand->name . ' ' .$item->name }}</div>
                     <div class="item_des_nw" id="quantity_item_preview">Số lượng: {{ $quantity }}</div>
                     <div class="item_price_nw" id="total_item_preview">
-                        @if($item->item->price_off > 0 || $item->item->price_off != null)
-                            {{ number_format($item->item->price_off,0, ",",".") }} VNĐ    
+                        @if($item->price_off > 0 || $item->price_off != null)
+                            {{ number_format($item->price_off,0, ",",".") }} VNĐ
                         @else
-                            {{ number_format($item->item->price,0, ",",".") }} VNĐ
+                            {{ number_format($item->price,0, ",",".") }} VNĐ
                         @endif
                     </div>
                     <button type="button" class="btn btn-primary btn-continue" data-dismiss="modal">Tiếp tục mua hàng</button>

@@ -53,7 +53,7 @@
 	            @endphp
 	            @foreach($main_slider->sliderDetails as $slider)
                 <div class="item {{ $i ==0 ? 'active' : '' }}">
-                    <a href="{{ $slider->link }}"><img class="img-responsive" src="{{ asset($slider->media->url) }}" alt="{{ $slider->media->alt_text }}"></a>
+                    <a href="{{ !empty($slider) ? $slider->link : '#'}}"><img class="img-responsive" src="{{ !empty($slider->media) ? asset($slider->media->url) : 'http://placehold.it/1900x1080' }}" alt="{{ !empty($slider->media) ? $slider->media->alt_text : ''}}"></a>
                 </div>
                 @php
 					$i++
@@ -111,12 +111,7 @@
                     <div class="col-lg-12 custom-no-padding">
                         <div class="items-title">
                             <div class="active">{{ $item_cats_parent[$key]->name }}</div>
-                            <div><a href="">Mech</a></div>
-                            <div><a href="">Box</a></div>
-                            <select name="" id="">
-                                <option value="">Mech</option>
-                                <option value="">Box</option>
-                            </select>
+
                             <div class="item-hr"></div>
                         </div>
                     </div>

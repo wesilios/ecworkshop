@@ -70,6 +70,7 @@ Route::post('/admin/items/{slug}/media/select', 'AdminItemsController@selectImag
 Route::put('/admin/items/{slug}/indeximage', 'AdminItemsController@set_image_index')->name('admin.items.indeximage');
 Route::delete('/admin/items/{slug}/deleteimage','AdminItemsController@delete_image')->name('admin.items.deleteimage');
 
+
 /*
 | Item brands -------------------------------------------------------------
 */
@@ -84,6 +85,13 @@ Route::get('/admin/colors', 'AdminColorsController@index')->name('admin.colors.i
 Route::post('/admin/colors', 'AdminColorsController@store')->name('admin.colors.store');
 Route::put('/admin/colors/{id}/update', 'AdminColorsController@update')->name('admin.colors.update');
 Route::delete('/admin/colors/{id}/destroy', 'AdminColorsController@destroy')->name('admin.colors.destroy');
+/*
+| Item sizes -------------------------------------------------------------
+*/
+Route::get('/admin/sizes', 'AdminSizesController@index')->name('admin.sizes.index');
+Route::post('/admin/sizes', 'AdminSizesController@store')->name('admin.sizes.store');
+Route::put('/admin/sizes/{id}/update', 'AdminSizesController@update')->name('admin.sizes.update');
+Route::delete('/admin/sizes/{id}/destroy', 'AdminSizesController@destroy')->name('admin.sizes.destroy');
 /*
 | Item boxes --------------------------------------------------------------
 */
@@ -111,10 +119,7 @@ Route::delete('/admin/tanks/{id}/deleteimage','AdminTanksController@delete_image
 /*
 | Item juices --------------------------------------------------------------
 */
-Route::get('/admin/juices/sizes', 'AdminSizesController@index')->name('admin.juices.sizes.index');
-Route::post('/admin/juices/sizes', 'AdminSizesController@store')->name('admin.juices.sizes.store');
-Route::put('/admin/juices/sizes/{id}/update', 'AdminSizesController@update')->name('admin.juices.sizes.update');
-Route::delete('/admin/juices/sizes/{id}/destroy', 'AdminSizesController@destroy')->name('admin.juices.sizes.destroy');
+
 Route::resource('/admin/juices', 'AdminJuicesController');
 Route::put('/admin/juices/{id}/media', 'AdminJuicesController@uploadImage')->name('admin.juices.upload');
 Route::put('/admin/juices/{id}/media/select', 'AdminJuicesController@selectImage')->name('admin.juices.select');

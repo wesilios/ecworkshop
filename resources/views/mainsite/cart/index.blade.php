@@ -76,16 +76,16 @@
                                     </tr>
                                 @else
                                 @php $i = 1 @endphp
-                                @foreach(Session::get('cart')->items as $item)
+                                @foreach(Session::get('cart')->items as $key => $item)
                                 <tr>
                                     <td>{{ $i }}</td>
                                     <td><img class="img-responsive img-item img-hover"
-                                        src="{{ asset($item['item']->medias()->first()->url) }}"
+                                        src="{{ $item['item']->medias->isNotEmpty() ? asset($item['item']->medias()->first()->url) : 'https://via.placeholder.com/450x450?text=No+image' }}"
                                         alt=""/>
                                     </td>
                                     <td>
                                         {{ $item['item']->brand['name'] .' '. $item['item']->item['name'] }}<br>
-                                        @if(isset($item['item']->size))
+                                        @if(isset($item['sizes']->size))
                                         Phân loại: {{ $item['item']->size['name'] }}
                                         @endif
                                         @if(isset($item['colors'][0]))
@@ -103,7 +103,7 @@
                                                 <span class="input-group-btn">
                                                     <input type='button' value='-' class='qtyminus btn btn-secondary' field='quantity{{ $item['item']->item['id'] }}' />
                                                 </span>
-                                                    <input type='text' name='quantity{{ $item['item']->item['id'] }}' value='{{ $item['quantity'] }}' class='qty form-control' id="quantity{{ $item['item']->item['id'] }}"/>
+                                                    <input type='text' name='quantity{{ $key }}' value='{{ $item['quantity'] }}' class='qty form-control' id="quantity{{ $item['item']->item['id'] }}"/>
                                                 <span class="input-group-btn">
                                                     <input type='button' value='+' class='qtyplus btn btn-secondary' field='quantity{{ $item['item']->item['id'] }}' />
                                                 </span>
@@ -115,14 +115,14 @@
                                             <div class="form-group">
                                                 <label class="control-label col-sm-4">{{ $color['color']->name }}</label>
                                                 <div class="col-sm-4">
-                                                    <input type='number' name='quantity{{ $item['item']->item['id'].'_'.$color['color']->id }}' value='{{ $color['quantity'] }}' class='form-control' id="quantity{{ $item['item']->item['id'].'_'.$color['color']->id }}" min="1" step="1"/>
+                                                    <input type='number' name='quantity{{ $key.'_'.$color['color']->id }}' value='{{ $color['quantity'] }}' class='form-control' id="quantity{{ $item['item']->item['id'].'_'.$color['color']->id }}" min="1" step="1"/>
                                                 </div>
                                             </div>
                                         </div>
                                     @endforeach
                                     @endif
                                     <td>{{ number_format( $item['price'] , 0, ",",".") }} đ</td>
-                                    <td><a href="{{ route('cart.delete', [$item['item']->item['id']]) }}" class="cart-delete"><i class="fa fa-2x fa-times-circle-o"></i></a></td>
+                                    <td><a href="{{ route('cart.delete', ['id'=>$key]) }}" class="cart-delete"><i class="fa fa-2x fa-times-circle-o"></i></a></td>
                                 </tr>
                                 @php $i++ @endphp
                                 @endforeach
