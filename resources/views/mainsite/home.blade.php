@@ -128,7 +128,7 @@
                                                      {{ asset($img->url) }}
                                                      @endforeach
                                                              " alt="">
-                                                <div class="item-name">{{ $item->brand ? $item->brand->name : '' . ' ' . $item->name }}</div>
+                                                <div class="item-name">{{ $item->brand ? $item->brand->name : ''}} {{ $item->name }}</div>
                                                 <div class="item-price">
                                                     @if($item->price_off > 0 || $item->price_off != null)
                                                         {{ number_format($item->price_off,0, ",",".") }} VNĐ
@@ -155,7 +155,7 @@
                                                     <img class="img-responsive"
                                                          src="{{ asset($item->medias()->first()->url) }}" alt="">
                                                 @endif
-                                                <div class="item-name">{{ $item->brand ? $item->brand->name : '' . ' ' . $item->name }}</div>
+                                                <div class="item-name">{{ $item->brand ? $item->brand->name : ''}} {{ $item->name }}</div>
                                                 <div class="item-price">
                                                     @if($item->price_off > 0 || $item->price_off != null)
                                                         {{ number_format($item->price_off,0, ",",".") }} VNĐ

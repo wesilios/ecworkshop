@@ -206,10 +206,10 @@ class AdminItemsController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return redirect()->route('admin.items.update',['slug'=>$slug,'item_category'=>$rq->item_category])
-                    ->withErrors($validator)
+                return redirect()->back()
                     ->withInput();
             }
+
             $item_category = ItemCategory::where('slug','=',$rq->item_category)->first();
 
             if($item_category->itemCategories->isNotEmpty())
@@ -233,9 +233,9 @@ class AdminItemsController extends Controller
                 $item->homepage_active  = $rq->homepage_active == 'on' ? 1 : 0;
                 $item->brand_id         = $rq->brand_id;
                 $item->slug             = Alpha::alpha_dash($item->name);
-                $colors                 = $rq->get('color_id');
-                $sizes                         = $rq->post('size_id');
-                if(isset($colors))
+                $colors                 = $rq->get('color_id','');
+                $sizes                  = $rq->post('size_id','');
+                if(!empty($colors))
                 {
                     if($item->colors->count()>0) {
                         $item->colors()->detach();
@@ -247,7 +247,7 @@ class AdminItemsController extends Controller
                     }
 
                 }
-                if(isset($sizes))
+                if(!empty($sizes))
                 {
                     if($item->sizes->count() >0){
                         $item->sizes()->detach();
@@ -259,13 +259,13 @@ class AdminItemsController extends Controller
                     }
                 }
                 if($item->save()){
-                    return redirect()->back()->with(['status'=>'success','message'=>'Cập nhật thành công.']);
+                    return redirect()->route('admin.items.edit',['slug'=>$item->slug, 'item_category'=>$item_category->name])->with(['status'=>'success','message'=>'Cập nhật thành công.']);
                 }
             } else {
                 return redirect()->back()->withInput()->with(['status'=>'error','message'=>'Something wrong!']);
             }
         } catch (\Exception $e) {
-            return redirect()->back()->withInput()->with(['status'=>'error','message'=>$e->getMessage()]);
+            return redirect()->back()->withInput()->with('status',$e->getMessage());
         }
     }
 
@@ -298,66 +298,65 @@ class AdminItemsController extends Controller
 
     public function uploadImage(Request $request, $id)
     {
-        //
-        //dd($request->all());
-        $files = $request->file('medias');
-        $item = Item::find($id);
-        if($files === null)
-        {
-            return redirect()->route('admin.items.edit', [$id])->with('error','No input');
-        }
-        else
-        {
-            foreach($files as $file)
+        try {
+            $files = $request->file('medias');
+            $item = Item::find($id);
+            if($files === null)
             {
-                $file->getClientMimeType();
-                //echo $file->getMimeType();
-                if(substr($file->getMimeType(), 0, 5) == 'image') {
-                    $name = time() . '_media_' . $file->getClientOriginalName();
-                    $type = $file->getMimeType();
-                    $file->move('images', $name);
-                    $admin_id = Auth::user()->id;
-                    $media = Media::create(['file_name'=>$name, 'url'=>$name, 'type'=>$type, 'admin_id'=>$admin_id]);
-                }
-                else
+                return redirect()->route('admin.items.edit', [$id])->with('error','No input');
+            }
+            else
+            {
+                foreach($files as $file)
                 {
-                    return redirect()->route('admin.items.edit', [$id])->with('error','Not a image file!');
-                }
-                if($media->id > 0)
-                {
-                    $item->medias()->save($media);
+                    $file->getClientMimeType();
+                    //echo $file->getMimeType();
+                    if(substr($file->getMimeType(), 0, 5) == 'image') {
+                        $name = time() . '_media_' . $file->getClientOriginalName();
+                        $type = $file->getMimeType();
+                        $file->move('images', $name);
+                        $admin_id = Auth::user()->id;
+                        $media = Media::create(['file_name'=>$name, 'url'=>$name, 'type'=>$type, 'admin_id'=>$admin_id]);
+                    }
+                    else
+                    {
+                        return redirect()->route('admin.items.edit', [$id])->with('error','Not a image file!');
+                    }
+                    if($media->id > 0)
+                    {
+                        $item->medias()->save($media);
+                    }
                 }
             }
+            return redirect()->back()->with('status','Cập nhật image thành công');
+        } catch (\Exception $e) {
+            return redirect()->back()->with(['status'=>'1','message'=>$e->getMessage()]);
         }
-
-        //dd($item->media);
-        return redirect()->route('admin.items.edit', [$id])->with('status','Cập nhật image thành công');
     }
 
     public function selectImage(Request $request, $slug)
     {
-        $input = $request->all();
-        $item = Item::where('slug','=',$slug)->first();
-        if($request->get('media_id'))
-        {
-            $item->medias()->detach();
-            foreach($input['media_id'] as $input_media)
+        try {
+            $input = $request->all();
+            $item = Item::where('slug','=',$slug)->first();
+            if($request->get('media_id'))
             {
-                $media = Media::find($input_media);
-                if(in_array($input_media, $item->medias->pluck('id')->all()))
+//                $item->medias()->detach();
+                foreach($input['media_id'] as $input_media)
                 {
-                    //echo "";
+                    if(!in_array($input_media, $item->medias->pluck('id')->all()))
+                    {
+                        $item->medias()->save(Media::find($input_media));
+                    }
                 }
-                else
-                {
-                    $item->medias()->save($media);
-                }
+                return redirect()->back()->with(['status' =>'success','message'=>'Cập nhật image thành công']);
+            } else {
+                return redirect()->back()->with(['status'=>'error','message'=>'Vui lòng chọn ảnh cần cập nhật']);
             }
-            return redirect()->back()->with('status','Cập nhật image thành công');
-        } else {
-            return redirect()->back()->with(['status'=>'error','message'=>'Vui lòng chọn ảnh cần cập nhật']);
+        } catch (\Exception $e) {
+            return redirect()->back()->with(['status'=>'error','message'=>$e->getMessage()]);
         }
-    }
+     }
 
     public function set_image_index(Request $request, $id)
     {
@@ -391,89 +390,109 @@ class AdminItemsController extends Controller
 
     public function ajaxUpload(Request $request)
     {
-        if($request->ajax())
-        {
-            $files      = $request->file('medias');
-            $folder     = Folder::find($request->folder_id);
-            $item       = Item::find($request->item_id);
-            $folder_id  = $folder->id;
+        try {
+            if($request->ajax())
+            {
+                $files      = $request->file('medias');
+                $folder     = Folder::find($request->folder_id);
+                $item       = Item::find($request->item_id);
+                $folder_id  = $folder->id;
 
-            if($files === null)
-            {
-                return response()->json([
-                    'error'   => '1',
-                    'message' => 'File is empty',
-                ]);
-            }
-            foreach ($files as $file)
-            {
-                $file = Media::ajaxUploadImage($file, $folder_id);
-                if(empty($file))
+                if($files === null)
                 {
                     return response()->json([
                         'error'   => '1',
-                        'message' => 'Upload failed!',
+                        'message' => 'File is empty',
+                    ]);
+                }
+                foreach ($files as $file)
+                {
+                    $file = Media::ajaxUploadImage($file, $folder_id);
+                    if(empty($file))
+                    {
+                        return response()->json([
+                            'error'   => '1',
+                            'message' => 'Upload failed!',
+                        ]);
+                    }
+                }
+
+                if(!empty($files))
+                {
+                    $medias = Media::where('folder_id', '=', $folder_id)->orderBy('id', 'desc')->get();
+                    $folder_list = Folder::where('folder_id',$folder_id)->get();
+                    $data   = view('admin.ajax.media.items.new_files', compact('medias', 'folder', 'folder_list','item'))->render();
+                    return response()->json([
+                        'data'        => $data,
+                        'file'        => $files,
+                        'success'     => '1',
+                        'message'     => 'Success'
+                    ]);
+                }
+                else
+                {
+                    return response()->json([
+                        'error'   => '1',
+                        'message' => 'File must be a image type',
                     ]);
                 }
             }
-
-            if(!empty($files))
-            {
-                $medias = Media::where('folder_id', '=', $folder_id)->orderBy('id', 'desc')->get();
-                $folder_list = Folder::where('folder_id',$folder_id)->get();
-                $data   = view('admin.ajax.media.items.new_files', compact('medias', 'folder', 'folder_list','item'))->render();
-                return response()->json([
-                    'data'        => $data,
-                    'file'        => $files,
-                    'success'     => '1',
-                    'message'     => 'Success'
-                ]);
-            }
-            else
-            {
-                return response()->json([
-                    'error'   => '1',
-                    'message' => 'File must be a image type',
-                ]);
-            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error'   => '1',
+                'message' => $e->getMessage(),
+            ]);
         }
     }
 
     public function ajaxRemoveImg(Request $request)
     {
-        if($request->ajax())
-        {
-            $item     = Item::find($request->item_id);
-            $media = $item->medias->where('id',$request->media_id)->first();
+        try {
+            if($request->ajax())
+            {
+                $item     = Item::find($request->item_id);
+                $media = $item->medias->where('id',$request->media_id)->first();
 
-            $item->medias()->detach($request->media_id);
-            $index_img = '';
-            foreach ($item->medias as $media) {
-                if($media->id == $item->item->index_img)
+                $item->medias()->detach($request->media_id);
+                $index_img = '';
+                if($item->medias->isNotEmpty()) {
+                    foreach ($item->medias as $media) {
+                        if($media->id == $item->item->index_img)
+                        {
+                            $index_img = $media;
+                        }
+                    }
+                    $media_remain = $item->medias()->where('media_id','!=',  $item->item->index_img)->get();
+                    $item     = Item::find($request->item_id);
+                } else {
+                    $media_remain = $item->medias;
+                    $index_img = '';
+                }
+
+                if($item->medias->isNotEmpty())
                 {
-                    $index_img = $media;
+                    $data = view('admin.ajax.media.items.new_media_list', compact('item','index_img', 'media_remain'))->render();
+                    return response()->json([
+                        'data'      => $data,
+                        'item'      => $item->medias,
+                        'success'   => '1',
+                        'message'   => 'Sucess'
+                    ]);
+                } else {
+                    $data = view('admin.ajax.media.items.new_media_list', compact('item','index_img', 'media_remain'))->render();
+                    return response()->json([
+                        'data'      => $data,
+                        'item'      => $item->medias,
+                        'error'     => '1',
+                        'message'   => 'Slider images for this item is empty'
+                    ]);
                 }
             }
-            $media_remain = $item->medias()->where('media_id','!=',  $item->item->index_img)->get();
-            $item     = Item::find($request->item_id);
-            if($item->medias->isNotEmpty())
-            {
-                $data = view('admin.ajax.media.items.new_media_list', compact('item','index_img', 'media_remain'))->render();
-                return response()->json([
-                    'data'      => $data,
-                    'item'      => $item->medias,
-                    'success'   => '1',
-                    'message'   => 'Sucess'
-                ]);
-            } else {
-                $data = view('admin.ajax.media.items.new_media_list', compact('item','index_img', 'media_remain'))->render();
-                return response()->json([
-                    'data'      => $data,
-                    'item'      => $item->medias,
-                    'error'     => '1',
-                    'message'   => 'Slider images for this item is empty'
-                ]);
-            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => '1',
+                'message' => $e->getMessage()
+            ]);
         }
     }
 }

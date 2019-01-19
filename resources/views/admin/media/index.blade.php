@@ -131,8 +131,8 @@
 												</button>
 												<ul class="dropdown-menu" role="menu">
 													<li><a href="#" class="renameFolder">Rename</a></li>
-													{{--<li class="divider"></li>--}}
-													{{--<li><a href="#" class="deleteFolder">Delete</a></li>--}}
+													<li class="divider"></li>
+													<li><a href="#" class="deleteFolder">Delete</a></li>
 												</ul>
 											</div>
 										</div>

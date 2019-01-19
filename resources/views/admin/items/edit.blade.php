@@ -516,7 +516,7 @@
             if(confirm('Are you sure?'))
             {
                 $.ajax({
-                    url: "{{ route('admin.tank.remove_selected_img') }}",
+                    url: "{{ route('admin.item.remove_selected_img') }}",
                     method:'POST',
                     dataType:'json',
                     data: {media_id:id, _token:token, item_id:item_id},
