@@ -7,6 +7,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 use Auth;
 use Validator;
 use App\Media;
+use App\Folder;
 use App\Slider;
 use App\SliderDetail;
 
@@ -26,10 +27,23 @@ class AdminSlidersController extends Controller
 
     public function edit($id)
     {
-    	$medias = Media::orderBy('id', 'desc')->paginate(24);
-    	$slider = Slider::find($id);
-    	//dd($slider->sliderDetails->media->id);
-    	return view('admin.sliders.edit', compact('slider','medias'));
+    	try {
+            $medias = Media::orderBy('id', 'desc')->paginate(24);
+            $folder = Folder::find(1);
+            $folder_list = Folder::where('folder_id',$folder->id)->get();
+            $new = ['folder_id' => $folder->id,'folder_name' => $folder->name, 'folder_slug'=>$folder->slug];
+            $folder_string[] = $new;
+            $slider = Slider::find($id);
+            return view('admin.sliders.edit', [
+                'slider'                => $slider,
+                'medias'                => $medias,
+                'folder'                => $folder,
+                'folder_list'           => $folder_list,
+                'folder_string'         => $folder_string,
+            ]);
+        } catch (\Exception $e) {
+    	    return $e->getMessage();
+        }
     }
 
     public function upload(Request $request, $id)
@@ -51,7 +65,7 @@ class AdminSlidersController extends Controller
 				    $path = 'images/'.$name;
 				    $type = $file->getMimeType();
 		            //$file->move('images', $name);
-	                Image::make($file)->resize(1400, null, function ($constraint) {
+	                Image::make($file)->resize(1900, null, function ($constraint) {
 	                    $constraint->aspectRatio();})->save($path);
 		            $admin_id = Auth::user()->id;
 		            $media = Media::create(['file_name'=>$name, 'url'=>$path, 'type'=>$type, 'admin_id'=>$admin_id]);
@@ -74,19 +88,24 @@ class AdminSlidersController extends Controller
 
     public function selectImage(Request $request, $id)
     {
-    	//dd($request->all());
-    	$input = $request->all();
-    	if($input['media_id'])
-        {
-        	foreach($input['media_id'] as $input_media)
+    	try {
+            $medias_id = $request->get('media_id','');
+            if(!empty($medias_id))
             {
-            	$sliderDetail = new SliderDetail;
-		        $sliderDetail->slider_id = $id;
-		        $sliderDetail->media_id = $input_media;
-		        $sliderDetail->save();
+                foreach($medias_id as $media_id)
+                {
+                    $sliderDetail = new SliderDetail;
+                    $sliderDetail->slider_id = $id;
+                    $sliderDetail->media_id = $media_id;
+                    $sliderDetail->save();
+                }
+            } else {
+                return redirect()->back()->with('error', 'Không có image nào được chọn');
             }
+            return redirect()->back()->with('status','Cập nhật hình ảnh thành công');
+        } catch(\Exception $e) {
+    	    return redirect()->back()->with('error',$e->getMessage());
         }
-        return redirect()->back()->with('status','Cập nhật hình ảnh thành công');
     }
 
     public function updateLink(Request $request, $slider_id, $id)
@@ -112,6 +131,63 @@ class AdminSlidersController extends Controller
     	$sliderDetail = SliderDetail::findOrFail($id);
     	$sliderDetail->delete();
     	return redirect()->route('admin.sliders.edit', [$slider_id])->with('status','Xóa hình ảnh thành công');
+    }
+
+    public function ajaxUpload(Request $request)
+    {
+        try {
+            if($request->ajax())
+            {
+                $slider     = Slider::find($request->get('slider_id'));
+                $files      = $request->file('medias');
+                $folder     = Folder::find($request->folder_id);
+                $folder_id  = $folder->id;
+
+                if($files === null)
+                {
+                    return response()->json([
+                        'error'   => '1',
+                        'message' => 'File is empty',
+                    ]);
+                }
+                foreach ($files as $file)
+                {
+                    $file = Media::ajaxUploadImage($file, $folder_id);
+                    if(empty($file))
+                    {
+                        return response()->json([
+                            'error'   => '1',
+                            'message' => 'Upload failed!',
+                        ]);
+                    }
+                }
+
+                if(!empty($files))
+                {
+                    $medias = Media::where('folder_id', '=', $folder_id)->orderBy('id', 'desc')->get();
+                    $folder_list = Folder::where('folder_id',$folder_id)->get();
+                    $data   = view('admin.ajax.media.slider.new_files', compact('medias', 'folder', 'folder_list', 'slider'))->render();
+                    return response()->json([
+                        'data'        => $data,
+                        'file'        => $files,
+                        'success'     => '1',
+                        'message'     => 'Success'
+                    ]);
+                }
+                else
+                {
+                    return response()->json([
+                        'error'   => '1',
+                        'message' => 'File must be a image type',
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'error'   => '1',
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 
 }

@@ -608,7 +608,7 @@
                         alert(data.mess);
                     } else {
                         $("#newFolder input[name='folder_id']").val(data.folder_id);
-                        $('#modal-medias').html(data.option);
+                        $('#modal-content').html(data.option);
                     }
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
@@ -651,11 +651,11 @@
 
         $('.selectFile_1').click(function(e){
             e.preventDefault();
-            $("input[name='medias[]']").click();
+            $("input[name='medias[]']").trigger('click');
         });
 
         $("input[name='medias[]']").change(function(e) {
-            var medias = e.target.files;
+            var medias = e.target.files;console.log('here');
             var folder_id = $(this).attr('data-folder-id');
             var item_id = '{{ $item->id }}';
             var token = $("input[name='_token']").val();
@@ -676,8 +676,8 @@
                 success: function (data){
                     if(data.success == '1')
                     {
-                        $('#gallery_modal .modal-content').html();
-                        $('#gallery_modal .modal-content').html(data.data);
+                        $('#gallery_modal #modal-medias').html('');
+                        $('#gallery_modal #modal-medias').html(data.data);
                     } else {
                         if(data.error == '1')
                         {

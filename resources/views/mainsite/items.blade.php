@@ -63,10 +63,10 @@
                     <div class="page-breadcrumb">
                         <div><a href="{{ route('index') }}">Trang chủ</a></div>
                         @if(isset($pageSub))
-                        <div><a href="{{ route('items.cat.index',[$item_cat]) }}">{{ $page->name }}</a></div>
-                        <div><a href="{{ route('items.cat.sub.index',[$item_cat,$item_sub_cat]) }}" class="active">{{ $pageSub->name }}</a></div>
+                        <div><a href="{{ route('items.cat.index',[$item_cat]) }}">{{ str_replace('/',' -', $page->name) }}</a></div>
+                        <div><a href="{{ route('items.cat.sub.index',[$item_cat,$item_sub_cat]) }}" class="active">{{ str_replace('/',' -',$pageSub->name) }}</a></div>
                         @else
-                        <div><a href="{{ route('items.cat.index',[$item_cat]) }}" class="active">{{ $page->name }}</a></div>
+                        <div><a href="{{ route('items.cat.index',[$item_cat]) }}" class="active">{{ str_replace('/',' -', $page->name) }}</a></div>
                         @endif
                     </div>
                 </div>

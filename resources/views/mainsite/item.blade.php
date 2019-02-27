@@ -63,11 +63,11 @@
                     <div class="page-breadcrumb">
                         <div><a href="{{ route('index') }}">Trang chủ</a></div>
                         @if(isset($pageSub))
-                        <div><a href="{{ route('items.cat.index',[$item_cat]) }}">{{ $item->itemCategoryParent->name }}</a></div>
-                        <div><a href="{{ route('items.cat.sub.index',[$item_cat, $item_sub_cat]) }}">{{ $item->itemCategoryMain->name }}</a></div>
+                        <div><a href="{{ route('items.cat.index',[$item_cat]) }}">{{ str_replace('/',' -', $item->itemCategoryParent->name) }}</a></div>
+                        <div><a href="{{ route('items.cat.sub.index',[$item_cat, $item_sub_cat]) }}">{{ str_replace('/',' -', $item->itemCategoryMain->name) }}</a></div>
                         <div><a href="" class="active">{{ $item->name }}</a></div>
                         @else
-                        <div><a href="{{ route('items.cat.index',[$item_cat]) }}" >{{ $item->itemCategoryParent ? $item->itemCategoryParent->name : '' }}</a></div>
+                        <div><a href="{{ route('items.cat.index',[$item_cat]) }}" >{{ str_replace('/',' -', $item->itemCategoryParent ) ? str_replace('/',' -', $item->itemCategoryParent->name ): '' }}</a></div>
                         <div><a href="" class="active">{{ $item->name }}</a></div>
                         @endif
                     </div>

@@ -90,24 +90,48 @@
                         <!-- Right Side Of Navbar -->
                         <ul class="nav navbar-nav navbar-center">
                             <!-- Authentication Links -->
-                            @if($top_nav->pages->isNotEmpty())
-                                @foreach($top_nav->pages as $pageslist)
-                                    @if($pageslist->pageChildren->isNotEmpty())
-                                        <li class="dropdown">
-                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" v-pre>
-                                                {{ $pageslist->name }}
-                                                <i class="fa fa-angle-down"></i>
-                                            </a>
-                                            <ul class="dropdown-menu">
-                                                @foreach($pageslist->pageChildren as $pagechild)
-                                                    <li>
-                                                        <a href="/{{ $pageslist->slug }}/{{ $pagechild->slug }}">{{ $pagechild->name }}</a>
-                                                    </li>
-                                                @endforeach
-                                            </ul>
-                                        </li>
+                            @if($top_nav->menu_details->isNotEmpty())
+                                @foreach($top_nav->menu_details as $pageslist)
+                                    @if($pageslist->type == 'page')
+                                        @if($pageslist->getPage->pageChildren->count() > 1)
+                                            <li class="dropdown">
+                                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" v-pre>
+                                                    {{ $pageslist->getPage->name }}
+                                                    <i class="fa fa-angle-down"></i>
+                                                </a>
+                                                <ul class="dropdown-menu">
+                                                    @foreach($pageslist->getPage->pageChildren as $pagechild)
+                                                        @if($pageslist->getPage->id != $pagechild->id)
+                                                            <li>
+                                                                <a href="/{{ $pageslist->getPage->slug }}/{{ $pagechild->slug }}">{{ $pagechild->name }}</a>
+                                                            </li>
+                                                        @endif
+                                                    @endforeach
+                                                </ul>
+                                            </li>
+                                        @else
+                                            <li><a href="/{{ $pageslist->getPage->slug }}">{{ $pageslist->getPage->name }}</a></li>
+                                        @endif
                                     @else
-                                        <li><a href="/{{ $pageslist->slug }}">{{ $pageslist->name }}</a></li>
+                                        @if($pageslist->getItemCat->itemCategories->count() > 1)
+                                            <li class="dropdown">
+                                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" v-pre>
+                                                    {{ $pageslist->getItemCat->name }}
+                                                    <i class="fa fa-angle-down"></i>
+                                                </a>
+                                                <ul class="dropdown-menu">
+                                                    @foreach($pageslist->getItemCat->itemCategories as $pagechild)
+                                                        @if($pageslist->getItemCat->id != $pagechild->id)
+                                                            <li>
+                                                                <a href="/{{ $pageslist->getItemCat->slug }}/{{ $pagechild->slug }}">{{ $pagechild->name }}</a>
+                                                            </li>
+                                                        @endif
+                                                    @endforeach
+                                                </ul>
+                                            </li>
+                                        @else
+                                            <li><a href="/{{ $pageslist->getItemCat->slug }}">{{ $pageslist->getItemCat->name }}</a></li>
+                                        @endif
                                     @endif
                                 @endforeach
                             @endif
@@ -141,9 +165,51 @@
                         Danh mục sản phẩm
                     </div>
                     <ul>
-                        @foreach($footer_1st_menu->pages as $pageslist)
-                            <li><a href="/{{ $pageslist->slug }}">{{ $pageslist->name }}</a></li>
-                        @endforeach
+                        @if($footer_1st_menu->menu_details->isNotEmpty())
+                            @foreach($footer_1st_menu->menu_details as $pageslist)
+                                @if($pageslist->type == 'page')
+                                    @if($pageslist->getPage->pageChildren->count() >1)
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" v-pre>
+                                                {{ $pageslist->getPage->name }}
+                                                <i class="fa fa-angle-down"></i>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                @foreach($pageslist->getPage->pageChildren as $pagechild)
+                                                    @if($pageslist->getPage->id != $pagechild->id)
+                                                        <li>
+                                                            <a href="/{{ $pageslist->getPage->slug }}/{{ $pagechild->slug }}">{{ $pagechild->name }}</a>
+                                                        </li>
+                                                    @endif
+                                                @endforeach
+                                            </ul>
+                                        </li>
+                                    @else
+                                        <li><a href="/{{ $pageslist->getPage->slug }}">{{ $pageslist->getPage->name }}</a></li>
+                                    @endif
+                                @else
+                                    @if($pageslist->getItemCat->itemCategories->count() > 1)
+                                        <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" v-pre>
+                                                {{ $pageslist->getItemCat->name }}
+                                                <i class="fa fa-angle-down"></i>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                @foreach($pageslist->getItemCat->itemCategories as $pagechild)
+                                                    @if($pageslist->getItemCat->id != $pagechild->id)
+                                                        <li>
+                                                            <a href="/{{ $pageslist->getItemCat->slug }}/{{ $pagechild->slug }}">{{ $pagechild->name }}</a>
+                                                        </li>
+                                                    @endif
+                                                @endforeach
+                                            </ul>
+                                        </li>
+                                    @else
+                                        <li><a href="/{{ $pageslist->getItemCat->slug }}">{{ $pageslist->getItemCat->name }}</a></li>
+                                    @endif
+                                @endif
+                            @endforeach
+                        @endif
                     </ul>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-3">

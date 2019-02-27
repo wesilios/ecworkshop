@@ -35,4 +35,5 @@ class ItemCategory extends Model
     {
         return $this->hasOne('App\ItemCategory', 'item_Category_id','id');
     }
+
 }

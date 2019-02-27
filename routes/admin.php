@@ -207,6 +207,7 @@ Route::prefix('/admin')->group(function() {
     Route::post('/media/folder/ajax/tank','AdminFolderController@ajaxTankModalShow')->name('admin.folder.tank.ajax.show');
     Route::post('/media/folder/ajax/fullkit','AdminFolderController@ajaxFullKitModalShow')->name('admin.folder.fullkit.ajax.show');
     Route::post('/media/folder/ajax/item','AdminFolderController@ajaxItemModalShow')->name('admin.folder.item.ajax.show');
+    Route::post('/media/folder/ajax/slider','AdminFolderController@ajaxSliderModalShow')->name('admin.folder.slider.ajax.show');
 
     Route::post('/folder/juice/create_ajax','AdminFolderController@createJuiceAjax')->name('admin.folder.createJuiceAjax');
     Route::post('/folder/accessory/create_ajax','AdminFolderController@createAccessoryAjax')->name('admin.folder.createAccessoryAjax');
@@ -214,6 +215,7 @@ Route::prefix('/admin')->group(function() {
     Route::post('/folder/tank/create_ajax','AdminFolderController@createTankBoxAjax')->name('admin.folder.createTankAjax');
     Route::post('/folder/fullkit/create_ajax','AdminFolderController@createFullKitAjax')->name('admin.folder.createFullKitAjax');
     Route::post('/folder/item/create_ajax','AdminFolderController@createItemAjax')->name('admin.folder.createItemAjax');
+    Route::post('/folder/slider/create_ajax','AdminFolderController@createSliderAjax')->name('admin.folder.createSliderAjax');
     /*
     |--------------------------------------------------------------------------
     | Admin ajax
@@ -226,6 +228,7 @@ Route::prefix('/admin')->group(function() {
     Route::post('/tank/ajaxUpload', 'AdminTanksController@ajaxUpload')->name('admin.tank.ajaxUpload');
     Route::post('/fullkit/ajaxUpload', 'AdminFullKitsController@ajaxUpload')->name('admin.fullkit.ajaxUpload');
     Route::post('/item/ajaxUpload', 'AdminItemsController@ajaxUpload')->name('admin.item.ajaxUpload');
+    Route::post('/slider/ajaxUpload', 'AdminSlidersController@ajaxUpload')->name('admin.slider.ajaxUpload');
 
     Route::post('/juice/remove_selected_img', 'AdminJuicesController@ajaxRemoveImg')->name('admin.juice.remove_selected_img');
     Route::post('/accessory/remove_selected_img', 'AdminAccessoriesController@ajaxRemoveImg')->name('admin.accessory.remove_selected_img');

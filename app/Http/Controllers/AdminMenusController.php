@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\ItemCategory;
+use App\MenuDetail;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Menu;
@@ -52,57 +54,159 @@ class AdminMenusController extends Controller
                         ->withErrors($validator);
         }
 
-        $menu = Menu::findOrFail($id);
+        $menu = Menu::find($id);
         $menu->update($request->all());
         return redirect()->route('admin.menus.index')->with('status','Lưu thành công!');
     }
 
     public function destroy($id)
     {
-    	$menu = Menu::findOrFail($id);
+    	$menu = Menu::find($id);
         $menu->delete();
         return redirect()->route('admin.menus.index')->with('delete','Xóa thành công!');
     }
 
-    public function edit($id)
+    public function edit(Request $rq, $id)
     {
-        $menu = Menu::findOrFail($id);
-        $pages = Page::all()->pluck('name','id');
-        return view('admin.menus.edit', compact('menu','pages'));
+        try {
+            $menu = Menu::find($id);
+            if($menu->menu_details->isEmpty()) {
+                $pages = Page::all()->pluck('name','id');
+                $item_parent = ItemCategory::all();
+            } else {
+                if($menu->menu_details()->where('type','page')->get()->isNotEmpty()){
+                    $pages = '';
+                    foreach($menu->menu_details()->where('type','page')->get() as $detail_page) {
+                        if(empty($pages) || isset($pages)){
+                            $pages = Page::where('id','!=', $detail_page->page_item_cat_id);
+                        } else {
+                            $pages = $pages->where('id','!=', $detail_page->page_item_cat_id);
+                        }
+                    }
+                    $pages = $pages->get()->pluck('name','id');
+                } else {
+                    $pages = Page::all()->pluck('name','id');
+                }
+                if($menu->menu_details()->where('type','item_cat')->get()->isNotEmpty()) {
+                    $item_parent = '';
+                    foreach($menu->menu_details()->where('type','item_cat')->get() as $detail_item_cat) {
+                        if(empty($item_parent) || isset($item_parent)) {
+                            $item_parent = ItemCategory::where('id','!=',$detail_item_cat->page_item_cat_id);
+                        } else {
+                            $item_parent = $item_parent->where('id','!=',$detail_item_cat->page_item_cat_id);
+                        }
+                    }
+                    $item_parent = $item_parent->get();
+                } else {
+                    $item_parent = ItemCategory::all();
+                }
+            }
+            return view('admin.menus.edit', compact('menu','pages', 'item_parent'));
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
-    public function addPage(Request $request, $id)
+    public function addPage(Request $rq, $id)
     {
-        $menu = Menu::findOrFail($id);
-        //dd($request->all());
-        $page = Page::findOrFail($request->page_id);
-        //dd($page);
-        foreach($menu->pages as $pagelist)
-        {
-            if($pagelist->pivot->page_id == $request->page_id)
-            {
-                return redirect()->route('admin.menus.edit',[$id])->with('error','Trang này đã có trên menu');
+        $menu = Menu::find($id);
+        $page_id = $rq->get('page_id','');
+        $item_cat_id = $rq->get('item_cat_id','');
+        if(!empty($page_id)) {
+            $page = Page::find($page_id);
+            if($page) {
+                $new_page = new MenuDetail();
+                $new_page->menu_id = $menu->id;
+                $new_page->type = 'page';
+                $new_page->page_item_cat_id = $page_id;
+                $new_page->order_no = $menu->menu_details->isNotEmpty() ? $menu->menu_details->count()+1 : 1;
+                $new_page->save();
+            }
+        } elseif(!empty($item_cat_id)) {
+            $item_cat = ItemCategory::find($item_cat_id);
+            if($item_cat) {
+                $new_page = new MenuDetail();
+                $new_page->menu_id = $menu->id;
+                $new_page->type = 'item_cat';
+                $new_page->page_item_cat_id = $item_cat_id;
+                $new_page->order_no = $menu->menu_details->isNotEmpty() ? $menu->menu_details->count()+1 : 1;
+                $new_page->save();
             }
         }
-        $menu->pages()->attach($page);
-        return redirect()->route('admin.menus.edit',[$id])->with('status','Thêm trang vào menu thành công');
+        return redirect()->back()->with('status','Thêm trang vào menu thành công');
     }
 
     public function destroyPage($menu_id, $page_id)
     {
-        $menu = Menu::findOrFail($menu_id);
-        //dd($request->all());
-        $page = Page::findOrFail($page_id);
-        $menu->pages()->detach($page);
-        return redirect()->route('admin.menus.edit',[$menu_id])->with('delete','Xóa trang khỏi thành công');
+        try {
+            $menu = Menu::find($menu_id);
+            $page = MenuDetail::find($page_id);
+            if($page) {
+                $pages = MenuDetail::where([
+                    ['menu_id','=',$menu_id],
+                    ['order_no','>',$page->order_no]
+                ])->get();
+                foreach($pages as $p) {
+                    $p->order_no = $p->order_no-1;
+                    $p->save();
+                }
+                $page->delete();
+            } else {
+                return redirect()->back()->with('error','Trang không tìm thấy');
+            }
+            return redirect()->back()->with('delete','Xóa trang khỏi thành công');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error',$e->getMessage());
+        }
     }
 
-    public function savePageOrder(Request $request, $menu_id, $page_id)
+    public function savePageOrder(Request $rq, $menu_id, $page_id)
     {
-        //dd($request->all());
-        $menu = Menu::findOrFail($menu_id);
-        $page = Page::findOrFail($page_id);
-        
-        return redirect()->route('admin.menus.edit',[$menu_id])->with('status','Cập nhật menu thành công');
+        try {
+            $menu = Menu::find($menu_id);
+            $page = MenuDetail::find($page_id);
+            if($page) {
+                $newPageOrder = $rq->get('pageOrder','');
+                if(!empty($newPageOrder)) {
+                    if($newPageOrder > 0 && $newPageOrder <= $menu->menu_details->count()) {
+                        if($newPageOrder < $page->order_no) {
+                            $pages = MenuDetail::where([
+                                ['menu_id','=',$menu_id],
+                                ['order_no','<',$page->order_no]
+                            ])->get();
+                            foreach($pages as $p) {
+                                if($newPageOrder <= $p->order_no) {
+                                    $p->order_no = $p->order_no+1;
+                                    $p->save();
+                                }
+                            }
+                        } elseif($newPageOrder > $page->order_no) {
+                            $pages = MenuDetail::where([
+                                ['menu_id','=',$menu_id],
+                                ['order_no','>',$page->order_no]
+                            ])->get();
+                            foreach($pages as $p) {
+                                if($newPageOrder >= $p->order_no) {
+                                    $p->order_no = $p->order_no-1;
+                                    $p->save();
+                                }
+                            }
+                        }
+                    } else {
+                        return redirect()->back()->with('error','Thứ tự trang vượt quá số lượng trang trong menu');
+                    }
+                } else {
+                    return redirect()->back()->with('error','Số thứ tự trang bị thiếu');
+                }
+                $page->order_no = $newPageOrder;
+                $page->save();
+                return redirect()->route('admin.menus.edit',[$menu_id])
+                    ->with('status','Cập nhật menu thành công');
+            } else {
+                return redirect()->back()->with('error','Trang không tìm thấy');
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error',$e->getMessage());
+        }
     }
 }

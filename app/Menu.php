@@ -13,4 +13,9 @@ class Menu extends Model
     {
     	return $this->belongsToMany('App\Page')->withPivot('created_at','updated_at');
     }
+
+    public function menu_details() {
+        return $this->hasMany('App\MenuDetail');
+    }
+
 }

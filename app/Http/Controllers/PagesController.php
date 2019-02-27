@@ -42,10 +42,10 @@ class PagesController extends Controller
     public function getHome()
     {
     	try {
-            $settings = Setting::findOrFail(1);
-            $main_slider = Slider::findOrFail(1);
-            $first_sub_slider = Slider::findOrFail(2);
-            $second_sub_slider = Slider::findOrFail(3);
+            $settings = Setting::find(1);
+            $main_slider = Slider::find(1);
+            $first_sub_slider = Slider::find(2);
+            $second_sub_slider = Slider::find(3);
 
 
             $item_cats_all = ItemCategory::all();
@@ -119,7 +119,7 @@ class PagesController extends Controller
                 }
                 else
                 {
-                    $settings = Setting::findOrFail(1);
+                    $settings = Setting::find(1);
                     $top_nav = Menu::where('id',1)->first();
                     $footer_1st_menu = Menu::where('id',2)->first();
                     $footer_2nd_menu = Menu::where('id',3)->first();
@@ -182,7 +182,7 @@ class PagesController extends Controller
 
     public function getCheck(Request $request)
     {
-        $settings = Setting::findOrFail(1);
+        $settings = Setting::find(1);
         $top_nav = Menu::where('id',1)->first();
         $footer_1st_menu = Menu::where('id',2)->first();
         $footer_2nd_menu = Menu::where('id',3)->first();
@@ -245,7 +245,7 @@ class PagesController extends Controller
         {
             return redirect()->route('customer.orders');
         }*/
-        $settings = Setting::findOrFail(1);
+        $settings = Setting::find(1);
         $top_nav = Menu::where('id',1)->first();
         $footer_1st_menu = Menu::where('id',2)->first();
         $footer_2nd_menu = Menu::where('id',3)->first();
@@ -306,7 +306,7 @@ class PagesController extends Controller
             {
                 $items = Item::where('name','LIKE','%'.$request->search_query.'%')->get();
             } else {
-                $itmes = Item::where([
+                $items = Item::where([
                     ['name','LIKE','%'.$request->search_query.'%'],
                     ['item_category_id','=',$it_cat_rq]
                 ])->get();
@@ -330,7 +330,7 @@ class PagesController extends Controller
 
     public function get404()
     {
-        $settings = Setting::findOrFail(1);
+        $settings = Setting::find(1);
         $top_nav = Menu::where('id',1)->first();
         $footer_1st_menu = Menu::where('id',2)->first();
         $footer_2nd_menu = Menu::where('id',3)->first();

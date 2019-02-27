@@ -8,7 +8,7 @@
 <div class="example-modal">
     <div class="modal fade item_modal" id="gallery_modal" role="dialog">
         <div class="modal-dialog modal-dialog-95" style="border-top:5px solid #0097bc; border-radius:4px">
-            <div class="modal-content" id="modal-medias">
+            <div class="modal-content" id="modal-content">
                 <div class="modal-header">
                     <div>
                         <span>Media Gallery</span>
@@ -113,7 +113,7 @@
                                 </div>
                             @endif
                         </div>
-                        <div class="col-sm-10" >
+                        <div class="col-sm-10" id="modal-medias">
                             <h5><strong>Files</strong></h5>
                             <div class="modalDisplayImages row">
                                 @if($medias->isNotEmpty())
@@ -130,8 +130,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="form-hidden-article">
                                         </div>
                                     @endforeach
                                 @endif

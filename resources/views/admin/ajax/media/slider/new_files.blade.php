@@ -35,41 +35,6 @@
     @endif
 </div>
 <script>
-    $('.select2-multi').select2();
-    $('.select2-single').select2();
-    $('.removeSelectedImg').click(function(e){
-        e.preventDefault();
-        var id = $(this).attr('data-media-id');
-        var item_id = '{{ $item->id }}';
-        var token = $("input[name='_token']").val();
-        if(confirm('Are you sure?'))
-        {
-            $.ajax({
-                url: "{{ route('admin.item.remove_selected_img') }}",
-                method:'POST',
-                dataType:'json',
-                data: {media_id:id, _token:token, item_id:item_id},
-                success: function(data) {
-                    if(data.error) {
-                        console.log(data.message);
-                        window.location.reload(true);
-                        console.log(data.item);
-                        $('#selected_img').html('');
-                        $('#selected_img').html(data.data);
-                    } else {
-                        $('#selected_img').html('');
-                        console.log(data.data);
-                        $('#selected_img').html(data.data);
-                    }
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    console.log(xhr.status);
-                    console.log(xhr.responseText);
-                    console.log(thrownError);
-                }
-            });
-        }
-    });
     $('.selectMultImgA').click(function(event){
         event.preventDefault();
         var id = $(this).attr('data-media-id');
@@ -90,17 +55,17 @@
         e.preventDefault();
         var $this = $(this);
         var token = $("input[name='_token']").val();
-        var item_id = '{{ $item->id }}';
+        var slider_id = '{{ $slider->id }}';
         var folder_name = $("input[name='folder_name']").val();
         var folder_id = $("input[name='folder_id']").val();
         if(folder_name == '') {
             alert('Trống tên');
         } else {
             $.ajax({
-                url: "{{ route('admin.folder.createItemAjax') }}",
+                url: "{{ route('admin.folder.createSliderAjax') }}",
                 method:'POST',
                 dataType:'json',
-                data: {folder_name:folder_name, _token:token, folder_id:folder_id, item_id:item_id},
+                data: {folder_name:folder_name, _token:token, folder_id:folder_id, slider_id:slider_id},
                 success: function(data) {
                     if(data.error) {
                         $('#newFolder .error').html(data.mess);
@@ -129,17 +94,30 @@
         }
     });
 
-    function getFolderByAjax(folder_slug, folder_id, token, item_id) {
+    $('.folder-link').dblclick(function(e){
+        var href = $(this).attr('href');
+        var slider_id = '{{ $slider->id }}';
+        var token = $("input[name='_token']").val();
+        var folder_slug = $(this).attr('data-folder-slug');
+        var folder_id = $(this).attr('data-folder-id');
+        if(folder_id == null || folder_slug == null) {
+            alert('Cant get this folder');
+        } else {
+            getFolderByAjax(folder_slug, folder_id, token, slider_id);
+        }
+    });
+
+    function getFolderByAjax(folder_slug, folder_id, token, slider_id) {
         $.ajax({
-            url: "{{ route('admin.folder.item.ajax.show') }}",
+            url: "{{ route('admin.folder.slider.ajax.show') }}",
             method: 'POST',
             dataType: 'json',
-            data: {folder_slug:folder_slug, folder_id:folder_id, _token:token, item_id:item_id},
+            data: {folder_slug:folder_slug, folder_id:folder_id, _token:token, slider_id:slider_id},
             success: function (data) {
                 if(data.error) {
                     alert(data.mess);
                 } else {
-                    console.log(data.folder_string);
+                    $("#newFolder input[name='folder_id']").val(data.folder_id);
                     $('#modal-content').html(data.option);
                 }
             },
@@ -151,30 +129,16 @@
         });
     };
 
-    $('.folder-link').dblclick(function(e){
-        var href = $(this).attr('href');
-        var item_id = '{{ $item->id }}';
-        var item_category_id = '{{ $item->item_category_id }}';
-        var token = $("input[name='_token']").val();
-        var folder_slug = $(this).attr('data-folder-slug');
-        var folder_id = $(this).attr('data-folder-id');
-        if(folder_id == null || folder_slug == null) {
-            alert('Cant get this folder');
-        } else {
-            getFolderByAjax(folder_slug, folder_id, token, item_id, item_category_id);
-        }
-    });
-
     $('.custom').click(function (e) {
         e.preventDefault();
-        var item_id = '{{ $item->id }}';
+        var slider_id = '{{ $slider->id }}';
         var token = $("input[name='_token']").val();
         var folder_slug = $(this).attr('data-folder-slug');
         var folder_id = $(this).attr('data-folder-id');
         if(folder_id == null || folder_slug == null) {
             alert('Cant get this folder');
         } else {
-            getFolderByAjax(folder_slug, folder_id, token, item_id);
+            getFolderByAjax(folder_slug, folder_id, token, slider_id);
         }
     });
 
@@ -182,14 +146,14 @@
     function uploadImages() {};
 
     $('.selectFile_1').click(function(e){
-        e.preventDefault();console.log('3');
-        $("input[name='medias[]']").click();
+        e.preventDefault();
+        $("input[name='medias[]']").trigger('click');
     });
 
     $("input[name='medias[]']").change(function(e) {
-        var medias = e.target.files;
+        var medias = e.target.files;console.log('here');
         var folder_id = $(this).attr('data-folder-id');
-        var item_id = '{{ $item->id }}';
+        var item_id = '{{ $slider->id }}';
         var token = $("input[name='_token']").val();
         $("#formUploadImage").trigger('submit');
     });
@@ -198,7 +162,7 @@
         e.preventDefault();
         var data = new FormData(this);
         $.ajax({
-            url: "{{ route('admin.item.ajaxUpload') }}",
+            url: "{{ route('admin.slider.ajaxUpload') }}",
             method: 'POST',
             dataType: 'json',
             contentType: false,

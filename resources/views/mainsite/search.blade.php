@@ -39,7 +39,7 @@
                 </div>
             </div>
             <div class="row">
-                @if(!empty($itemSearch))
+                @if(!empty($itemSearch) && $itemSearch->isNotEmpty())
                     @foreach($itemSearch as $item)
                         @if($item->medias->isNotEmpty())
                             @if(!empty($item->index_img))

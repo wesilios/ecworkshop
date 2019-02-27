@@ -10,7 +10,7 @@ class Page extends Model
 
     protected $fillable = [
 
-    	'name', 'description', 'slug', 'category_id','page_id'
+    	'name', 'description', 'slug', 'category_id','page_id', 'id'
 
     ];
 

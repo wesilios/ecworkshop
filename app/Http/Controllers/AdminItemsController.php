@@ -96,10 +96,16 @@ class AdminItemsController extends Controller
             $item->item_status_id           = $rq->item_status_id;
             $item->homepage_active          = $rq->homepage_active == 'on' ? 1 : 0;
             $item->brand_id                 = $rq->brand_id;
-            $item->slug                     = Alpha::alpha_dash($item->name);
             $item->item_category_id         = $rq->item_category_id;
             $item->item_category_parent_id  = $rq->item_category_parent_id;
             $item->admin_id                 = Auth::user()->id;
+            $checkItems                     = Item::where('slug','LIKE','%'.Alpha::alpha_dash($item->name).'%')->get();
+            if($checkItems->count() > 0){
+                $item->slug                 = Alpha::alpha_dash($item->name) . '-' .$checkItems->count();
+            } else {
+                $item->slug                 = Alpha::alpha_dash($item->name);
+            }
+
             if($item->save()){
                 $item->item_category_parent_id == 0 ? $item_cat_slug = $item->itemCategoryMain->slug : $item_cat_slug = $item->itemCategoryParent->slug;
                 $colors                         = $rq->post('color_id');
@@ -224,7 +230,6 @@ class AdminItemsController extends Controller
             }
             if($item)
             {
-                $item->name             = $rq->name;
                 $item->summary          = $rq->summary;
                 $item->description      = $rq->description;
                 $item->price            = $rq->price;
@@ -232,7 +237,15 @@ class AdminItemsController extends Controller
                 $item->item_status_id   = $rq->item_status_id;
                 $item->homepage_active  = $rq->homepage_active == 'on' ? 1 : 0;
                 $item->brand_id         = $rq->brand_id;
-                $item->slug             = Alpha::alpha_dash($item->name);
+                if(strlen($item->name) != strlen($rq->name)){
+                    $checkItems                     = Item::where('slug','LIKE','%'.Alpha::alpha_dash($rq->name).'%')->get();
+                    if($checkItems->count() > 0){
+                        $item->slug                 = Alpha::alpha_dash($rq->name) . '-' .$checkItems->count();
+                    } else {
+                        $item->slug                 = Alpha::alpha_dash($rq->name);
+                    }
+                    $item->name             = $rq->name;
+                }
                 $colors                 = $rq->get('color_id','');
                 $sizes                  = $rq->post('size_id','');
                 if(!empty($colors))

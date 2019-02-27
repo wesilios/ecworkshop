@@ -79,13 +79,13 @@
                     <!-- Wrapper for slides -->
                     <div class="carousel-inner">
                         <div class="item active">
-                            <a href=""><img class="img-responsive" src="http://placehold.it/1900x1080" alt=""></a>
+                            <a href=""><img class="img-responsive" src="http://placehold.it/1900x862" alt=""></a>
                         </div>
                         <div class="item ">
-                            <a href=""><img class="img-responsive" src="http://placehold.it/1900x1080" alt=""></a>
+                            <a href=""><img class="img-responsive" src="http://placehold.it/1900x862" alt=""></a>
                         </div>
                         <div class="item ">
-                            <a href=""><img class="img-responsive" src="http://placehold.it/1900x1080" alt=""></a>
+                            <a href=""><img class="img-responsive" src="http://placehold.it/1900x862" alt=""></a>
                         </div>
                     </div>
                     <a class="left carousel-control" href="#main_slider" role="button" data-slide="prev">
