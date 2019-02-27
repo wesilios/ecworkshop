@@ -20,31 +20,48 @@ class ItemsController extends Controller
     //
     public function getItemCat($item_cat)
     {
-    	$settings = Setting::findOrFail(1);
-        $footer_1st_menu = Menu::where('id',2)->first();
-        $footer_2nd_menu = Menu::where('id',3)->first();
-        $top_nav = Menu::where('id',1)->first();
-        $page = Page::where('slug','=', $item_cat)->first();
-    	$item_category = ItemCategory::where('slug',$item_cat)->first();
-    	$items = Item::where('item_category_id','=',$item_category->id)->orderBy('id','desc')->paginate(24);
-        $item_cats_all = ItemCategory::all();
-        $item_cats_parent = [];
-        foreach ($item_cats_all as $it_cat) {
-            if($it_cat->id == $it_cat->item_category_id)
-            {
-                $item_cats_parent[$it_cat->id]  = $it_cat;
+    	try {
+            $settings = Setting::findOrFail(1);
+            $footer_1st_menu = Menu::where('id',2)->first();
+            $footer_2nd_menu = Menu::where('id',3)->first();
+            $top_nav = Menu::where('id',1)->first();
+            $page = Page::where('slug','=', $item_cat)->first();
+            $item_category = ItemCategory::where('slug',$item_cat)->first();
+
+            $item_cats_all = ItemCategory::all();
+            $item_cats_parent = [];
+            foreach ($item_cats_all as $it_cat) {
+                if($it_cat->id == $it_cat->item_category_id)
+                {
+                    $item_cats_parent[$it_cat->id]  = $it_cat;
+                }
             }
+            if($item_category->itemCategories()->count() > 1) {
+                $items = '';
+                foreach($item_category->itemCategories as $key => $list_cat) {
+                    if($key == 0){
+                        $items = Item::where('item_category_id','=',$list_cat->id);
+                    } else {
+                        $items = $items->orWhere('item_category_id','=',$list_cat->id);
+                    }
+                }
+                $items = $items->orderBy('id','desc')->paginate(24);
+            } else {
+                $items = Item::where('item_category_id','=',$item_category->id)->orderBy('id','desc')->paginate(24);
+            }
+            return view('mainsite.items', compact(
+                'item_cat',
+                'settings',
+                'footer_1st_menu',
+                'footer_2nd_menu',
+                'top_nav',
+                'page',
+                'items',
+                'item_cats_parent'
+            ));
+        } catch (\Exception $e) {
+    	    return redirect()->route('404.not.found');
         }
-        return view('mainsite.items', compact(
-    		'item_cat',
-    		'settings',
-            'footer_1st_menu',
-            'footer_2nd_menu',
-            'top_nav',
-            'page',
-            'items',
-            'item_cats_parent'
-    	));
     }
 
     public function getItemSubCat($item_cat, $item_sub_cat)

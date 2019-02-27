@@ -79,12 +79,9 @@
                                 <div class="col-sm-12 col-md-4 col-lg-3">
                                     <div class="item">
                                         <a href="/{{ $item->itemCategoryMain->itemCategory->slug }}/{{ $item->itemCategoryMain->slug }}/{{ $item->id }}/{{ $item->slug }}">
-                                            <img class="img-responsive"
-                                            src="
-                                            @foreach($item->medias()->where('media_id', $item->index_img)->get() as $img)
-                                            {{ asset($img->url) }}
-                                            @endforeach
-                                            " alt="">
+                                            <div style="width:100%; height:283px;">
+                                                <img class="img-responsive" style="vertical-align: middle;margin: auto" src="{{ asset($item->medias()->where('media_id', $item->index_img)->first()->url) }}" alt="">
+                                            </div>
                                             <div class="item-name">{{ $item->brand->name . ' ' . $item->name }}</div>
                                             <div class="item-price">{{ number_format($item->price,0, ",",".") }} VNĐ</div>
                                             <div class="btn-cart">Thêm vào giỏ hàng</div>
@@ -95,12 +92,9 @@
                                 <div class="col-sm-12 col-md-4 col-lg-3">
                                     <div class="item">
                                         <a href="/{{ $item->itemCategoryMain->slug }}/{{ $item->id }}/{{ $item->slug }}">
-                                            <img class="img-responsive"
-                                            src="
-                                            @foreach($item->medias()->where('media_id', $item->index_img)->get() as $img)
-                                            {{ asset($img->url) }}
-                                            @endforeach
-                                            " alt="">
+                                            <div style="width:100%; height:283px;">
+                                                <img class="img-responsive" style="vertical-align: middle;margin: auto" src="{{ asset($item->medias()->where('media_id', $item->index_img)->first()->url) }}" alt="">
+                                            </div>
                                             <div class="item-name">{{ $item->brand->name . ' ' . $item->name }}</div>
                                             <div class="item-price">{{ number_format($item->price,0, ",",".") }} VNĐ</div>
                                             <div class="btn-cart">Thêm vào giỏ hàng</div>
@@ -113,14 +107,9 @@
                                 <div class="col-sm-12 col-md-4 col-lg-3">
                                     <div class="item">
                                         <a href="/{{ $item->itemCategoryMain->itemCategory->slug }}/{{ $item->itemCategoryMain->slug }}/{{ $item->id }}/{{ $item->slug }}">
-                                            @if($item->medias()->first() == null)
-                                            <img class="img-responsive" src="https://via.placeholder.com/650x650?text=No+image" alt="">
-                                            @else
-                                            <img class="img-responsive"
-                                            src="
-                                            {{ asset($item->medias()->first()->url) }}
-                                            " alt="">
-                                            @endif
+                                            <div style="width:100%; height:283px;">
+                                                <img class="img-responsive" style="vertical-align: middle;margin: auto" src="{{ asset($item->medias()->first()->url) }}" alt="">
+                                            </div>
                                             <div class="item-name">{{ !empty($item->brand->name) ? $item->brand->name : ''}} {{ ' ' . $item->name }}</div>
                                             <div class="item-price">{{ number_format($item->price,0, ",",".") }} VNĐ</div>
                                             <div class="btn-cart">Thêm vào giỏ hàng</div>
@@ -131,14 +120,9 @@
                                 <div class="col-sm-12 col-md-4 col-lg-3">
                                     <div class="item">
                                         <a href="/{{ $item->itemCategoryMain->slug }}/{{ $item->id }}/{{ $item->slug }}">
-                                            @if($item->medias()->first() == null)
-                                            <img class="img-responsive" src="https://via.placeholder.com/650x650?text=No+image" alt="">
-                                            @else
-                                            <img class="img-responsive"
-                                            src="
-                                            {{ asset($item->medias()->first()->url) }}
-                                            " alt="">
-                                            @endif
+                                            <div style="width:100%; height:283px;">
+                                                <img class="img-responsive" style="vertical-align: middle;margin: auto" src="{{ asset($item->medias()->first()->url) }}" alt="">
+                                            </div>
                                             <div class="item-name">{{ !empty($item->brand->name) ? $item->brand->name : ''}} {{ ' ' . $item->name }}</div>
                                             <div class="item-price">{{ number_format($item->price,0, ",",".") }} VNĐ</div>
                                             <div class="btn-cart">Thêm vào giỏ hàng</div>

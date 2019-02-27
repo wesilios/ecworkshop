@@ -122,12 +122,11 @@
                                     <div>
                                         <div class="item">
                                             <a href="{{ $item->itemCategoryMain->slug }}/{{ $item->id }}/{{ $item->slug }}">
-                                                <img class="img-responsive"
-                                                     src="
-                                             @foreach($item->medias()->where('media_id', $item->index_img)->get() as $img)
-                                                     {{ asset($img->url) }}
-                                                     @endforeach
-                                                             " alt="">
+                                                {{--<img class="img-responsive"--}}
+                                                     {{--src="{{ asset($item->medias()->where('media_id', $item->index_img)->first()->url) }}" alt="">--}}
+                                                <div style="width:283px; height:283px;">
+                                                    <img class="img-responsive" style="vertical-align: middle;margin: auto" src="{{ asset($item->medias()->where('media_id', $item->index_img)->first()->url) }}" alt="">
+                                                </div>
                                                 <div class="item-name">{{ $item->brand ? $item->brand->name : ''}} {{ $item->name }}</div>
                                                 <div class="item-price">
                                                     @if($item->price_off > 0 || $item->price_off != null)
@@ -152,8 +151,10 @@
                                                 @if($item->medias()->first() == null)
                                                     <img class="img-responsive" src="https://via.placeholder.com/650x650?text=No+image" alt="">
                                                 @else
-                                                    <img class="img-responsive"
-                                                         src="{{ asset($item->medias()->first()->url) }}" alt="">
+                                                    {{--<img class="img-responsive" src="{{ asset($item->medias()->first()->url) }}" alt="">--}}
+                                                    <div style="width:283px; height:283px;">
+                                                        <img class="img-responsive" style="vertical-align: middle;margin: auto" src="{{ asset($item->medias()->first()->url) }}" alt="">
+                                                    </div>
                                                 @endif
                                                 <div class="item-name">{{ $item->brand ? $item->brand->name : ''}} {{ $item->name }}</div>
                                                 <div class="item-price">

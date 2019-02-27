@@ -194,6 +194,7 @@ class AdminItemsController extends Controller
                 return '';
             }
         } catch (\Exception $e){
+            return $e->getMessage();
             return redirect()->back()->withInput()->with(['status'=>'error','message'=>$e->getMessage()]);
         }
     }
@@ -272,7 +273,7 @@ class AdminItemsController extends Controller
                     }
                 }
                 if($item->save()){
-                    return redirect()->route('admin.items.edit',['slug'=>$item->slug, 'item_category'=>$item_category->name])->with(['status'=>'success','message'=>'Cập nhật thành công.']);
+                    return redirect()->route('admin.items.edit',['slug'=>$item->slug, 'item_category'=>$item_category->slug])->with(['status'=>'success','message'=>'Cập nhật thành công.']);
                 }
             } else {
                 return redirect()->back()->withInput()->with(['status'=>'error','message'=>'Something wrong!']);
